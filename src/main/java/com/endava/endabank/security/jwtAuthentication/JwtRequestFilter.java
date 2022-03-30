@@ -1,5 +1,6 @@
 package com.endava.endabank.security.jwtAuthentication;
 
+import com.endava.endabank.constants.Routes;
 import com.endava.endabank.security.utils.JwtManage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,8 +32,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().equals("/api/v1/login") ||
-                (request.getServletPath().equals("/api/v1/users") && request.getMethod().equals(HttpMethod.POST.name()))) {
+        if (request.getServletPath().equals(Routes.API_ROUTE + Routes.LOGIN_ROUTE) ||
+                (request.getServletPath().equals(Routes.API_ROUTE + Routes.USERS_ROUTE) && request.getMethod().equals(HttpMethod.POST.name()))) {
             filterChain.doFilter(request, response);
         } else {
             String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);

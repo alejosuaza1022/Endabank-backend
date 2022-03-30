@@ -1,5 +1,6 @@
 package com.endava.endabank.services.impl;
 
+import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
@@ -53,9 +54,9 @@ public class UserServiceImpl implements UserService {
     public UserRegisterGetDto save(UserRegisterDto userDto) {
         User user = modelMapper.map(userDto, User.class);
         Role role = roleService.findById(userDto.getRoleId()).
-                orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+                orElseThrow(() -> new ResourceNotFoundException(Strings.ROLE_NOT_FOUND));
         IdentifierType identifierType = identifierTypeService.findById(userDto.getTypeIdentifierId()).
-                orElseThrow((() -> new ResourceNotFoundException("Identifier type not found")));
+                orElseThrow((() -> new ResourceNotFoundException(Strings.IDENTIFIER_TYPE_NOT_FOUND)));
         user.setRole(role);
         user.setIdentifierType(identifierType);
         user.setPassword(passwordEncoder.encode(user.getPassword()));

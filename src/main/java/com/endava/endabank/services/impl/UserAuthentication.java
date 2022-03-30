@@ -1,5 +1,6 @@
 package com.endava.endabank.services.impl;
 
+import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.models.Permission;
 import com.endava.endabank.models.Role;
@@ -28,7 +29,7 @@ public class UserAuthentication implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOpt = userDao.findByEmail(username);
-        User user = userOpt.orElseThrow(() -> new UsernameNotFoundException("User not found in the database"));
+        User user = userOpt.orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         return new org.springframework.security.core.userdetails.
                 User(user.getEmail(), user.getPassword(),
                 getAuthorities(user));

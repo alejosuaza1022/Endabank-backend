@@ -1,5 +1,6 @@
 package com.endava.endabank.controllers;
 
+import com.endava.endabank.constants.Routes;
 import com.endava.endabank.dto.user.AuthenticationDto;
 import com.endava.endabank.security.utils.JwtManage;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping(Routes.API_ROUTE)
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtManage jwtManage;
@@ -28,8 +30,8 @@ public class AuthenticationController {
         this.jwtManage = jwtManage;
     }
 
-    @PostMapping(value = "/login")
-    public ResponseEntity<?> CreateAuthenticationToken(@RequestBody AuthenticationDto authenticationDto) {
+    @PostMapping(value = Routes.LOGIN_ROUTE)
+    public ResponseEntity<?> CreateAuthenticationToken(@Valid @RequestBody AuthenticationDto authenticationDto) {
         Authentication authentication = authenticate(authenticationDto.getEmail(), authenticationDto.getPassword());
         final String token = jwtManage.generateToken((User) authentication.getPrincipal());
         Map<String, String> dataResponse = new HashMap<>();
