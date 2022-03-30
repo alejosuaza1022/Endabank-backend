@@ -4,7 +4,10 @@ import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -19,8 +22,10 @@ public class UserController {
     public ResponseEntity<?> create(@RequestBody UserRegisterDto user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.save(user));
     }
+
     @GetMapping
-    public ResponseEntity<?> get() {
+    @PreAuthorize("hasAuthority('ACCOUNT:VALIDATE')")
+    public ResponseEntity<?> get(Principal principal) {
         return ResponseEntity.status(HttpStatus.CREATED).body("hello world");
     }
 }

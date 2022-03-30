@@ -6,12 +6,14 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -19,9 +21,14 @@ public class JwtManage {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
+        List<String> authorities =
+                user.getAuthorities()
+                        .stream()
+                        .map(GrantedAuthority::getAuthority).toList();
+        claims.put("permissions", authorities);
+        return doGenerateToken(claims, user.getUsername());
     }
 
     private String doGenerateToken(Map<String, Object> claims, String username) {
@@ -39,11 +46,11 @@ public class JwtManage {
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(token);
         String username = decodedJWT.getSubject();
-        Claim _roles = decodedJWT.getClaim("roles");
-        String[] roles = {};
-        if (!_roles.isNull()) {
-            roles = _roles.asArray(String.class);
+        Claim _permissions = decodedJWT.getClaim("permissions");
+        String[] permissions = {};
+        if (!_permissions.isNull()) {
+            permissions = _permissions.asArray(String.class);
         }
-        return new Object[]{username, roles};
+        return new Object[]{username, permissions};
     }
 }
