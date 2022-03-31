@@ -5,6 +5,7 @@ import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
+import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.exceptions.customExceptions.ResourceNotFoundException;
 import com.endava.endabank.models.IdentifierType;
 import com.endava.endabank.models.Permission;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -45,8 +47,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> findAll() {
-        return userDao.findAll();
+    public List<UserToApproveAccountDto> usersToApprove() {
+        List<User> users = userDao.findAll();
+        return users.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -83,6 +86,19 @@ public class UserServiceImpl implements UserService {
         UserPrincipalSecurity userPrincipalSecurity = modelMapper.map(user, UserPrincipalSecurity.class);
         return
                 new UsernamePasswordAuthenticationToken(userPrincipalSecurity, null, authorities);
+    }
+
+    @Override
+    public UserToApproveAccountDto updateApprove(Integer id, boolean value) {
+        User user = userDao.findById(id).orElseThrow(() ->
+                new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        user.setIsApproved(value);
+        userDao.save(user);
+        return this.mapToDto(user);
+    }
+
+    private UserToApproveAccountDto mapToDto(User user) {
+        return modelMapper.map(user, UserToApproveAccountDto.class);
     }
 
 

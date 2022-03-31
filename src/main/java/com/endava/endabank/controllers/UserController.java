@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
+import java.util.Map;
 
 @RestController
 @RequestMapping(Routes.API_ROUTE + Routes.USERS_ROUTE)
@@ -28,7 +28,13 @@ public class UserController {
 
     @GetMapping()
     @PreAuthorize(Permissions.AUTHORITY_ACCOUNT_VALIDATE)
-    public ResponseEntity<?> get(Principal principal) {
-        return ResponseEntity.status(HttpStatus.CREATED).body("hello world");
+    public ResponseEntity<?> getUsersToApprove() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.usersToApprove());
+    }
+
+    @PutMapping("/approve/{id}")
+    @PreAuthorize(Permissions.AUTHORITY_ACCOUNT_VALIDATE)
+    public ResponseEntity<?> updateUserIsApproved(@PathVariable Integer id, @RequestBody Map<String, Boolean> map) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateApprove(id, map.get("value")));
     }
 }
