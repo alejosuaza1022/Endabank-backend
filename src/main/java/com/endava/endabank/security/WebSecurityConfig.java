@@ -2,12 +2,11 @@ package com.endava.endabank.security;
 
 import com.endava.endabank.security.jwtAuthentication.JwtAuthenticationEntryPoint;
 import com.endava.endabank.security.jwtAuthentication.JwtRequestFilter;
-import com.endava.endabank.services.impl.UserAuthentication;
+import com.endava.endabank.services.impl.UserAuthenticationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,11 +22,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final JwtRequestFilter jwtRequestFilter;
-    private final UserAuthentication userAuthentication;
+    private final UserAuthenticationService userAuthentication;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     public WebSecurityConfig(PasswordEncoder passwordEncoder, JwtRequestFilter jwtRequestFilter,
-                             UserAuthentication userAuthentication, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+                             UserAuthenticationService userAuthentication, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.passwordEncoder = passwordEncoder;
         this.jwtRequestFilter = jwtRequestFilter;
         this.userAuthentication = userAuthentication;

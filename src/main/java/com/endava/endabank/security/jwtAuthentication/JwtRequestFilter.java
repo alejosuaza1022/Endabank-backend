@@ -1,10 +1,15 @@
 package com.endava.endabank.security.jwtAuthentication;
 
 import com.endava.endabank.constants.Routes;
+import com.endava.endabank.dto.user.UserPrincipalSecurity;
+import com.endava.endabank.models.User;
 import com.endava.endabank.security.utils.JwtManage;
+import com.endava.endabank.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -16,18 +21,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-
-import static java.util.Arrays.stream;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
+    private final UserService userService;
     private final JwtManage jwtManage;
+    private final ModelMapper modelMapper;
 
-    public JwtRequestFilter(JwtManage jwtManage) {
+    public JwtRequestFilter(UserService userService, JwtManage jwtManage, ModelMapper modelMapper) {
+        this.userService = userService;
         this.jwtManage = jwtManage;
+        this.modelMapper = modelMapper;
     }
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -39,11 +47,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (authorization != null && authorization.startsWith("Bearer ")) {
                 try {
-                    Object[] dataJwt = jwtManage.verifyToken(authorization);
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    stream((String[]) dataJwt[1]).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(dataJwt[0], null, authorities);
+                    Integer userId = jwtManage.verifyToken(authorization);
+                    UsernamePasswordAuthenticationToken authenticationToken = userService.getUsernamePasswordToken(userId);
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);

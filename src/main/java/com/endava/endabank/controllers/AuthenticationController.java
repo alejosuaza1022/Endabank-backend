@@ -2,6 +2,7 @@ package com.endava.endabank.controllers;
 
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.dto.user.AuthenticationDto;
+import com.endava.endabank.security.UserAuthentication;
 import com.endava.endabank.security.utils.JwtManage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,15 +34,13 @@ public class AuthenticationController {
     @PostMapping(value = Routes.LOGIN_ROUTE)
     public ResponseEntity<?> CreateAuthenticationToken(@Valid @RequestBody AuthenticationDto authenticationDto) {
         Authentication authentication = authenticate(authenticationDto.getEmail(), authenticationDto.getPassword());
-        final String token = jwtManage.generateToken((User) authentication.getPrincipal());
+        final String token = jwtManage.generateToken((UserAuthentication) authentication.getPrincipal());
         Map<String, String> dataResponse = new HashMap<>();
         dataResponse.put("access_token", token);
         return ResponseEntity.ok(dataResponse);
     }
 
     private Authentication authenticate(String email, String password) {
-        Objects.requireNonNull(email);
-        Objects.requireNonNull(password);
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 
 
