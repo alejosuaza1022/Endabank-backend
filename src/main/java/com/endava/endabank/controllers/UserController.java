@@ -3,13 +3,14 @@ package com.endava.endabank.controllers;
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
+import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
 import com.endava.endabank.services.UserService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -43,7 +44,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateApprove(id, map.get("value")));
     }
 
-    @GetMapping(Routes.RESET_PASSWORD_ROUTE+"/{email}")
+    @GetMapping(Routes.RESET_PASSWORD_ROUTE + "/{email}")
     public ResponseEntity<?> resetPassword(@PathVariable String email) {
         Map<String, Object> map = userService.generateResetPassword(email);
         return ResponseEntity.status((HttpStatus) map.get("statusCode")).body(map);
@@ -53,9 +54,12 @@ public class UserController {
     public ResponseEntity<?> updateForgotPassword(@RequestBody UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateForgotPassword(updatePasswordDto));
     }
+
     @PutMapping(Routes.UPDATE_PASSWORD)
-    public ResponseEntity<?> updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto){
-        return  null;
+    public ResponseEntity<?> updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
+        UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updatePassword(user, updatePasswordDto));
     }
 
 }

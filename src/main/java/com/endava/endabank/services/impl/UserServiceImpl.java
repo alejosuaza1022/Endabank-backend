@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -130,6 +131,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Map<String, String> updateForgotPassword(UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
+        Map<String, String> map = new HashMap<>();
         UserValidations.comparePasswords(updatePasswordDto.getPassword(), updatePasswordDto.getRePassword());
         int  userId = UserValidations.validateUserForgotPasswordToken(
                 jwtManage, forgotUserPasswordTokenService, updatePasswordDto.getToken());
@@ -138,9 +140,21 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));
         userDao.save(user);
 
-        Map<String, String> map = new HashMap<>();
-        map.put("message", "Password update");
+        map.put("message", Strings.PASSWORD_UPDATED);
         return map;
+    }
+
+    @Override
+    public Map<String, String> updatePassword(UserPrincipalSecurity userPrincipalSecurity, UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
+        Map<String, String> map = new HashMap<>();
+        UserValidations.comparePasswords(updatePasswordDto.getPassword(), updatePasswordDto.getRePassword());
+        User user = userDao.findById(userPrincipalSecurity.getId()).
+                orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        UserValidations.validateOldPassword(passwordEncoder, user, updatePasswordDto.getOldPassword());
+        user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));
+        userDao.save(user);
+        map.put("message", Strings.PASSWORD_UPDATED);
+        return  map;
     }
 
     private UserToApproveAccountDto mapToDto(User user) {
