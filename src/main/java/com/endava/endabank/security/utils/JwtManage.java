@@ -22,14 +22,14 @@ public class JwtManage {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateToken(UserAuthentication user) {
+    public String generateToken(Integer id, String username) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", user.getId());
-        return doGenerateToken(claims, user.getUsername());
+        claims.put("userId", id);
+        return doGenerateToken(claims, username);
     }
 
     private String doGenerateToken(Map<String, Object> claims, String username) {
-        Algorithm algorithm = Algorithm.HMAC512(secret.getBytes(StandardCharsets.UTF_8));
+        Algorithm algorithm = Algorithm.HMAC512(secret);
         return JWT.create().
                 withSubject(username).withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + 20 * 60 * 1000))
@@ -39,7 +39,7 @@ public class JwtManage {
 
     public Integer verifyToken(String authorizationHeader) {
         String token = authorizationHeader.substring("Bearer ".length());
-        Algorithm algorithm = Algorithm.HMAC512(secret.getBytes(StandardCharsets.UTF_8));
+        Algorithm algorithm = Algorithm.HMAC512(secret);
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(token);
         Claim id = decodedJWT.getClaim("userId");

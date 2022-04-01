@@ -34,7 +34,8 @@ public class AuthenticationController {
     @PostMapping(value = Routes.LOGIN_ROUTE)
     public ResponseEntity<?> CreateAuthenticationToken(@Valid @RequestBody AuthenticationDto authenticationDto) {
         Authentication authentication = authenticate(authenticationDto.getEmail(), authenticationDto.getPassword());
-        final String token = jwtManage.generateToken((UserAuthentication) authentication.getPrincipal());
+        UserAuthentication userAuthentication = (UserAuthentication) authentication.getPrincipal();
+        final String token = jwtManage.generateToken(userAuthentication.getId(), userAuthentication.getUsername());
         Map<String, String> dataResponse = new HashMap<>();
         dataResponse.put("access_token", token);
         return ResponseEntity.ok(dataResponse);

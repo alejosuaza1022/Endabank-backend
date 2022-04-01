@@ -1,20 +1,22 @@
 package com.endava.endabank.services.impl;
 
+import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.dto.user.UserPrincipalSecurity;
-import com.endava.endabank.dto.user.UserRegisterDto;
-import com.endava.endabank.dto.user.UserRegisterGetDto;
-import com.endava.endabank.dto.user.UserToApproveAccountDto;
+import com.endava.endabank.dto.user.*;
+import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
 import com.endava.endabank.exceptions.customExceptions.ResourceNotFoundException;
-import com.endava.endabank.models.IdentifierType;
-import com.endava.endabank.models.Permission;
-import com.endava.endabank.models.Role;
-import com.endava.endabank.models.User;
+import com.endava.endabank.models.*;
+import com.endava.endabank.security.utils.JwtManage;
+import com.endava.endabank.services.ForgotUserPasswordTokenService;
 import com.endava.endabank.services.IdentifierTypeService;
 import com.endava.endabank.services.RoleService;
 import com.endava.endabank.services.UserService;
+import com.endava.endabank.utils.MailService;
+import com.endava.endabank.utils.user.UserValidations;
+import com.sendgrid.Response;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,9 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,15 +34,20 @@ public class UserServiceImpl implements UserService {
     private final IdentifierTypeService identifierTypeService;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtManage jwtManage;
+    private final ForgotUserPasswordTokenService forgotUserPasswordTokenService;
 
     public UserServiceImpl(UserDao userDao, ModelMapper modelMapper,
                            IdentifierTypeService identifierTypeService,
-                           RoleService roleService, PasswordEncoder passwordEncoder) {
+                           RoleService roleService, PasswordEncoder passwordEncoder,
+                           JwtManage jwtManage, ForgotUserPasswordTokenService forgotUserPasswordTokenService) {
         this.userDao = userDao;
         this.modelMapper = modelMapper;
         this.identifierTypeService = identifierTypeService;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.jwtManage = jwtManage;
+        this.forgotUserPasswordTokenService = forgotUserPasswordTokenService;
     }
 
     @Override
@@ -95,6 +100,47 @@ public class UserServiceImpl implements UserService {
         user.setIsApproved(value);
         userDao.save(user);
         return this.mapToDto(user);
+    }
+
+    @Override
+    public Map<String, Object> generateResetPassword(String email) {
+        Map<String, Object> map = new HashMap<>();
+        int httpStatus;
+        try {
+            User user = userDao.findByEmail(email).
+                    orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+            String token = jwtManage.generateToken(user.getId(), user.getEmail());
+            ForgotUserPasswordToken forgotUserPasswordToken = new ForgotUserPasswordToken(user, token);
+            forgotUserPasswordTokenService.save(forgotUserPasswordToken);
+            String link = Routes.RESET_PASSWORD_FRONTEND_ROUTE + token;
+            Response response = MailService.SendEmail(user.getEmail(), user.getFirstName(), link);
+            httpStatus = response.getStatusCode();
+            map.put("statusCode", HttpStatus.valueOf(httpStatus));
+        } catch (Exception e) {
+            httpStatus = HttpStatus.SERVICE_UNAVAILABLE.value();
+            System.out.println(e.getMessage());
+
+        }
+        map.put("message", httpStatus == HttpStatus.ACCEPTED.value() ? Strings.MAIL_SENT : Strings.MAIL_FAIL);
+        map.put("statusCode", HttpStatus.valueOf(httpStatus));
+        return map;
+
+    }
+
+    @Override
+    @Transactional
+    public Map<String, String> updateForgotPassword(UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
+        UserValidations.comparePasswords(updatePasswordDto.getPassword(), updatePasswordDto.getRePassword());
+        int[] data = UserValidations.validateUserForgotPasswordToken(
+                jwtManage, forgotUserPasswordTokenService, updatePasswordDto.getToken());
+        User user = userDao.findById(data[0]).
+                orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));
+        userDao.save(user);
+        forgotUserPasswordTokenService.deleteById(data[1]);
+        Map<String, String> map = new HashMap<>();
+        map.put("message", "Password update");
+        return map;
     }
 
     private UserToApproveAccountDto mapToDto(User user) {

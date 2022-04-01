@@ -1,5 +1,6 @@
 package com.endava.endabank.security;
 
+import com.endava.endabank.constants.Routes;
 import com.endava.endabank.security.jwtAuthentication.JwtAuthenticationEntryPoint;
 import com.endava.endabank.security.jwtAuthentication.JwtRequestFilter;
 import com.endava.endabank.services.impl.UserAuthenticationService;
@@ -47,8 +48,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/login").permitAll();
-        httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST,"/api/v1/users").permitAll();
+                .authorizeRequests().antMatchers(HttpMethod.POST, Routes.API_ROUTE + Routes.LOGIN_ROUTE,
+                        Routes.API_ROUTE + Routes.USERS_ROUTE).permitAll();
+        httpSecurity.authorizeRequests().antMatchers(
+                HttpMethod.GET, Routes.API_ROUTE + Routes.USERS_ROUTE +
+                        Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
+        httpSecurity.authorizeRequests().antMatchers(
+                HttpMethod.PUT, Routes.API_ROUTE +
+                Routes.USERS_ROUTE + Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
         httpSecurity.authorizeRequests().anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement()
