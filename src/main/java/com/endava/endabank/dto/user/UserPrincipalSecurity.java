@@ -7,4 +7,5 @@ public class UserPrincipalSecurity {
     private Integer id;
     private String email;
     private String phoneNumber;
+
 }

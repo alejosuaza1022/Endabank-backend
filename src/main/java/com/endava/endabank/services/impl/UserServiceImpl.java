@@ -131,13 +131,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Map<String, String> updateForgotPassword(UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
         UserValidations.comparePasswords(updatePasswordDto.getPassword(), updatePasswordDto.getRePassword());
-        int[] data = UserValidations.validateUserForgotPasswordToken(
+        int  userId = UserValidations.validateUserForgotPasswordToken(
                 jwtManage, forgotUserPasswordTokenService, updatePasswordDto.getToken());
-        User user = userDao.findById(data[0]).
+        User user = userDao.findById(userId).
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));
         userDao.save(user);
-        forgotUserPasswordTokenService.deleteById(data[1]);
+
         Map<String, String> map = new HashMap<>();
         map.put("message", "Password update");
         return map;

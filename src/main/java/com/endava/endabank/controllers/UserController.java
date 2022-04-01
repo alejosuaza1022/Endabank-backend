@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -51,6 +52,10 @@ public class UserController {
     @PutMapping(Routes.RESET_PASSWORD_ROUTE)
     public ResponseEntity<?> updateForgotPassword(@RequestBody UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateForgotPassword(updatePasswordDto));
+    }
+    @PutMapping(Routes.UPDATE_PASSWORD)
+    public ResponseEntity<?> updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto){
+        return  null;
     }
 
 }

@@ -36,8 +36,5 @@ public class ForgotUserPasswordTokenServiceImpl implements ForgotUserPasswordTok
         forgotUserPasswordTokenDao.save(forgotUserPasswordTokenNew);
     }
 
-    @Override
-    public void deleteById(Integer id) {
-        forgotUserPasswordTokenDao.deleteById(id);
-    }
+
 }

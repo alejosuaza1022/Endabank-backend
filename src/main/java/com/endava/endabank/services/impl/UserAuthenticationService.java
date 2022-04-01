@@ -31,9 +31,6 @@ public class UserAuthenticationService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOpt = userDao.findByEmail(username);
         User user = userOpt.orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
-//        return new org.springframework.security.core.userdetails.
-//                User(user.getEmail(), user.getPassword(),
-//                getAuthorities(user));
         return new UserAuthentication(
                 user.getEmail(), user.getPassword(),
                 new ArrayList<>(), user.getId());

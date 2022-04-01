@@ -40,7 +40,6 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "identifier_type_id", nullable = false)
     private IdentifierType identifierType;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<BankAccount> bankAccounts = new ArrayList<>();

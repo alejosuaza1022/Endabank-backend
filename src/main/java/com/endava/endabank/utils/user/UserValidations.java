@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class UserValidations {
 
-    public static int[] validateUserForgotPasswordToken(JwtManage jwtManage,
+    public static int validateUserForgotPasswordToken(JwtManage jwtManage,
                                                         ForgotUserPasswordTokenService forgotUserPasswordTokenService,
                                                         String token) {
         Integer userId = jwtManage.verifyToken("Bearer " + token);
@@ -22,7 +22,9 @@ public class UserValidations {
         if (!(tokenDb.equals(token))) {
             throw new AccessDeniedException(Strings.TOKEN_RESET_PASSWORD_INVALID);
         }
-        return new int[]{userId, tokenModel.getId()};
+        tokenModel.setToken("");
+        forgotUserPasswordTokenService.save(tokenModel);
+        return userId;
     }
 
     public static void validateOldPassword(PasswordEncoder passwordEncoder,
