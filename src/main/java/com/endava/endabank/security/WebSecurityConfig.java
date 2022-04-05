@@ -55,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         Routes.API_ROUTE + Routes.USERS_ROUTE).permitAll();
         httpSecurity.authorizeRequests().antMatchers(
                 HttpMethod.GET, Routes.API_ROUTE + Routes.USERS_ROUTE +
-                        Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
+                        Routes.RESET_PASSWORD_ROUTE + "/**", Routes.SWAGGER_IU, "/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll();
         httpSecurity.authorizeRequests().antMatchers(
                 HttpMethod.PUT, Routes.API_ROUTE +
                         Routes.USERS_ROUTE + Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
