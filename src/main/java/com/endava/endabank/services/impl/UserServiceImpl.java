@@ -139,7 +139,6 @@ public class UserServiceImpl implements UserService {
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));
         userDao.save(user);
-
         map.put("message", Strings.PASSWORD_UPDATED);
         return map;
     }

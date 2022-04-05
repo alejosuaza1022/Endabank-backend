@@ -7,6 +7,7 @@ import javax.validation.constraints.*;
 
 @Data
 public class UserRegisterDto {
+    private Integer id;
     @Email
     @NotNull
     private String email;

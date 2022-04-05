@@ -16,11 +16,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
     private final PasswordEncoder passwordEncoder;
     private final JwtRequestFilter jwtRequestFilter;
     private final UserAuthenticationService userAuthentication;
@@ -47,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity.csrf().disable().cors().and()
                 .authorizeRequests().antMatchers(HttpMethod.POST, Routes.API_ROUTE + Routes.LOGIN_ROUTE,
                         Routes.API_ROUTE + Routes.USERS_ROUTE).permitAll();
         httpSecurity.authorizeRequests().antMatchers(
@@ -55,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
         httpSecurity.authorizeRequests().antMatchers(
                 HttpMethod.PUT, Routes.API_ROUTE +
-                Routes.USERS_ROUTE + Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
+                        Routes.USERS_ROUTE + Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
         httpSecurity.authorizeRequests().anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement()

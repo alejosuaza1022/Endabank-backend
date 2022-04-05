@@ -10,7 +10,7 @@ import com.sendgrid.helpers.mail.objects.Personalization;
 
 import java.io.IOException;
 
-public class MailService {
+public final class MailService {
 
     public static Response SendEmail(String emailTo, String name, String link) throws IOException {
         Mail mail = new Mail();
