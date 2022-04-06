@@ -35,10 +35,10 @@ public class UserRegisterDto {
     private String password;
 
     @NotNull
-    @Digits(fraction = 0,integer = 2,message = "Number between 1 and 99")
-    private Integer roleId;
-
-    @NotNull
     @Digits(fraction = 0,integer = 2, message = "Number between 1 and 99")
     private Integer typeIdentifierId;
+
+    public void setEmail(String email){
+        this.email = email.toLowerCase();
+    }
 }

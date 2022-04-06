@@ -59,20 +59,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     }
 
-    private boolean verifyRoute(String method, String route) {
-        Map<String, ArrayList<String>> routesToIgnores = new HashMap<>();
-        String POST = HttpMethod.POST.name();
-        String GET = HttpMethod.GET.name();
-        String PUT = HttpMethod.PUT.name();
-        routesToIgnores.put(Routes.API_ROUTE + Routes.LOGIN_ROUTE, createMethods(POST));
-        routesToIgnores.put(Routes.API_ROUTE +
-                Routes.USERS_ROUTE + Routes.RESET_PASSWORD_ROUTE, createMethods(GET, PUT));
-        routesToIgnores.put(Routes.API_ROUTE + Routes.USERS_ROUTE, createMethods(POST));
-        if (routesToIgnores.get(route) == null) return false;
-        return routesToIgnores.get(route).contains(method);
-
-
-    }
 
     private ArrayList<String> createMethods(String... a) {
         return (ArrayList<String>) Arrays.stream(a).collect(Collectors.toList());

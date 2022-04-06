@@ -2,6 +2,8 @@ package com.endava.endabank.exceptions;
 
 import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
 import com.endava.endabank.exceptions.customExceptions.ResourceNotFoundException;
+import com.endava.endabank.exceptions.customExceptions.UniqueConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -49,8 +51,19 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(UniqueConstraintViolationException.class)
+    public ResponseEntity<ErrorMessage> UniqueConstraintExceptionHandler(Exception ex, WebRequest request){
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
+
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 new Date(),

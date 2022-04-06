@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(Routes.API_ROUTE)
@@ -35,9 +36,12 @@ public class AuthenticationController {
     public ResponseEntity<?> CreateAuthenticationToken(@Valid @RequestBody AuthenticationDto authenticationDto) {
         Authentication authentication = authenticate(authenticationDto.getEmail(), authenticationDto.getPassword());
         UserAuthentication userAuthentication = (UserAuthentication) authentication.getPrincipal();
+        String role = userAuthentication.getAuthorities().toArray()[0].toString();
         final String token = jwtManage.generateToken(userAuthentication.getId(), userAuthentication.getUsername());
-        Map<String, String> dataResponse = new HashMap<>();
+        Map<String, Object> dataResponse = new HashMap<>();
         dataResponse.put("access_token", token);
+        dataResponse.put("rol",role);
+        dataResponse.put("isApproved",userAuthentication.getIsApproved());
         return ResponseEntity.ok(dataResponse);
     }
 

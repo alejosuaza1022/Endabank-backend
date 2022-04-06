@@ -11,6 +11,9 @@ public final class Strings {
     public final static  String TOKEN_RESET_PASSWORD_INVALID = "The token is not valid for this user";
     public final static String USER_TOKEN_NOT_FOUND = "The Token for this user was not found on the database";
     public final static String PASSWORD_UPDATED= "Password update";
+    public final static String CONSTRAINT_IDENTIFIER_VIOLATED = "the user identifier provided already exist";
+    public final static String CONSTRAINT_EMAIL_VIOLATED = "the user email provided already exist";
+
 
 
 }

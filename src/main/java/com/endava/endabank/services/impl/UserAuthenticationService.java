@@ -31,9 +31,13 @@ public class UserAuthenticationService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOpt = userDao.findByEmail(username);
         User user = userOpt.orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        Role role = user.getRole();
+        boolean isApproved = user.getIsApproved() != null && user.getIsApproved();
+        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.getName()));
         return new UserAuthentication(
                 user.getEmail(), user.getPassword(),
-                new ArrayList<>(), user.getId());
+                authorities, user.getId(),isApproved );
     }
 
 }

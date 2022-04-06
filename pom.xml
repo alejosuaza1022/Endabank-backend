@@ -79,6 +79,12 @@
             <artifactId>sendgrid-java</artifactId>
             <version>4.8.3</version>
         </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
     </dependencies>
 
 
@@ -102,7 +108,7 @@
                 <version>8.0.5</version>
                 <configuration>
                     <url>${env.ENDABANK_DB_URL}</url>
-                    <user>${env.ENDABANK_DB_USERNAME}</user>
+                    <user>${env.ENDABANK_DB_USER}</user>
                     <password>${env.ENDABANK_DB_PASSWORD}</password>
                 </configuration>
             </plugin>

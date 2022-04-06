@@ -1,11 +1,13 @@
 package com.endava.endabank.services.impl;
 
+import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.*;
 import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
 import com.endava.endabank.exceptions.customExceptions.ResourceNotFoundException;
+import com.endava.endabank.exceptions.customExceptions.UniqueConstraintViolationException;
 import com.endava.endabank.models.*;
 import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.services.ForgotUserPasswordTokenService;
@@ -69,7 +71,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserRegisterGetDto save(UserRegisterDto userDto) {
         User user = modelMapper.map(userDto, User.class);
-        Role role = roleService.findById(userDto.getRoleId()).
+        Optional<User> userExist  = userDao.findByEmail(user.getEmail());
+        if(userExist.isPresent()){
+            throw new ResourceNotFoundException(Strings.CONSTRAINT_EMAIL_VIOLATED);
+        }
+        userExist = userDao.findByIdentifier(user.getIdentifier());
+        if(userExist.isPresent()){
+            throw  new UniqueConstraintViolationException(Strings.CONSTRAINT_IDENTIFIER_VIOLATED);
+        }
+        Role role = roleService.findById(Permissions.ROLE_USER).
                 orElseThrow(() -> new ResourceNotFoundException(Strings.ROLE_NOT_FOUND));
         IdentifierType identifierType = identifierTypeService.findById(userDto.getTypeIdentifierId()).
                 orElseThrow((() -> new ResourceNotFoundException(Strings.IDENTIFIER_TYPE_NOT_FOUND)));
