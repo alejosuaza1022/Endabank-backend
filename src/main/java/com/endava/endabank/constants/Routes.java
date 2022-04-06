@@ -10,4 +10,5 @@ public final class Routes {
     public final static String APPROVE_ACCOUNT_ROUTE = "/approve/{id}";
     public final static String RESET_PASSWORD_FRONTEND_ROUTE = FRONTEND_ROUTE + "/reset-password/?token=";
     public final static String UPDATE_PASSWORD = "/change-password";
+    public final static String SWAGGER_IU = "/swagger-ui.html/**";
 }

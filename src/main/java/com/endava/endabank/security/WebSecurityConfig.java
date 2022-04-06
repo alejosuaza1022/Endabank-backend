@@ -13,7 +13,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -49,16 +51,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable().cors().and()
                 .authorizeRequests().antMatchers(HttpMethod.POST, Routes.API_ROUTE + Routes.LOGIN_ROUTE,
                         Routes.API_ROUTE + Routes.USERS_ROUTE).permitAll();
-                httpSecurity.authorizeRequests().antMatchers(
-                                HttpMethod.GET, Routes.API_ROUTE + Routes.USERS_ROUTE +
-                                Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
+        httpSecurity.authorizeRequests().antMatchers(
+                HttpMethod.GET, Routes.API_ROUTE + Routes.USERS_ROUTE +
+                        Routes.RESET_PASSWORD_ROUTE + "/**", Routes.SWAGGER_IU, "/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll();
         httpSecurity.authorizeRequests().antMatchers(
                 HttpMethod.PUT, Routes.API_ROUTE +
                         Routes.USERS_ROUTE + Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
-//        httpSecurity.authorizeRequests().anyRequest().authenticated().and()
-//                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//                .and().sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.authorizeRequests().anyRequest().authenticated().and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
