@@ -2,10 +2,10 @@ package com.endava.endabank.utils.user;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
-import com.endava.endabank.models.ForgotUserPasswordToken;
-import com.endava.endabank.models.User;
+import com.endava.endabank.model.ForgotUserPasswordToken;
+import com.endava.endabank.model.User;
 import com.endava.endabank.security.utils.JwtManage;
-import com.endava.endabank.services.ForgotUserPasswordTokenService;
+import com.endava.endabank.service.ForgotUserPasswordTokenService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

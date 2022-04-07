@@ -1,6 +1,6 @@
-package com.endava.endabank.services;
+package com.endava.endabank.service;
 
-import com.endava.endabank.models.Role;
+import com.endava.endabank.model.Role;
 
 import java.util.Optional;
 

@@ -1,36 +1,46 @@
-package com.endava.endabank.models;
+package com.endava.endabank.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name = "account_types")
+@Table(name = "cards")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class AccountType {
+public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
+
+    @Column( length = 8)
+    private String cvv;
+
+    @Column(name = "expiration_date", nullable = false)
+    private LocalDate date;
+
+    @OneToOne
+    @JoinColumn(name = "bank_account_id",nullable = false)
+    private BankAccount bankAccount;
+
     @Column(nullable = false, length = 20)
-    private String name;
-    @OneToMany(mappedBy = "accountType", orphanRemoval = true)
-    @ToString.Exclude
-    private List<BankAccount> bankAccounts = new ArrayList<>();
+    private String nameOnCard;
+
+    @Column(nullable = false, length = 20)
+    private String cardNumber;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        AccountType that = (AccountType) o;
-        return id != null && Objects.equals(id, that.id);
+        Card card = (Card) o;
+        return id != null && Objects.equals(id, card.id);
     }
 
     @Override

@@ -1,11 +1,10 @@
-package com.endava.endabank.services;
+package com.endava.endabank.service;
 
 import com.endava.endabank.dto.user.*;
 import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
-import com.endava.endabank.models.User;
+import com.endava.endabank.model.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 

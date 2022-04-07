@@ -1,4 +1,4 @@
-package com.endava.endabank.services.impl;
+package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
@@ -8,12 +8,12 @@ import com.endava.endabank.dto.user.*;
 import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
 import com.endava.endabank.exceptions.customExceptions.ResourceNotFoundException;
 import com.endava.endabank.exceptions.customExceptions.UniqueConstraintViolationException;
-import com.endava.endabank.models.*;
+import com.endava.endabank.model.*;
 import com.endava.endabank.security.utils.JwtManage;
-import com.endava.endabank.services.ForgotUserPasswordTokenService;
-import com.endava.endabank.services.IdentifierTypeService;
-import com.endava.endabank.services.RoleService;
-import com.endava.endabank.services.UserService;
+import com.endava.endabank.service.ForgotUserPasswordTokenService;
+import com.endava.endabank.service.IdentifierTypeService;
+import com.endava.endabank.service.RoleService;
+import com.endava.endabank.service.UserService;
 import com.endava.endabank.utils.MailService;
 import com.endava.endabank.utils.user.UserValidations;
 import com.sendgrid.Response;
@@ -26,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 

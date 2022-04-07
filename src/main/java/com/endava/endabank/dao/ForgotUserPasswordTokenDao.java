@@ -1,7 +1,7 @@
 package com.endava.endabank.dao;
 
 
-import com.endava.endabank.models.ForgotUserPasswordToken;
+import com.endava.endabank.model.ForgotUserPasswordToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

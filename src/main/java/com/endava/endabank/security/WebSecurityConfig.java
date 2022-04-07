@@ -3,7 +3,7 @@ package com.endava.endabank.security;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.security.jwtAuthentication.JwtAuthenticationEntryPoint;
 import com.endava.endabank.security.jwtAuthentication.JwtRequestFilter;
-import com.endava.endabank.services.impl.UserAuthenticationService;
+import com.endava.endabank.service.impl.UserAuthenticationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

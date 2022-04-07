@@ -1,10 +1,9 @@
-package com.endava.endabank.services.impl;
+package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.models.Permission;
-import com.endava.endabank.models.Role;
-import com.endava.endabank.models.User;
+import com.endava.endabank.model.Role;
+import com.endava.endabank.model.User;
 import com.endava.endabank.security.UserAuthentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,9 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 
 @Service

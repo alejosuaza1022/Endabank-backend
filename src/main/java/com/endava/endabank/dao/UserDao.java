@@ -1,6 +1,6 @@
 package com.endava.endabank.dao;
 
-import com.endava.endabank.models.User;
+import com.endava.endabank.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

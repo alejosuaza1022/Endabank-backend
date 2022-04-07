@@ -1,9 +1,9 @@
-package com.endava.endabank.services.impl;
+package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.ForgotUserPasswordTokenDao;
-import com.endava.endabank.models.ForgotUserPasswordToken;
-import com.endava.endabank.services.ForgotUserPasswordTokenService;
+import com.endava.endabank.model.ForgotUserPasswordToken;
+import com.endava.endabank.service.ForgotUserPasswordTokenService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 

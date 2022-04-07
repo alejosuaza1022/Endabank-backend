@@ -1,7 +1,7 @@
-package com.endava.endabank.services;
+package com.endava.endabank.service;
 
 
-import com.endava.endabank.models.ForgotUserPasswordToken;
+import com.endava.endabank.model.ForgotUserPasswordToken;
 
 public interface ForgotUserPasswordTokenService {
     ForgotUserPasswordToken findByUserId(Integer id);

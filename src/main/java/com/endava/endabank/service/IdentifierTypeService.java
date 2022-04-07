@@ -1,6 +1,6 @@
-package com.endava.endabank.services;
+package com.endava.endabank.service;
 
-import com.endava.endabank.models.IdentifierType;
+import com.endava.endabank.model.IdentifierType;
 
 import java.util.Optional;
 

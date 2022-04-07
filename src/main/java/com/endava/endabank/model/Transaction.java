@@ -1,4 +1,4 @@
-package com.endava.endabank.models;
+package com.endava.endabank.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -21,7 +21,7 @@ public class Transaction {
     private Integer id;
     private String description;
     @Column(nullable = false)
-    private float ammount;
+    private float amount;
     @Column(length = 40)
     private String address;
     @ManyToOne(optional = false)

@@ -1,4 +1,4 @@
-package com.endava.endabank.models;
+package com.endava.endabank.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

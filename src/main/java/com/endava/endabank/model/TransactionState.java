@@ -1,4 +1,4 @@
-package com.endava.endabank.models;
+package com.endava.endabank.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;

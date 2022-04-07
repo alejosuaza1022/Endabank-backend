@@ -1,8 +1,8 @@
-package com.endava.endabank.services.impl;
+package com.endava.endabank.service.impl;
 
 import com.endava.endabank.dao.RoleDao;
-import com.endava.endabank.models.Role;
-import com.endava.endabank.services.RoleService;
+import com.endava.endabank.model.Role;
+import com.endava.endabank.service.RoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

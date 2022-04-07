@@ -1,11 +1,9 @@
 package com.endava.endabank.security.jwtAuthentication;
 
-import com.endava.endabank.constants.Routes;
 import com.endava.endabank.security.utils.JwtManage;
-import com.endava.endabank.services.UserService;
+import com.endava.endabank.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -19,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component

@@ -1,8 +1,8 @@
-package com.endava.endabank.services.impl;
+package com.endava.endabank.service.impl;
 
 import com.endava.endabank.dao.IdentifierTypeDao;
-import com.endava.endabank.models.IdentifierType;
-import com.endava.endabank.services.IdentifierTypeService;
+import com.endava.endabank.model.IdentifierType;
+import com.endava.endabank.service.IdentifierTypeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

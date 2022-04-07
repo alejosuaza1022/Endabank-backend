@@ -1,4 +1,4 @@
-package com.endava.endabank.models;
+package com.endava.endabank.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -8,26 +8,27 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "permissions")
+@Table(name = "transaction_types")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Permission {
+public class TransactionType {
     @Id
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(length = 40, nullable = false)
-    private String name;
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "permissions")
+    @Column(length = 20, nullable = false)
+    private  String name;
+    @OneToMany(mappedBy = "transactionType")
     @ToString.Exclude
-    private List<Role> roles;
+    private List<Transaction> transactions;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Permission that = (Permission) o;
+        TransactionType that = (TransactionType) o;
         return id != null && Objects.equals(id, that.id);
     }
 
