@@ -18,4 +18,8 @@ public class AuthenticationDto {
     @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W]).{8,20})",
             message = "1 Capital, 1 Special character, 1 Number and 8 to 20 digits,")
     private String password;
+
+    public void setEmail(String email){
+        this.email = email.toLowerCase();
+    }
 }
