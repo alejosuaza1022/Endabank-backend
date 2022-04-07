@@ -19,12 +19,15 @@ import java.util.Set;
 @ToString
 @RequiredArgsConstructor
 public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
+
     @Column(length = 40, nullable = false)
     private String name;
+
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "role", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<User> user;

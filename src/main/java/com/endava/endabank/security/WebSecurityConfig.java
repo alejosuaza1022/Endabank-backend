@@ -4,6 +4,7 @@ import com.endava.endabank.constants.Routes;
 import com.endava.endabank.security.jwtAuthentication.JwtAuthenticationEntryPoint;
 import com.endava.endabank.security.jwtAuthentication.JwtRequestFilter;
 import com.endava.endabank.service.impl.UserAuthenticationService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -26,14 +28,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtRequestFilter jwtRequestFilter;
     private final UserAuthenticationService userAuthentication;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-    public WebSecurityConfig(PasswordEncoder passwordEncoder, JwtRequestFilter jwtRequestFilter,
-                             UserAuthenticationService userAuthentication, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
-        this.passwordEncoder = passwordEncoder;
-        this.jwtRequestFilter = jwtRequestFilter;
-        this.userAuthentication = userAuthentication;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-    }
 
     @Bean
     @Override
@@ -53,7 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         Routes.API_ROUTE + Routes.USERS_ROUTE).permitAll();
         httpSecurity.authorizeRequests().antMatchers(
                 HttpMethod.GET, Routes.API_ROUTE + Routes.USERS_ROUTE +
-                        Routes.RESET_PASSWORD_ROUTE + "/**", Routes.SWAGGER_IU, "/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll();
+                        Routes.RESET_PASSWORD_ROUTE + "/**", Routes.SWAGGER_IU,
+                Routes.SWAGGER_JSON, Routes.CONFIGURATION,
+                Routes.SWAGGER, Routes.WEB_JARS).permitAll();
         httpSecurity.authorizeRequests().antMatchers(
                 HttpMethod.PUT, Routes.API_ROUTE +
                         Routes.USERS_ROUTE + Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();

@@ -15,12 +15,15 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class AccountType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
+
     @Column(nullable = false, length = 20)
     private String name;
+
     @OneToMany(mappedBy = "accountType", orphanRemoval = true)
     @ToString.Exclude
     private List<BankAccount> bankAccounts = new ArrayList<>();

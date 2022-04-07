@@ -14,6 +14,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class Card {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)

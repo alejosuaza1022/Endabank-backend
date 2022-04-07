@@ -15,10 +15,12 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class StateType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
+
     @Column(length = 40, nullable = false)
     private String name;
 

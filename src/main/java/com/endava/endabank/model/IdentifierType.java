@@ -14,12 +14,15 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class IdentifierType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column( nullable = false)
     private Integer id;
+
     @Column(nullable = false, length = 20)
     private String name;
+
     @OneToMany(mappedBy =  "identifierType" )
     @ToString.Exclude
     private List<User> user;

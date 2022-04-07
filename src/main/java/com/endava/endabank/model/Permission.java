@@ -14,11 +14,14 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class Permission {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(length = 40, nullable = false)
     private String name;
+
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "permissions")
     @ToString.Exclude
     private List<Role> roles;

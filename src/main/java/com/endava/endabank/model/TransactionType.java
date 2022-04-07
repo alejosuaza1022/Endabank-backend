@@ -14,12 +14,15 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class TransactionType {
+
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(length = 20, nullable = false)
     private  String name;
+
     @OneToMany(mappedBy = "transactionType")
     @ToString.Exclude
     private List<Transaction> transactions;

@@ -18,28 +18,39 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(length = 40, nullable = false)
     private String email;
+
     @Column(nullable = false, length = 20)
     private String phoneNumber;
+
     @Column(length = 20, unique = true, nullable = false)
     private String identifier;
+
     @Column(length = 40, nullable = false)
     private String firstName;
+
     @Column(length = 40, nullable = false)
     private String lastName;
+
     @Column(nullable = false)
     private String password;
+
     private Boolean isApproved;
+
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "identifier_type_id", nullable = false)
     private IdentifierType identifierType;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<BankAccount> bankAccounts = new ArrayList<>();

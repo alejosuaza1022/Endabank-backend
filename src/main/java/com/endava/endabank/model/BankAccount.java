@@ -14,26 +14,35 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class BankAccount {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
+
     @Column(nullable = false, length = 8)
     private String password;
+
     private  Float balance;
+
     @Column(nullable = false, length = 20)
     private String accountNumber;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "account_type_id", nullable = false)
     private AccountType accountType;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     @OneToOne(mappedBy = "bankAccount")
     private Card card;
+
     @OneToMany(mappedBy = "bankAccountIssuer")
     @ToString.Exclude
     private List<Transaction> transactionsSent;
+
     @OneToMany(mappedBy = "bankAccountReceiver")
     @ToString.Exclude
     private List<Transaction> transactionsReceived;
