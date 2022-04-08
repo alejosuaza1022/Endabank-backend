@@ -1,5 +1,6 @@
 package com.endava.endabank.security;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 

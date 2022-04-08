@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.endava.endabank.exceptions.customExceptions.BadDataException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +15,18 @@ import java.util.Map;
 
 @Component
 public class JwtManage {
-    @Value("${jwt.secret}")
-    private String secret;
 
-    public String generateToken(Integer id, String username) {
+    public JwtManage(@Value("${jwt.secret}") String secret) {
+        this.secret = secret;
+    }
+
+    private final String secret;
+
+    public String generateToken(Integer id, String username) throws BadDataException {
         Map<String, Object> claims = new HashMap<>();
+        if(id == null || username == null || username.equals("")){
+            throw new BadDataException("The id and the username are required for the token creation");
+        }
         claims.put("userId", id);
         return doGenerateToken(claims, username);
     }
