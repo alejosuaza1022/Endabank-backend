@@ -17,6 +17,7 @@ import com.endava.endabank.service.UserService;
 import com.endava.endabank.utils.MailService;
 import com.endava.endabank.utils.user.UserValidations;
 import com.sendgrid.Response;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final ModelMapper modelMapper;
@@ -38,19 +40,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtManage jwtManage;
     private final ForgotUserPasswordTokenService forgotUserPasswordTokenService;
-
-    public UserServiceImpl(UserDao userDao, ModelMapper modelMapper,
-                           IdentifierTypeService identifierTypeService,
-                           RoleService roleService, PasswordEncoder passwordEncoder,
-                           JwtManage jwtManage, ForgotUserPasswordTokenService forgotUserPasswordTokenService) {
-        this.userDao = userDao;
-        this.modelMapper = modelMapper;
-        this.identifierTypeService = identifierTypeService;
-        this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtManage = jwtManage;
-        this.forgotUserPasswordTokenService = forgotUserPasswordTokenService;
-    }
 
     @Override
     @Transactional(readOnly = true)
