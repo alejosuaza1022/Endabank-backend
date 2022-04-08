@@ -13,10 +13,9 @@ import java.util.Objects;
 
 public class UserValidations {
 
-    public static int validateUserForgotPasswordToken(JwtManage jwtManage,
-                                                        ForgotUserPasswordTokenService forgotUserPasswordTokenService,
-                                                        String token) {
-        Integer userId = jwtManage.verifyToken("Bearer " + token);
+    public static int validateUserForgotPasswordToken(ForgotUserPasswordTokenService forgotUserPasswordTokenService,
+                                                      String token) {
+        Integer userId = JwtManage.verifyToken("Bearer " + token, Strings.SECRET_JWT);
         ForgotUserPasswordToken tokenModel = forgotUserPasswordTokenService.findByUserId(userId);
         String tokenDb = tokenModel.getToken();
         if (!(tokenDb.equals(token))) {

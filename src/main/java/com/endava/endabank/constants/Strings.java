@@ -1,5 +1,10 @@
 package com.endava.endabank.constants;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Strings {
     public final static String ROLE_NOT_FOUND = "The role was not found on the database";
     public final static String IDENTIFIER_TYPE_NOT_FOUND = "The identifier type was not found on the database";
@@ -13,7 +18,7 @@ public final class Strings {
     public final static String PASSWORD_UPDATED= "Password update";
     public final static String CONSTRAINT_IDENTIFIER_VIOLATED = "the user identifier provided already exist";
     public final static String CONSTRAINT_EMAIL_VIOLATED = "the user email provided already exist";
-
+    public final static String SECRET_JWT = System.getenv("JWT_ENDABANK_SECRET");
 
 
 }

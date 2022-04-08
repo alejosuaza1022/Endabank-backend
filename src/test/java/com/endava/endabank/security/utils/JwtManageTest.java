@@ -6,43 +6,48 @@ import com.endava.endabank.model.User;
 import com.endava.endabank.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JwtManageTest {
 
-    private final JwtManage jwtManage = new JwtManage("ZHVtbXkgdmFsdWUK");
+    private final String secret_dummy = "ZHVtbXkgdmFsdWUK";
 
     @Test
     void generateValidTokenTest() throws BadDataException {
         User user = TestUtils.getUserAdmin();
-        String token = jwtManage.generateToken(user.getId(), user.getEmail());
+        String token = JwtManage.generateToken(user.getId(),
+                user.getEmail(), secret_dummy);
         assertNotNull(token);
         assertNotEquals("", token);
     }
 
     @Test
-    void generateInvalidTokenTest() throws BadDataException {
+    void generateInvalidTokenTest() {
         assertThrows(BadDataException.class, () ->
-                jwtManage.generateToken(null, "a@a.com"));
+                JwtManage.generateToken(null, "a@a.com", secret_dummy));
         assertThrows(BadDataException.class, () ->
-                jwtManage.generateToken(1, null));
+                JwtManage.generateToken(1, null, secret_dummy));
         assertThrows(BadDataException.class, () ->
-                jwtManage.generateToken(1, ""));
+                JwtManage.generateToken(1, "", secret_dummy));
     }
 
     @Test
     void verifyValidToken() throws BadDataException {
         User user = TestUtils.getUserAdmin();
-        String token = jwtManage.generateToken(user.getId(), user.getEmail());
-        int idUser = jwtManage.verifyToken("Bearer " + token);
+        String token = JwtManage.generateToken(user.getId(), user.getEmail(), secret_dummy);
+        int idUser = JwtManage.verifyToken("Bearer " + token, secret_dummy);
         assertEquals(idUser, user.getId());
     }
+
     @Test
     void verifyInvalidToken() throws BadDataException {
         User user = TestUtils.getUserAdmin();
-        String token = jwtManage.generateToken(user.getId(), user.getEmail());
-       assertThrows(JWTVerificationException.class, ()->
-               jwtManage.verifyToken("Bearer " + token + "asd")
-               );
+        String token = JwtManage.generateToken(user.getId(), user.getEmail(), secret_dummy);
+        assertThrows(JWTVerificationException.class, () ->
+                JwtManage.verifyToken("Bearer " + token + "asd", secret_dummy)
+        );
     }
 }

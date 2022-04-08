@@ -1,7 +1,9 @@
 package com.endava.endabank.security.jwtAuthentication;
 
+import com.endava.endabank.constants.Strings;
 import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.service.UserService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,17 +22,9 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final UserService userService;
-    private final JwtManage jwtManage;
-    private final ModelMapper modelMapper;
-
-    public JwtRequestFilter(UserService userService, JwtManage jwtManage, ModelMapper modelMapper) {
-        this.userService = userService;
-        this.jwtManage = jwtManage;
-        this.modelMapper = modelMapper;
-    }
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -39,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authorization != null && authorization.startsWith("Bearer ")) {
             try {
-                Integer userId = jwtManage.verifyToken(authorization);
+                Integer userId = JwtManage.verifyToken(authorization, Strings.SECRET_JWT);
                 UsernamePasswordAuthenticationToken authenticationToken = userService.getUsernamePasswordToken(userId);
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -55,8 +49,4 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     }
 
-
-    private ArrayList<String> createMethods(String... a) {
-        return (ArrayList<String>) Arrays.stream(a).collect(Collectors.toList());
-    }
 }
