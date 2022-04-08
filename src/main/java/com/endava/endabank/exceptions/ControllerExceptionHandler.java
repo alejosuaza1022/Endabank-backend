@@ -3,7 +3,6 @@ package com.endava.endabank.exceptions;
 import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
 import com.endava.endabank.exceptions.customExceptions.ResourceNotFoundException;
 import com.endava.endabank.exceptions.customExceptions.UniqueConstraintViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -19,7 +18,7 @@ import java.util.Map;
 @ControllerAdvice
 public class ControllerExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorMessage> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ErrorMessage> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),
@@ -30,7 +29,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> validationError(MethodArgumentNotValidException ex, WebRequest request) {
+    public ResponseEntity<?> handleValidationErrorException(MethodArgumentNotValidException ex, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -41,7 +40,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(ActionNotAllowedException.class)
-    public ResponseEntity<ErrorMessage> ActionNotAllowed(ActionNotAllowedException ex, WebRequest request) {
+    public ResponseEntity<ErrorMessage> handleActionNotAllowedException(ActionNotAllowedException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.FORBIDDEN.value(),
                 new Date(),
@@ -52,7 +51,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(UniqueConstraintViolationException.class)
-    public ResponseEntity<ErrorMessage> UniqueConstraintExceptionHandler(Exception ex, WebRequest request){
+    public ResponseEntity<ErrorMessage> handleUniqueConstraintException(Exception ex, WebRequest request){
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),
@@ -62,7 +61,7 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
+    public ResponseEntity<ErrorMessage> handleGlobalException(Exception ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 new Date(),
