@@ -15,5 +15,7 @@ public final class Routes {
     public final static String CONFIGURATION = "/configuration/**";
     public final static String SWAGGER = "/swagger*/**";
     public final static String WEB_JARS = "/webjars/**";
+    public final static String RESOURCE_DETAILS = "/details";
+
 
 }

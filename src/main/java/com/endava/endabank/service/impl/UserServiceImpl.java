@@ -5,6 +5,7 @@ import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
+import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
@@ -29,13 +30,16 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<UserToApproveAccountDto> usersToApprove() {
         List<User> users = userDao.findAll();
-        return users.stream().map(this::mapToDto).collect(Collectors.toList());
+        return users.stream().map(this::mapToUserToApproveDto).collect(Collectors.toList());
     }
 
     @Override
@@ -110,7 +114,7 @@ public class UserServiceImpl implements UserService {
                 new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         user.setIsApproved(value);
         userDao.save(user);
-        return this.mapToDto(user);
+        return this.mapToUserToApproveDto(user);
     }
 
     @Override
@@ -165,10 +169,20 @@ public class UserServiceImpl implements UserService {
         map.put("message", Strings.PASSWORD_UPDATED);
         return map;
     }
+    @Override
+    public UserDetailsDto getUserDetails(UserPrincipalSecurity user, Collection<GrantedAuthority> authorities){
+        UserDetailsDto userDetailsDto = mapToUserDetailsDto(user);
+        userDetailsDto.setAuthorities(authorities);
+        return  userDetailsDto;
+    }
 
-    private UserToApproveAccountDto mapToDto(User user) {
+    private UserToApproveAccountDto mapToUserToApproveDto(User user) {
         return modelMapper.map(user, UserToApproveAccountDto.class);
     }
+    private UserDetailsDto mapToUserDetailsDto(UserPrincipalSecurity user) {
+        return modelMapper.map(user, UserDetailsDto.class);
+    }
+
 
 
 }

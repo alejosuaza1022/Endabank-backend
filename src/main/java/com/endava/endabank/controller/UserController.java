@@ -3,6 +3,7 @@ package com.endava.endabank.controller;
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
+import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -64,6 +69,14 @@ public class UserController {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
         return ResponseEntity.status(HttpStatus.OK).body(userService.updatePassword(user, updatePasswordDto));
+    }
+
+    @GetMapping(Routes.RESOURCE_DETAILS)
+    public UserDetailsDto getDetails(Principal principal) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
+        Collection<GrantedAuthority> authorities = usernamePasswordAuthenticationToken.getAuthorities();
+        UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
+        return  userService.getUserDetails(user, authorities);
     }
 
 }
