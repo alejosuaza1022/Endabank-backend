@@ -60,7 +60,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateForgotPassword(updatePasswordDto));
     }
 
-    @CrossOrigin(origins = "http://localhost:3000/")
     @PutMapping(Routes.UPDATE_PASSWORD)
     public ResponseEntity<?> updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
