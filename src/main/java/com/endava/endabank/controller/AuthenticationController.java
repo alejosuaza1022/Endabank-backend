@@ -20,8 +20,8 @@ import javax.validation.Valid;
 @RequestMapping(Routes.API_ROUTE)
 @AllArgsConstructor
 public class AuthenticationController {
-    private final UserAuthenticationService userAuthenticationService;
-    private final AuthenticationManager authenticationManager;
+    private  UserAuthenticationService userAuthenticationService;
+    private AuthenticationManager authenticationManager;
 
     @PostMapping(value = Routes.LOGIN_ROUTE)
     public ResponseEntity<?> CreateAuthenticationToken(@Valid @RequestBody AuthenticationDto authenticationDto) throws BadDataException {

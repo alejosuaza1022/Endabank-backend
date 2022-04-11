@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +28,7 @@ import java.util.Map;
 @RequestMapping(Routes.API_ROUTE + Routes.USERS_ROUTE)
 @AllArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody UserRegisterDto user) {
@@ -46,13 +45,13 @@ public class UserController {
     @PutMapping(Routes.APPROVE_ACCOUNT_ROUTE)
     @PreAuthorize(Permissions.AUTHORITY_ACCOUNT_VALIDATE)
     public ResponseEntity<?> updateUserIsApproved(@PathVariable Integer id, @RequestBody Map<String, Boolean> map) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateApprove(id, map.get("value")));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateApprove(id, map.get("value" )));
     }
 
-    @GetMapping(Routes.RESET_PASSWORD_ROUTE + "/{email}")
+    @GetMapping(Routes.RESET_PASSWORD_ROUTE + "/{email}" )
     public ResponseEntity<?> resetPassword(@PathVariable String email) {
         Map<String, Object> map = userService.generateResetPassword(email);
-        return ResponseEntity.status((HttpStatus) map.get("statusCode")).body(map);
+        return ResponseEntity.status((HttpStatus) map.get("statusCode" )).body(map);
     }
 
     @PutMapping(Routes.RESET_PASSWORD_ROUTE)
