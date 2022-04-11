@@ -1,9 +1,19 @@
 package com.endava.endabank.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,13 +28,13 @@ public class IdentifierType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column( nullable = false)
+    @Column(nullable = false)
     private Integer id;
 
     @Column(nullable = false, length = 20)
     private String name;
 
-    @OneToMany(mappedBy =  "identifierType" )
+    @OneToMany(mappedBy = "identifierType")
     @ToString.Exclude
     private List<User> user;
 

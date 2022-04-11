@@ -49,5 +49,9 @@ class JwtManageTest {
         assertThrows(JWTVerificationException.class, () ->
                 JwtManage.verifyToken("Bearer " + token + "asd", secret_dummy)
         );
+        assertThrows(JWTVerificationException.class, () ->
+                JwtManage.verifyToken("Bearer ", secret_dummy)
+        );
+
     }
 }

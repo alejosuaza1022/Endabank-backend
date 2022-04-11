@@ -24,7 +24,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserAuthenticationService implements UserDetailsService {
-    private final UserDao userDao;
+    private UserDao userDao;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

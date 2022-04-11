@@ -13,7 +13,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
+@NoArgsConstructor
 public class AccountType {
 
     @Id

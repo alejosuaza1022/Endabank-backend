@@ -7,9 +7,13 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Email;
 import com.sendgrid.helpers.mail.objects.Personalization;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MailService {
 
     public static Response SendEmail(String emailTo, String name, String link) throws IOException {

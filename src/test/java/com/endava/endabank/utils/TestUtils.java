@@ -5,12 +5,15 @@ import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.model.IdentifierType;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.User;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TestUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class TestUtils {
     public static User getUserAdmin() {
         Role adminRole = TestUtils.adminRole();
         IdentifierType cc = TestUtils.identifierTypeCC();

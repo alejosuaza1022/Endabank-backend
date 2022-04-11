@@ -1,5 +1,7 @@
 package com.endava.endabank.dto.user;
+
 import lombok.Data;
+
 @Data
 public class UserToApproveAccountDto {
     private String firstName;

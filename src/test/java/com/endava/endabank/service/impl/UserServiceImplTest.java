@@ -68,7 +68,7 @@ class UserServiceImplTest {
 
 
     @Nested
-    @DisplayName("User save test")
+    @DisplayName("User save test" )
     class SaveUserTests {
         UserRegisterDto userRegisterDto;
 
@@ -78,8 +78,9 @@ class UserServiceImplTest {
             when(modelMapper.map(userRegisterDto, User.class)).thenReturn(TestUtils.getUserNotAdmin());
         }
 
+
         @Test
-        void saveShouldThrowExceptionWhenUserEmailAlready() {
+        void saveShouldThrowExceptionWhenUserEmailAlreadyExists() {
             when(userDao.findByEmail(userRegisterDto.getEmail())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
             assertThrows(UniqueConstraintViolationException.class, () -> userService.save(userRegisterDto));
         }
@@ -109,6 +110,5 @@ class UserServiceImplTest {
 
         }
     }
-
 
 }

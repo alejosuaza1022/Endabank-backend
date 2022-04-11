@@ -14,8 +14,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class ForgotUserPasswordTokenServiceImpl implements ForgotUserPasswordTokenService {
-    private  ForgotUserPasswordTokenDao forgotUserPasswordTokenDao;
-
+    private ForgotUserPasswordTokenDao forgotUserPasswordTokenDao;
 
 
     @Override

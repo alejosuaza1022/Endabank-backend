@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class RoleServiceImpl implements RoleService {
-    private  RoleDao roleDao;
+    private RoleDao roleDao;
 
     @Override
     @Transactional(readOnly = true)

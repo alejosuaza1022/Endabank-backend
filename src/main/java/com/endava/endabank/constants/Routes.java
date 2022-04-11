@@ -12,8 +12,8 @@ public final class Routes {
     public final static String UPDATE_PASSWORD = "/change-password";
     public final static String SWAGGER_IU = "/swagger-ui.html/**";
     public final static String SWAGGER_JSON = "/v2/api-docs/**";
-    public  final  static  String CONFIGURATION = "/configuration/**";
-    public  final  static  String SWAGGER = "/swagger*/**";
+    public final static String CONFIGURATION = "/configuration/**";
+    public final static String SWAGGER = "/swagger*/**";
     public final static String WEB_JARS = "/webjars/**";
 
 }
