@@ -15,6 +15,17 @@
     <description>Endabank backend proyect</description>
     <properties>
         <java.version>17</java.version>
+        <sonar.coverage.exclusions>
+            **/com/endava/endabank/model/**,
+            **/com/endava/endabank/dao/**,
+            **/com/endava/endabank/dto/**,
+            **/com/endava/endabank/constants/**,
+            **/com/endava/endabank/exceptions/**,
+            **/com/endava/endabank/EndabankApplication.java,
+            **/com/endava/endabank/SwaggerConfig/**
+        </sonar.coverage.exclusions>
+        <sonar.login>e1bbcc446f3dafd410742e7c81daad0e5cf96937</sonar.login>
+        <sonar.projectName>Endabank-backend</sonar.projectName>
     </properties>
     <dependencies>
         <dependency>
@@ -89,6 +100,11 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.7</version>
+        </dependency>
     </dependencies>
 
 
@@ -123,6 +139,11 @@
                     <source>16</source>
                     <target>16</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
             </plugin>
         </plugins>
     </build>
