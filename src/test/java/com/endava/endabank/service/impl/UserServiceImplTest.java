@@ -7,7 +7,7 @@ import com.endava.endabank.dao.RoleDao;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
-import com.endava.endabank.exceptions.customExceptions.UniqueConstraintViolationException;
+import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
 import com.endava.endabank.model.User;
 import com.endava.endabank.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -104,7 +104,7 @@ class UserServiceImplTest {
                     thenReturn(TestUtils.userRegisterGetDto());
             UserRegisterGetDto userRegisterGetDto = userService.save(userRegisterDto);
             assertEquals(userRegisterGetDto.getEmail(), userRegisterDto.getEmail());
-            assertEquals(userRegisterGetDto.getRole().getId(), Permissions.ROLE_USER);
+            assertEquals(Permissions.ROLE_USER,userRegisterGetDto.getRole().getId() );
             assertEquals(userRegisterGetDto.getIdentifier(), userRegisterDto.getIdentifier());
             assertEquals(userRegisterGetDto.getTypeIdentifier().getId(), userRegisterDto.getTypeIdentifierId());
 

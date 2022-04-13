@@ -1,8 +1,8 @@
 package com.endava.endabank.security;
 
 import com.endava.endabank.constants.Routes;
-import com.endava.endabank.security.jwtAuthentication.JwtAuthenticationEntryPoint;
-import com.endava.endabank.security.jwtAuthentication.JwtRequestFilter;
+import com.endava.endabank.security.jwtauthentication.JwtAuthenticationEntryPoint;
+import com.endava.endabank.security.jwtauthentication.JwtRequestFilter;
 import com.endava.endabank.service.impl.UserAuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;

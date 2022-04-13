@@ -1,7 +1,7 @@
 package com.endava.endabank.security.utils;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.endava.endabank.exceptions.customExceptions.BadDataException;
+import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import com.endava.endabank.model.User;
 import com.endava.endabank.utils.TestUtils;
 import org.junit.jupiter.api.Test;

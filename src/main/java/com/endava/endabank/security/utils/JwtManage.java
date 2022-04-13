@@ -5,7 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.endava.endabank.exceptions.customExceptions.BadDataException;
+import com.endava.endabank.constants.Strings;
+import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +21,7 @@ public final class JwtManage {
     public static String generateToken(Integer id, String username, String secret) throws BadDataException {
         Map<String, Object> claims = new HashMap<>();
         if(id == null || username == null || "".equals(username)){
-            throw new BadDataException("The id and the username are required for the token creation");
+            throw new BadDataException(Strings.BAD_DATA_FOR_TOKEN_GENERATION);
         }
         claims.put("userId", id);
         return doGenerateToken(claims, username, secret);

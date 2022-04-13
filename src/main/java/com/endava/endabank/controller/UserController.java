@@ -6,15 +6,16 @@ import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
-import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
+import com.endava.endabank.dto.user.UserRegisterGetDto;
+import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,36 +37,35 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody UserRegisterDto user) {
+    public ResponseEntity<UserRegisterGetDto> create(@Valid @RequestBody UserRegisterDto user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.save(user));
     }
 
     @GetMapping()
     @PreAuthorize(Permissions.AUTHORITY_ACCOUNT_VALIDATE)
-    public ResponseEntity<?> getUsersToApprove() {
-
+    public ResponseEntity<List<UserToApproveAccountDto>> getUsersToApprove() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.usersToApprove());
     }
 
     @PutMapping(Routes.APPROVE_ACCOUNT_ROUTE)
     @PreAuthorize(Permissions.AUTHORITY_ACCOUNT_VALIDATE)
-    public ResponseEntity<?> updateUserIsApproved(@PathVariable Integer id, @RequestBody Map<String, Boolean> map) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateApprove(id, map.get("value" )));
+    public ResponseEntity<UserToApproveAccountDto> updateUserIsApproved(@PathVariable Integer id, @RequestBody Map<String, Boolean> map) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateApprove(id, map.get("value")));
     }
 
-    @GetMapping(Routes.RESET_PASSWORD_ROUTE + "/{email}" )
-    public ResponseEntity<?> resetPassword(@PathVariable String email) {
+    @GetMapping(Routes.RESET_PASSWORD_ROUTE + "/{email}")
+    public ResponseEntity<Map<String, Object>> resetPassword(@PathVariable String email) {
         Map<String, Object> map = userService.generateResetPassword(email);
-        return ResponseEntity.status((HttpStatus) map.get("statusCode" )).body(map);
+        return ResponseEntity.status((HttpStatus) map.get("statusCode")).body(map);
     }
 
     @PutMapping(Routes.RESET_PASSWORD_ROUTE)
-    public ResponseEntity<?> updateForgotPassword(@RequestBody UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
+    public ResponseEntity<Map<String, String>> updateForgotPassword(@RequestBody UpdatePasswordDto updatePasswordDto) throws AccessDeniedException {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateForgotPassword(updatePasswordDto));
     }
 
     @PutMapping(Routes.UPDATE_PASSWORD)
-    public ResponseEntity<?> updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
+    public ResponseEntity<Map<String, String>> updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto) throws AccessDeniedException {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
         return ResponseEntity.status(HttpStatus.OK).body(userService.updatePassword(user, updatePasswordDto));
@@ -76,7 +76,7 @@ public class UserController {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
         Collection<GrantedAuthority> authorities = usernamePasswordAuthenticationToken.getAuthorities();
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
-        return  userService.getUserDetails(user, authorities);
+        return userService.getUserDetails(user, authorities);
     }
 
 }

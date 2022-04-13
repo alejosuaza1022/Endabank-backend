@@ -1,7 +1,6 @@
 package com.endava.endabank.utils.user;
 
 import com.endava.endabank.constants.Strings;
-import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
 import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.utils.JwtManage;
@@ -32,16 +31,16 @@ public final class UserValidations {
     public static void validateOldPassword(PasswordEncoder passwordEncoder,
                                            User user,
                                            String oldPassword
-    ) throws ActionNotAllowedException {
+    ) throws AccessDeniedException {
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new ActionNotAllowedException(Strings.OLD_PASSWORD_NOT_MATCH);
+            throw new AccessDeniedException(Strings.OLD_PASSWORD_NOT_MATCH);
         }
     }
 
-    public static void comparePasswords(String password, String rePassword) throws ActionNotAllowedException {
+    public static void comparePasswords(String password, String rePassword) throws AccessDeniedException {
         boolean passwordEquals = Objects.equals(password, rePassword);
         if (!passwordEquals) {
-            throw new ActionNotAllowedException(Strings.PASSWORDS_DOESNOT_MATCH);
+            throw new AccessDeniedException(Strings.PASSWORDS_DOESNOT_MATCH);
         }
     }
 }

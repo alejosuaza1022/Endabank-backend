@@ -1,6 +1,10 @@
 package com.endava.endabank.constants;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Permissions {
-    public final static String AUTHORITY_ACCOUNT_VALIDATE = "hasAuthority('ACCOUNT:VALIDATE')";
-    public final static Integer ROLE_USER = 2;
+    public static final String AUTHORITY_ACCOUNT_VALIDATE = "hasAuthority('ACCOUNT:VALIDATE')";
+    public static final Integer ROLE_USER = 2;
 }

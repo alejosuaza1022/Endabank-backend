@@ -10,9 +10,8 @@ import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
-import com.endava.endabank.exceptions.customExceptions.ActionNotAllowedException;
-import com.endava.endabank.exceptions.customExceptions.ResourceNotFoundException;
-import com.endava.endabank.exceptions.customExceptions.UniqueConstraintViolationException;
+import com.endava.endabank.exceptions.customexceptions.ResourceNotFoundException;
+import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
 import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.IdentifierType;
 import com.endava.endabank.model.Permission;
@@ -29,6 +28,7 @@ import com.sendgrid.Response;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,7 +37,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -61,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<UserToApproveAccountDto> usersToApprove() {
         List<User> users = userDao.findAll();
-        return users.stream().map(this::mapToUserToApproveDto).collect(Collectors.toList());
+        return users.stream().map(this::mapToUserToApproveDto).toList();
     }
 
     @Override
@@ -128,23 +126,22 @@ public class UserServiceImpl implements UserService {
             ForgotUserPasswordToken forgotUserPasswordToken = new ForgotUserPasswordToken(user, token);
             forgotUserPasswordTokenService.save(forgotUserPasswordToken);
             String link = Routes.RESET_PASSWORD_FRONTEND_ROUTE + token;
-            Response response = MailService.SendEmail(user.getEmail(), user.getFirstName(), link);
+            Response response = MailService.sendEmail(user.getEmail(), user.getFirstName(), link);
             httpStatus = response.getStatusCode();
-            map.put("statusCode", HttpStatus.valueOf(httpStatus));
+            map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
         } catch (Exception e) {
             httpStatus = HttpStatus.SERVICE_UNAVAILABLE.value();
             System.out.println(e.getMessage());
-
         }
-        map.put("message", httpStatus == HttpStatus.ACCEPTED.value() ? Strings.MAIL_SENT : Strings.MAIL_FAIL);
-        map.put("statusCode", HttpStatus.valueOf(httpStatus));
+        map.put(Strings.MESSAGE_RESPONSE, httpStatus == HttpStatus.ACCEPTED.value() ? Strings.MAIL_SENT : Strings.MAIL_FAIL);
+        map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
         return map;
 
     }
 
     @Override
     @Transactional
-    public Map<String, String> updateForgotPassword(UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
+    public Map<String, String> updateForgotPassword(UpdatePasswordDto updatePasswordDto) throws AccessDeniedException {
         Map<String, String> map = new HashMap<>();
         UserValidations.comparePasswords(updatePasswordDto.getPassword(), updatePasswordDto.getRePassword());
         int userId = UserValidations.validateUserForgotPasswordToken(
@@ -153,12 +150,12 @@ public class UserServiceImpl implements UserService {
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));
         userDao.save(user);
-        map.put("message", Strings.PASSWORD_UPDATED);
+        map.put(Strings.MESSAGE_RESPONSE, Strings.PASSWORD_UPDATED);
         return map;
     }
 
     @Override
-    public Map<String, String> updatePassword(UserPrincipalSecurity userPrincipalSecurity, UpdatePasswordDto updatePasswordDto) throws ActionNotAllowedException {
+    public Map<String, String> updatePassword(UserPrincipalSecurity userPrincipalSecurity, UpdatePasswordDto updatePasswordDto) throws AccessDeniedException {
         Map<String, String> map = new HashMap<>();
         UserValidations.comparePasswords(updatePasswordDto.getPassword(), updatePasswordDto.getRePassword());
         User user = userDao.findById(userPrincipalSecurity.getId()).
@@ -166,23 +163,24 @@ public class UserServiceImpl implements UserService {
         UserValidations.validateOldPassword(passwordEncoder, user, updatePasswordDto.getOldPassword());
         user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));
         userDao.save(user);
-        map.put("message", Strings.PASSWORD_UPDATED);
+        map.put(Strings.MESSAGE_RESPONSE, Strings.PASSWORD_UPDATED);
         return map;
     }
+
     @Override
-    public UserDetailsDto getUserDetails(UserPrincipalSecurity user, Collection<GrantedAuthority> authorities){
+    public UserDetailsDto getUserDetails(UserPrincipalSecurity user, Collection<GrantedAuthority> authorities) {
         UserDetailsDto userDetailsDto = mapToUserDetailsDto(user);
         userDetailsDto.setAuthorities(authorities);
-        return  userDetailsDto;
+        return userDetailsDto;
     }
 
     private UserToApproveAccountDto mapToUserToApproveDto(User user) {
         return modelMapper.map(user, UserToApproveAccountDto.class);
     }
+
     private UserDetailsDto mapToUserDetailsDto(UserPrincipalSecurity user) {
         return modelMapper.map(user, UserDetailsDto.class);
     }
-
 
 
 }

@@ -1,6 +1,7 @@
-package com.endava.endabank.security.jwtAuthentication;
+package com.endava.endabank.security.jwtauthentication;
 
 import com.endava.endabank.constants.Strings;
+import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.service.UserService;
 import lombok.AllArgsConstructor;
@@ -36,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
             } catch (Exception e) {
                 SecurityContextHolder.clearContext();
-                throw new Error(e);
+                throw new BadDataException(e.getMessage());
             }
         } else {
             filterChain.doFilter(request, response);

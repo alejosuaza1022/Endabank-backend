@@ -16,7 +16,7 @@ import java.io.IOException;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MailService {
 
-    public static Response SendEmail(String emailTo, String name, String link) throws IOException {
+    public static Response sendEmail(String emailTo, String name, String link) throws IOException {
         Mail mail = new Mail();
 
         Email fromEmail = new Email();
