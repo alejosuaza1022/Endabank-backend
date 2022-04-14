@@ -16,14 +16,14 @@ import java.io.IOException;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MailService {
 
-    public static Response sendEmail(String emailTo, String name, String link) throws IOException {
+    public static Response sendEmail(String emailTo, String name, String link, String templateId) throws IOException {
         Mail mail = new Mail();
 
         Email fromEmail = new Email();
         fromEmail.setName("Reset Password");
         fromEmail.setEmail(System.getenv("SENDGRID_MAIL_FROM"));
         mail.setFrom(fromEmail);
-        mail.setTemplateId(System.getenv("SEND_GRID_TEMPLATE_ID"));
+        mail.setTemplateId(templateId);
         Personalization personalization = new Personalization();
         personalization.addDynamicTemplateData("name", name);
         personalization.addDynamicTemplateData("link", link);

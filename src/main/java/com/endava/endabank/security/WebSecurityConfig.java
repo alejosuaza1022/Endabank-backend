@@ -43,16 +43,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().cors().and()
-                .authorizeRequests().antMatchers(HttpMethod.POST, Routes.API_ROUTE + Routes.LOGIN_ROUTE,
-                        Routes.API_ROUTE + Routes.USERS_ROUTE).permitAll();
+                .authorizeRequests().antMatchers(HttpMethod.POST, Routes.API_LOGIN_ROUTE,
+                        Routes.API_USERS_ROUTE, Routes.API_USERS_ROUTE + Routes.EMAIL_VALIDATION_ROUTE + "/**").permitAll();
         httpSecurity.authorizeRequests().antMatchers(
-                HttpMethod.GET, Routes.API_ROUTE + Routes.USERS_ROUTE +
+                HttpMethod.GET, Routes.API_USERS_ROUTE +
                         Routes.RESET_PASSWORD_ROUTE + "/**", Routes.SWAGGER_IU,
                 Routes.SWAGGER_JSON, Routes.CONFIGURATION,
-                Routes.SWAGGER, Routes.WEB_JARS).permitAll();
+                Routes.SWAGGER, Routes.WEB_JARS, Routes.API_USERS_ROUTE +
+                        Routes.EMAIL_VALIDATION_ROUTE + "/**").permitAll();
         httpSecurity.authorizeRequests().antMatchers(
                 HttpMethod.PUT, Routes.API_ROUTE +
-                        Routes.USERS_ROUTE + Routes.RESET_PASSWORD_ROUTE + "/**" ).permitAll();
+                        Routes.USERS_ROUTE + Routes.RESET_PASSWORD_ROUTE + "/**").permitAll();
         httpSecurity.authorizeRequests().anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement()

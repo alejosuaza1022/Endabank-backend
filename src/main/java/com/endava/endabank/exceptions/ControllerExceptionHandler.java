@@ -1,6 +1,7 @@
 package com.endava.endabank.exceptions;
 
 import com.endava.endabank.exceptions.customexceptions.ResourceNotFoundException;
+import com.endava.endabank.exceptions.customexceptions.ServiceUnavailableException;
 import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +59,16 @@ public class ControllerExceptionHandler {
                 ex.getMessage(),
                 request.getDescription(false));
 
+        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<ErrorMessage> handleServiceUnavailableException(Exception ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

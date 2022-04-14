@@ -2,14 +2,18 @@ package com.endava.endabank.controller;
 
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
+import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
+import com.endava.endabank.exceptions.customexceptions.ServiceUnavailableException;
+import com.endava.endabank.model.User;
 import com.endava.endabank.service.UserService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -35,10 +39,17 @@ import java.util.Map;
 @AllArgsConstructor
 public class UserController {
     private UserService userService;
+    private ModelMapper modelMapper;
 
     @PostMapping
-    public ResponseEntity<UserRegisterGetDto> create(@Valid @RequestBody UserRegisterDto user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.save(user));
+    public Map<String, Object> create(@Valid @RequestBody UserRegisterDto user) {
+        User userDb = this.userService.save(user);
+        Map<String, Object> map = this.userService.generateEmailVerification(userDb, null);
+        if (map.get(Strings.STATUS_CODE_RESPONSE).equals(HttpStatus.INTERNAL_SERVER_ERROR.value())) {
+            throw new ServiceUnavailableException(Strings.EMAIL_SEND_ERROR);
+        }
+        map.put("User", modelMapper.map(userDb, UserRegisterGetDto.class));
+        return map;
     }
 
     @GetMapping()
@@ -50,7 +61,7 @@ public class UserController {
     @PutMapping(Routes.APPROVE_ACCOUNT_ROUTE)
     @PreAuthorize(Permissions.AUTHORITY_ACCOUNT_VALIDATE)
     public ResponseEntity<UserToApproveAccountDto> updateUserIsApproved(@PathVariable Integer id, @RequestBody Map<String, Boolean> map) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateApprove(id, map.get("value")));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUserAccountApprove(id, map.get("value")));
     }
 
     @GetMapping(Routes.RESET_PASSWORD_ROUTE + "/{email}")
@@ -79,4 +90,12 @@ public class UserController {
         return userService.getUserDetails(user, authorities);
     }
 
+    @GetMapping(Routes.EMAIL_VALIDATION_ROUTE + "/{email}")
+    public Map<String, Object> getDetailsById(@PathVariable String email) {
+        return userService.generateEmailVerification(null, email);
+    }
+    @PostMapping(Routes.EMAIL_VALIDATION_ROUTE + "/{email}")
+    public Map<String, Object> validateEmail(@PathVariable String email) {
+        return userService.verifyEmail(email);
+    }
 }

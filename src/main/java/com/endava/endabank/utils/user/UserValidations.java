@@ -40,7 +40,7 @@ public final class UserValidations {
     public static void comparePasswords(String password, String rePassword) throws AccessDeniedException {
         boolean passwordEquals = Objects.equals(password, rePassword);
         if (!passwordEquals) {
-            throw new AccessDeniedException(Strings.PASSWORDS_DOESNOT_MATCH);
+            throw new AccessDeniedException(Strings.PASSWORDS_DOES_NOT_MATCH);
         }
     }
 }

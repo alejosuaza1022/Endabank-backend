@@ -7,6 +7,7 @@ import com.endava.endabank.dao.RoleDao;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
+import com.endava.endabank.exceptions.customexceptions.ServiceUnavailableException;
 import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
 import com.endava.endabank.model.User;
 import com.endava.endabank.utils.TestUtils;
@@ -100,15 +101,13 @@ class UserServiceImplTest {
                     thenReturn(Optional.of(TestUtils.userRole()));
             when(identifierTypeService.findById(userRegisterDto.
                     getTypeIdentifierId())).thenReturn(Optional.of(TestUtils.identifierTypeCC()));
-            when(modelMapper.map(TestUtils.getUserNotAdmin(), UserRegisterGetDto.class)).
-                    thenReturn(TestUtils.userRegisterGetDto());
-            UserRegisterGetDto userRegisterGetDto = userService.save(userRegisterDto);
-            assertEquals(userRegisterGetDto.getEmail(), userRegisterDto.getEmail());
-            assertEquals(Permissions.ROLE_USER,userRegisterGetDto.getRole().getId() );
-            assertEquals(userRegisterGetDto.getIdentifier(), userRegisterDto.getIdentifier());
-            assertEquals(userRegisterGetDto.getTypeIdentifier().getId(), userRegisterDto.getTypeIdentifierId());
-
+            User userDb = userService.save(userRegisterDto);
+            assertEquals(userDb.getEmail(), userRegisterDto.getEmail());
+            assertEquals(Permissions.ROLE_USER,userDb.getRole().getId() );
+            assertEquals(userDb.getIdentifier(), userRegisterDto.getIdentifier());
+            assertEquals(userDb.getIdentifierType().getId(), userRegisterDto.getTypeIdentifierId());
         }
+
     }
 
 }

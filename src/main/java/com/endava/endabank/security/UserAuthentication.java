@@ -9,13 +9,15 @@ import java.util.Objects;
 public class UserAuthentication extends User {
     private Integer id;
     private boolean isApproved;
+    private boolean isEmailVerified;
 
     public UserAuthentication(String username, String password,
                               Collection<? extends GrantedAuthority> authorities,
-                              Integer id, boolean isApproved) {
+                              Integer id, boolean isApproved, boolean isEmailVerified) {
         super(username, password, authorities);
         this.id = id;
         this.isApproved = isApproved;
+        this.isEmailVerified = isEmailVerified;
     }
 
     public Integer getId() {
@@ -40,6 +42,9 @@ public class UserAuthentication extends User {
         return isApproved;
     }
 
+    public boolean getIsEmailVerified() {
+        return this.isEmailVerified;
+    }
 
     public UserAuthentication(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);

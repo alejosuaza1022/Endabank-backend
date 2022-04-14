@@ -55,7 +55,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private Boolean isApproved;
+
+    private String tokenEmailVerification;
+
+    private Boolean isEmailVerified;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)

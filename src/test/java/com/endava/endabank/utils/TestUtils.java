@@ -1,5 +1,6 @@
 package com.endava.endabank.utils;
 
+import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.model.IdentifierType;
@@ -8,9 +9,12 @@ import com.endava.endabank.model.User;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestUtils {
@@ -73,5 +77,17 @@ public final class TestUtils {
     public static UserRegisterGetDto userRegisterGetDto() {
         return new ModelMapper().
                         map(getUserNotAdmin(), UserRegisterGetDto.class);
+    }
+    public static Map<String, Object> getSuccesfullEmailResponse() {
+        Map<String,Object> map = new HashMap<>();
+        map.put(Strings.MESSAGE_RESPONSE,  Strings.MAIL_SENT );
+        map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(HttpStatus.ACCEPTED.value()));
+        return map;
+    }
+    public static Map<String, Object> getFailEmailResponse() {
+        Map<String,Object> map = new HashMap<>();
+        map.put(Strings.MESSAGE_RESPONSE,  Strings.MAIL_FAIL );
+        map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(HttpStatus.SERVICE_UNAVAILABLE.value()));
+        return map;
     }
 }

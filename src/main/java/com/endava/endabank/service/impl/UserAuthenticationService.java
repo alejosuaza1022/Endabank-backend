@@ -8,6 +8,7 @@ import com.endava.endabank.model.User;
 import com.endava.endabank.security.UserAuthentication;
 import com.endava.endabank.security.utils.JwtManage;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,11 +37,14 @@ public class UserAuthenticationService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority(role.getName()));
         return new UserAuthentication(
                 user.getEmail(), user.getPassword(),
-                authorities, user.getId(), isApproved);
+                authorities, user.getId(), isApproved, user.getIsEmailVerified());
     }
 
     public Map<String, Object> logInUser(Authentication authentication) throws BadDataException {
         UserAuthentication userAuthentication = (UserAuthentication) authentication.getPrincipal();
+        if (!userAuthentication.getIsEmailVerified()) {
+            throw new AccessDeniedException(Strings.EMAIL_NOT_VERIFIED);
+        }
         String role = userAuthentication.getAuthorities().toArray()[0].toString();
         final String token = JwtManage.generateToken(userAuthentication.getId(),
                 userAuthentication.getUsername(), Strings.SECRET_JWT);

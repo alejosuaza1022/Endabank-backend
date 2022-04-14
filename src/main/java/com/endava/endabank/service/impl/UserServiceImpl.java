@@ -8,7 +8,6 @@ import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
-import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.exceptions.customexceptions.ResourceNotFoundException;
 import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
@@ -44,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 @Service
 @AllArgsConstructor
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserRegisterGetDto save(UserRegisterDto userDto) {
+    public User save(UserRegisterDto userDto) {
         User user = modelMapper.map(userDto, User.class);
         Optional<User> userExist = userDao.findByEmail(user.getEmail());
         if (userExist.isPresent()) {
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
         user.setIdentifierType(identifierType);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.save(user);
-        return modelMapper.map(user, UserRegisterGetDto.class);
+        return user;
     }
 
     @Override
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserToApproveAccountDto updateApprove(Integer id, boolean value) {
+    public UserToApproveAccountDto updateUserAccountApprove(Integer id, boolean value) {
         User user = userDao.findById(id).orElseThrow(() ->
                 new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         user.setIsApproved(value);
@@ -117,26 +117,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> generateResetPassword(String email) {
-        Map<String, Object> map = new HashMap<>();
-        int httpStatus;
-        try {
-            User user = userDao.findByEmail(email).
-                    orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
-            String token = JwtManage.generateToken(user.getId(), user.getEmail(), Strings.SECRET_JWT);
+        User userDb = userDao.findByEmail(email).
+                orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        BiFunction<User, String, String> callback = (user, token) -> {
             ForgotUserPasswordToken forgotUserPasswordToken = new ForgotUserPasswordToken(user, token);
             forgotUserPasswordTokenService.save(forgotUserPasswordToken);
-            String link = Routes.RESET_PASSWORD_FRONTEND_ROUTE + token;
-            Response response = MailService.sendEmail(user.getEmail(), user.getFirstName(), link);
-            httpStatus = response.getStatusCode();
-            map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
-        } catch (Exception e) {
-            httpStatus = HttpStatus.SERVICE_UNAVAILABLE.value();
-            System.out.println(e.getMessage());
-        }
-        map.put(Strings.MESSAGE_RESPONSE, httpStatus == HttpStatus.ACCEPTED.value() ? Strings.MAIL_SENT : Strings.MAIL_FAIL);
-        map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
-        return map;
+            return Routes.RESET_PASSWORD_FRONTEND_ROUTE + token;
+        };
+        return this.sendEmailToUser(System.getenv("SEND_GRID_TEMPLATE_ID"), userDb, callback);
+    }
 
+    @Override
+    public Map<String, Object> generateEmailVerification(User userDb, String email) {
+        if (userDb == null) {
+            userDb = userDao.findByEmail(email).
+                    orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        }
+        BiFunction<User, String, String> callback = (user, token) -> {
+            user.setTokenEmailVerification(token);
+            userDao.save(user);
+            return Routes.EMAIL_VALIDATION_FRONTEND_ROUTE + token;
+        };
+        return this.sendEmailToUser(System.getenv("SEND_GRID_TEMPLATE_ID"), userDb, callback);
     }
 
     @Override
@@ -174,12 +176,43 @@ public class UserServiceImpl implements UserService {
         return userDetailsDto;
     }
 
+    @Override
+    public Map<String, Object> verifyEmail(String token) {
+        int userId = JwtManage.verifyToken("Bearer " + token, Strings.SECRET_JWT);
+        User user = userDao.findById(userId).
+                orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        user.setIsEmailVerified(true);
+        userDao.save(user);
+        Map<String, Object> map = new HashMap<>();
+        map.put(Strings.MESSAGE_RESPONSE, Strings.EMAIL_VERIFIED);
+        return map;
+    }
+
     private UserToApproveAccountDto mapToUserToApproveDto(User user) {
         return modelMapper.map(user, UserToApproveAccountDto.class);
     }
 
     private UserDetailsDto mapToUserDetailsDto(UserPrincipalSecurity user) {
         return modelMapper.map(user, UserDetailsDto.class);
+    }
+
+    private Map<String, Object> sendEmailToUser(String templateId, User user,
+                                                BiFunction<User, String, String> callback) {
+        Map<String, Object> map = new HashMap<>();
+        int httpStatus;
+        try {
+            String token = JwtManage.generateToken(user.getId(), user.getEmail(), Strings.SECRET_JWT);
+            String link = callback.apply(user, token);
+            Response response = MailService.sendEmail(user.getEmail(), user.getFirstName(), link, templateId);
+            httpStatus = response.getStatusCode();
+            map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
+        } catch (Exception e) {
+            httpStatus = HttpStatus.SERVICE_UNAVAILABLE.value();
+            System.out.println(e.getMessage());
+        }
+        map.put(Strings.MESSAGE_RESPONSE, httpStatus == HttpStatus.ACCEPTED.value() ? Strings.MAIL_SENT : Strings.MAIL_FAIL);
+        map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
+        return map;
     }
 
 
