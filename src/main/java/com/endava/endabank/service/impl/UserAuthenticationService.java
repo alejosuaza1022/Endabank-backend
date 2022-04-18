@@ -42,7 +42,8 @@ public class UserAuthenticationService implements UserDetailsService {
 
     public Map<String, Object> logInUser(Authentication authentication) throws BadDataException {
         UserAuthentication userAuthentication = (UserAuthentication) authentication.getPrincipal();
-        if (!userAuthentication.getIsEmailVerified()) {
+        boolean data = userAuthentication.getIsEmailVerified() == null || !userAuthentication.getIsEmailVerified();
+        if (data) {
             throw new AccessDeniedException(Strings.EMAIL_NOT_VERIFIED);
         }
         String role = userAuthentication.getAuthorities().toArray()[0].toString();

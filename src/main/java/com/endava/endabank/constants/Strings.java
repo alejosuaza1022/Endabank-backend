@@ -19,10 +19,15 @@ public final class Strings {
     public static final String CONSTRAINT_EMAIL_VIOLATED = "There is already a user registered with this email";
     public static final String SECRET_JWT = System.getenv("JWT_ENDABANK_SECRET");
     public static final String MESSAGE_RESPONSE = "message";
-    public static final String STATUS_CODE_RESPONSE = "status code";
-    public  static  final String BAD_DATA_FOR_TOKEN_GENERATION = "The id and the username are required for the token creation";
-    public static final  String EMAIL_SEND_ERROR = "There was an error sending the email";
+    public static final String STATUS_CODE_RESPONSE = "statusCode";
+    public static final String BAD_DATA_FOR_TOKEN_GENERATION = "The id and the username are required for the token creation";
+    public static final String EMAIL_SEND_ERROR = "There was an error sending the email";
     public static final String SECRET_JWT_DEFAULT = "ZHVtbXkgdmFsdWUK";
-    public static final String EMAIL_VERIFIED = "The email was successfully verified";
+    public static final String EMAIL_VERIFIED = "All set, the email was successfully verified";
     public static final String EMAIL_NOT_VERIFIED = "The user email has not been verified yet";
+    public static final String EMAIL_FOR_VERIFICATION_SENT = "User registered, Check your email for the link for verification";
+    public static final String EMAIL_ALREADY_VERIFIED = "The email was already verified";
+    public static final String EMAIL_VERIFICATION_RESEND = "Mail for verification resent";
+    public static final String EMAIL_AS_VERIFY_EMAIL = "Email Verification";
+    public static final String EMAIL_AS_RESET_PASSWORD = "Reset Password";
 }

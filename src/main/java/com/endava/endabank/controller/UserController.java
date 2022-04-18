@@ -49,6 +49,7 @@ public class UserController {
             throw new ServiceUnavailableException(Strings.EMAIL_SEND_ERROR);
         }
         map.put("User", modelMapper.map(userDb, UserRegisterGetDto.class));
+        map.put(Strings.MESSAGE_RESPONSE,Strings.EMAIL_FOR_VERIFICATION_SENT);
         return map;
     }
 
@@ -65,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping(Routes.RESET_PASSWORD_ROUTE + "/{email}")
-    public ResponseEntity<Map<String, Object>> resetPassword(@PathVariable String email) {
+    public ResponseEntity<Map<String,Object>> resetPassword(@PathVariable String email) {
         Map<String, Object> map = userService.generateResetPassword(email);
         return ResponseEntity.status((HttpStatus) map.get("statusCode")).body(map);
     }

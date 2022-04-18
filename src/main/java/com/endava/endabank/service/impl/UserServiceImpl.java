@@ -9,6 +9,7 @@ import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
+import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import com.endava.endabank.exceptions.customexceptions.ResourceNotFoundException;
 import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
 import com.endava.endabank.model.ForgotUserPasswordToken;
@@ -124,7 +125,8 @@ public class UserServiceImpl implements UserService {
             forgotUserPasswordTokenService.save(forgotUserPasswordToken);
             return Routes.RESET_PASSWORD_FRONTEND_ROUTE + token;
         };
-        return this.sendEmailToUser(System.getenv("SEND_GRID_TEMPLATE_ID"), userDb, callback);
+        return this.sendEmailToUser(System.getenv("SEND_GRID_TEMPLATE_ID"), userDb,
+                Strings.EMAIL_AS_RESET_PASSWORD, callback);
     }
 
     @Override
@@ -133,12 +135,17 @@ public class UserServiceImpl implements UserService {
             userDb = userDao.findByEmail(email).
                     orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         }
+        if (Boolean.TRUE.equals(userDb.getIsEmailVerified())) {
+            throw new BadDataException(Strings.EMAIL_ALREADY_VERIFIED);
+        }
         BiFunction<User, String, String> callback = (user, token) -> {
             user.setTokenEmailVerification(token);
             userDao.save(user);
-            return Routes.EMAIL_VALIDATION_FRONTEND_ROUTE + token;
+            String emailDb = "&email=" + user.getEmail();
+            return Routes.EMAIL_VALIDATION_FRONTEND_ROUTE + token + emailDb;
         };
-        return this.sendEmailToUser(System.getenv("SEND_GRID_TEMPLATE_ID"), userDb, callback);
+        return this.sendEmailToUser(System.getenv("SEND_GRID_TEMPLATE_ID_VERIFY"), userDb,
+                Strings.EMAIL_AS_VERIFY_EMAIL, callback);
     }
 
     @Override
@@ -196,14 +203,14 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserDetailsDto.class);
     }
 
-    private Map<String, Object> sendEmailToUser(String templateId, User user,
+    private Map<String, Object> sendEmailToUser(String templateId, User user, String asName,
                                                 BiFunction<User, String, String> callback) {
         Map<String, Object> map = new HashMap<>();
         int httpStatus;
         try {
             String token = JwtManage.generateToken(user.getId(), user.getEmail(), Strings.SECRET_JWT);
             String link = callback.apply(user, token);
-            Response response = MailService.sendEmail(user.getEmail(), user.getFirstName(), link, templateId);
+            Response response = MailService.sendEmail(user.getEmail(), user.getFirstName(), link, templateId, asName);
             httpStatus = response.getStatusCode();
             map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
         } catch (Exception e) {

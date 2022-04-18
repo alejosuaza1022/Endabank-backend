@@ -22,7 +22,7 @@ public final class Routes {
     public static final String SWAGGER = "/swagger*/**";
     public static final String WEB_JARS = "/webjars/**";
     public static final String RESOURCE_DETAILS = "/details";
-    public static final String EMAIL_VALIDATION_FRONTEND_ROUTE = FRONTEND_ROUTE + "/log-in/?token=";
+    public static final String EMAIL_VALIDATION_FRONTEND_ROUTE = FRONTEND_ROUTE + "/verify-email/?token=";
     public static final String EMAIL_VALIDATION_ROUTE =  "/verify-email";
     public static final String SECRET_JWT_DEFAULT = "secret";
 }

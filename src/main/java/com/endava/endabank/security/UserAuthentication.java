@@ -8,12 +8,12 @@ import java.util.Objects;
 
 public class UserAuthentication extends User {
     private Integer id;
-    private boolean isApproved;
-    private boolean isEmailVerified;
+    private Boolean isApproved;
+    private Boolean isEmailVerified;
 
     public UserAuthentication(String username, String password,
                               Collection<? extends GrantedAuthority> authorities,
-                              Integer id, boolean isApproved, boolean isEmailVerified) {
+                              Integer id, Boolean isApproved, Boolean isEmailVerified) {
         super(username, password, authorities);
         this.id = id;
         this.isApproved = isApproved;
@@ -38,11 +38,11 @@ public class UserAuthentication extends User {
         return Objects.hash(this.id, this.getUsername());
     }
 
-    public boolean getIsApproved() {
+    public Boolean getIsApproved() {
         return isApproved;
     }
 
-    public boolean getIsEmailVerified() {
+    public Boolean getIsEmailVerified() {
         return this.isEmailVerified;
     }
 
