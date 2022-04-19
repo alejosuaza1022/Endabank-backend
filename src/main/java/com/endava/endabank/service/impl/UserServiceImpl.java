@@ -154,7 +154,7 @@ public class UserServiceImpl implements UserService {
         Map<String, String> map = new HashMap<>();
         UserValidations.comparePasswords(updatePasswordDto.getPassword(), updatePasswordDto.getRePassword());
         int userId = UserValidations.validateUserForgotPasswordToken(
-                forgotUserPasswordTokenService, updatePasswordDto.getToken());
+                forgotUserPasswordTokenService, updatePasswordDto.getToken(),Strings.SECRET_JWT);
         User user = userDao.findById(userId).
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));

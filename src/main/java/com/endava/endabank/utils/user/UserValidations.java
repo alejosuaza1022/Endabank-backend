@@ -15,9 +15,10 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserValidations {
 
-    public static int validateUserForgotPasswordToken(
-            ForgotUserPasswordTokenService forgotUserPasswordTokenService, String token) {
-        Integer userId = JwtManage.verifyToken("Bearer " + token, Strings.SECRET_JWT);
+    public static int validateUserForgotPasswordToken(ForgotUserPasswordTokenService forgotUserPasswordTokenService,
+                                                      String token, String secret) {
+        secret = secret != null ? secret: "ZHVtbXkgdmFsdWUK";
+        Integer userId = JwtManage.verifyToken("Bearer " + token, secret);
         ForgotUserPasswordToken tokenModel = forgotUserPasswordTokenService.findByUserId(userId);
         String tokenDb = tokenModel.getToken();
         if (!(tokenDb.equals(token))) {
