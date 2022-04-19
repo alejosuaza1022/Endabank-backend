@@ -20,7 +20,8 @@ public final class JwtManage {
 
     public static String generateToken(Integer id, String username, String secret) throws BadDataException {
         Map<String, Object> claims = new HashMap<>();
-        if(id == null || username == null || "".equals(username)){
+        if (id == null || username == null || "".equals(username)
+                || secret == null || "".equals(secret)) {
             throw new BadDataException(Strings.BAD_DATA_FOR_TOKEN_GENERATION);
         }
         claims.put("userId", id);
@@ -37,6 +38,10 @@ public final class JwtManage {
     }
 
     public static Integer verifyToken(String authorizationHeader, String secret) {
+        if (authorizationHeader == null || "".equals(authorizationHeader)
+                || secret == null || "".equals(secret)) {
+            throw new BadDataException(Strings.BAD_DATA_FOR_TOKEN_VERIFICATION);
+        }
         String token = authorizationHeader.substring("Bearer ".length());
         Algorithm algorithm = Algorithm.HMAC512(secret);
         JWTVerifier verifier = JWT.require(algorithm).build();

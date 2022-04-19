@@ -30,4 +30,5 @@ public final class Strings {
     public static final String EMAIL_VERIFICATION_RESEND = "Mail for verification resent";
     public static final String EMAIL_AS_VERIFY_EMAIL = "Email Verification";
     public static final String EMAIL_AS_RESET_PASSWORD = "Reset Password";
+    public static final String BAD_DATA_FOR_TOKEN_VERIFICATION = "Not provided the required data for the verification";
 }

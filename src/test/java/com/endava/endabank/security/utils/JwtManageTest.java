@@ -32,6 +32,10 @@ class JwtManageTest {
                 JwtManage.generateToken(1, null, secret_dummy));
         assertThrows(BadDataException.class, () ->
                 JwtManage.generateToken(1, "", secret_dummy));
+        assertThrows(BadDataException.class, () ->
+                JwtManage.generateToken(1, "", null));
+        assertThrows(BadDataException.class, () ->
+                JwtManage.generateToken(1, "", ""));
     }
 
     @Test
@@ -49,8 +53,17 @@ class JwtManageTest {
         assertThrows(JWTVerificationException.class, () ->
                 JwtManage.verifyToken("Bearer " + token + "asd", secret_dummy)
         );
-        assertThrows(JWTVerificationException.class, () ->
-                JwtManage.verifyToken("Bearer ", secret_dummy)
+        assertThrows(BadDataException.class, () ->
+                JwtManage.verifyToken("", secret_dummy)
+        );
+        assertThrows(BadDataException.class, () ->
+                JwtManage.verifyToken(null, secret_dummy)
+        );
+        assertThrows(BadDataException.class, () ->
+                JwtManage.verifyToken("Bearer" + token, null)
+        );
+        assertThrows(BadDataException.class, () ->
+                JwtManage.verifyToken("Bearer" + token, "")
         );
 
     }
