@@ -24,7 +24,7 @@ public final class UserValidations {
         if (!(tokenDb.equals(token))) {
             throw new AccessDeniedException(Strings.TOKEN_RESET_PASSWORD_INVALID);
         }
-        tokenModel.setToken("");
+        tokenModel.setToken(null);
         forgotUserPasswordTokenService.save(tokenModel);
         return userId;
     }
