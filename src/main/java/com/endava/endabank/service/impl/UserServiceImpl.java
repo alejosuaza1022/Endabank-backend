@@ -211,11 +211,11 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
-    private UserToApproveAccountDto mapToUserToApproveDto(User user) {
+    public UserToApproveAccountDto mapToUserToApproveDto(User user) {
         return modelMapper.map(user, UserToApproveAccountDto.class);
     }
 
-    private UserDetailsDto mapToUserDetailsDto(UserPrincipalSecurity user) {
+    public UserDetailsDto mapToUserDetailsDto(UserPrincipalSecurity user) {
         return modelMapper.map(user, UserDetailsDto.class);
     }
 

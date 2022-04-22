@@ -2,6 +2,7 @@ package com.endava.endabank.utils;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
+import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
@@ -114,12 +115,17 @@ public final class TestUtils {
         return new ModelMapper().
                 map(getUserNotAdmin(), UserRegisterGetDto.class);
     }
+    public static UserDetailsDto userDetailsGetDto(UserPrincipalSecurity user) {
+        return new ModelMapper().
+                map(user, UserDetailsDto.class);
+    }
 
     public static UserPrincipalSecurity getUserPrincipalSecurity() {
         return UserPrincipalSecurity.builder().
                 id(1).
                 email("user@endava.com").
                 phoneNumber("3210000000").
+                firstName("principal").
                 isApproved(true).build();
     }
 

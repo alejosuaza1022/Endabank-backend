@@ -7,6 +7,7 @@ import com.endava.endabank.dao.IdentifierTypeDao;
 import com.endava.endabank.dao.RoleDao;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
+import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
@@ -18,21 +19,25 @@ import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.service.ForgotUserPasswordTokenService;
 import com.endava.endabank.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -143,6 +148,7 @@ class UserServiceImplTest {
         assertTrue(userToApproveAccountDto.isApproved());
 
     }
+
     @Test
     void updateUserAccountApproveToFalse() {
         User userNotAdmin = TestUtils.getUserNotAdminNonApproved();
@@ -156,6 +162,36 @@ class UserServiceImplTest {
         assertEquals(userNotAdmin.getEmail(), userToApproveAccountDto.getEmail());
         assertEquals(userNotAdmin.getId(), userToApproveAccountDto.getId());
         assertEquals(userNotAdmin.getIsApproved(), userToApproveAccountDto.isApproved());
+    }
+
+    @Test
+    void getUserDetails() {
+        UserServiceImpl userService1 = Mockito.spy(userService);
+        UserPrincipalSecurity userPrincipalSecurity = TestUtils.getUserPrincipalSecurity();
+        doReturn(TestUtils.userDetailsGetDto(userPrincipalSecurity)).
+                when(userService1).mapToUserDetailsDto(userPrincipalSecurity);
+        Role role = TestUtils.adminRole();
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.getName()));
+        role.getPermissions().forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getName())));
+        UserDetailsDto userDetailsGetDto = userService1.getUserDetails(userPrincipalSecurity, authorities);
+        assertEquals(userPrincipalSecurity.getEmail(), userDetailsGetDto.getEmail());
+        assertEquals(userPrincipalSecurity.isApproved(), userDetailsGetDto.isApproved());
+        Collection<String> userDetailsAuthorities = userDetailsGetDto.getAuthorities();
+        assertEquals(authorities.size(), userDetailsAuthorities.size());
+        authorities.forEach(a -> assertTrue(userDetailsAuthorities.contains(a.getAuthority())));
+    }
+
+    @Test
+    void verifyEmail() {
+        User user = TestUtils.getUserNotAdmin();
+        String token = JwtManage.generateToken(1, user.getEmail(), TestUtils.SECRET_DUMMY);
+        try (MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
+            when(userDao.findById(1)).thenReturn(Optional.of(user));
+            utilities.when(()->JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
+            Map<String, Object> map = userService.verifyEmail(token);
+            assertEquals(Strings.EMAIL_VERIFIED, map.get(Strings.MESSAGE_RESPONSE));
+        }
     }
 
 
@@ -200,6 +236,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @Disabled
     void updateForgotPasswordShouldSuccess() {
         UpdatePasswordDto updatePasswordDto = TestUtils.getUpdatePasswordDto();
         User user = TestUtils.getUserNotAdmin();
@@ -210,9 +247,14 @@ class UserServiceImplTest {
         updatePasswordDto.setToken(token);
         Map<String, String> map = userService.updateForgotPassword(updatePasswordDto);
         assertEquals(Strings.PASSWORD_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
+        try(MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
+            utilities.when(()->JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
+            assertThrows(AccessDeniedException.class, () -> userService.updateForgotPassword(updatePasswordDto));
+        }
     }
 
     @Test
+    @Disabled
     void updateForgotPasswordShouldThrowException() {
         UpdatePasswordDto updatePasswordDto = TestUtils.getUpdatePasswordDto();
         User user = TestUtils.getUserNotAdmin();
@@ -220,7 +262,10 @@ class UserServiceImplTest {
         String token = JwtManage.generateToken(user.getId(), user.getEmail(), secret_dummy);
         when(forgotUserPasswordTokenService.findByUserId(user.getId())).thenReturn(TestUtils.getForgotUserPasswordToken(token + "abc"));
         updatePasswordDto.setToken(token);
-        assertThrows(AccessDeniedException.class, () -> userService.updateForgotPassword(updatePasswordDto));
+        try(MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
+            utilities.when(()->JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
+            assertThrows(AccessDeniedException.class, () -> userService.updateForgotPassword(updatePasswordDto));
+        }
     }
 
     @Test
@@ -240,6 +285,7 @@ class UserServiceImplTest {
         when(userDao.findById(userPrincipalSecurity.getId())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         assertThrows(AccessDeniedException.class, () -> userService.updatePassword(userPrincipalSecurity, updatePasswordDto));
     }
+
 
 }
 
