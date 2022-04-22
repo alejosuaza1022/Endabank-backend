@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JwtManageTest {
 
-    private final String secret_dummy = "ZHVtbXkgdmFsdWUK";
+    private final String secret_dummy = TestUtils.SECRET_DUMMY;
 
     @Test
     void generateValidTokenTest() throws BadDataException {
@@ -33,9 +33,9 @@ class JwtManageTest {
         assertThrows(BadDataException.class, () ->
                 JwtManage.generateToken(1, "", secret_dummy));
         assertThrows(BadDataException.class, () ->
-                JwtManage.generateToken(1, "", null));
+                JwtManage.generateToken(1, "a@a.com", ""));
         assertThrows(BadDataException.class, () ->
-                JwtManage.generateToken(1, "", ""));
+                JwtManage.generateToken(1, "a@a.com", null));
     }
 
     @Test
@@ -53,6 +53,9 @@ class JwtManageTest {
         assertThrows(JWTVerificationException.class, () ->
                 JwtManage.verifyToken("Bearer " + token + "asd", secret_dummy)
         );
+        assertThrows(JWTVerificationException.class, () ->
+                JwtManage.verifyToken("Bearer ", secret_dummy)
+        );
         assertThrows(BadDataException.class, () ->
                 JwtManage.verifyToken("", secret_dummy)
         );
@@ -60,11 +63,10 @@ class JwtManageTest {
                 JwtManage.verifyToken(null, secret_dummy)
         );
         assertThrows(BadDataException.class, () ->
-                JwtManage.verifyToken("Bearer" + token, null)
+                JwtManage.verifyToken("Bearer ", null)
         );
         assertThrows(BadDataException.class, () ->
-                JwtManage.verifyToken("Bearer" + token, "")
+                JwtManage.verifyToken("Bearer ", "")
         );
-
     }
 }

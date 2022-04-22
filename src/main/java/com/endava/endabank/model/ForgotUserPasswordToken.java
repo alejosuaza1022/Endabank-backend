@@ -32,7 +32,7 @@ public class ForgotUserPasswordToken {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String token;
 
     public ForgotUserPasswordToken(User user, String token) {

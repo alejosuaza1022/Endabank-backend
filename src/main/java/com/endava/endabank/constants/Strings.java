@@ -14,7 +14,7 @@ public final class Strings {
     public static final String PASSWORDS_DOES_NOT_MATCH = "The passwords does not match";
     public static final String TOKEN_RESET_PASSWORD_INVALID = "The token is not valid for this user";
     public static final String USER_TOKEN_NOT_FOUND = "The Token for this user was not found on the database";
-    public static final String PASSWORD_UPDATED = "Password update";
+    public static final String PASSWORD_UPDATED = "Password updated";
     public static final String CONSTRAINT_IDENTIFIER_VIOLATED = "There is already a user registered with this identifier";
     public static final String CONSTRAINT_EMAIL_VIOLATED = "There is already a user registered with this email";
     public static final String SECRET_JWT = System.getenv("JWT_ENDABANK_SECRET");
@@ -30,5 +30,5 @@ public final class Strings {
     public static final String EMAIL_VERIFICATION_RESEND = "Mail for verification resent";
     public static final String EMAIL_AS_VERIFY_EMAIL = "Email Verification";
     public static final String EMAIL_AS_RESET_PASSWORD = "Reset Password";
-    public static final String BAD_DATA_FOR_TOKEN_VERIFICATION = "Not provided the required data for the verification";
+    public static final String BAD_DATA_FOR_TOKEN_VERIFICATION = "The data required for the verification is missing";
 }

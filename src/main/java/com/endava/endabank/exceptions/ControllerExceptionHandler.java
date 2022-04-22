@@ -75,7 +75,6 @@ public class ControllerExceptionHandler {
     }
 
 
-
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorMessage> handleAuthenticationException(Exception ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
