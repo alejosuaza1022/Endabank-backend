@@ -22,7 +22,8 @@
             **/com/endava/endabank/constants/**,
             **/com/endava/endabank/exceptions/**,
             **/com/endava/endabank/EndabankApplication.java,
-            **/com/endava/endabank/SwaggerConfig/**
+            **/com/endava/endabank/SwaggerConfig/**,
+            **/com/endava/endabank/controller/**
         </sonar.coverage.exclusions>
         <sonar.login>e1bbcc446f3dafd410742e7c81daad0e5cf96937</sonar.login>
         <sonar.projectName>Endabank-backend</sonar.projectName>

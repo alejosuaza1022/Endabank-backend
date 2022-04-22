@@ -42,13 +42,6 @@ class UserValidationsTest {
     }
 
     @Test
-    void comparePasswordsDoMatch() {
-        String password = "A1234567!a1";
-        String rePassword = "A1234567!a1";
-        UserValidations.comparePasswords(password,rePassword);
-    }
-
-    @Test
     void comparePasswordsDoNotMatch(){
         String password = "A1234567!a1";
         String rePassword = "A1234567!aa";

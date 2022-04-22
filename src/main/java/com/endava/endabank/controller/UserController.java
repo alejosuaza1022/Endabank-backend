@@ -2,18 +2,13 @@ package com.endava.endabank.controller;
 
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
-import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
-import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
-import com.endava.endabank.exceptions.customexceptions.ServiceUnavailableException;
-import com.endava.endabank.model.User;
 import com.endava.endabank.service.UserService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -39,18 +34,10 @@ import java.util.Map;
 @AllArgsConstructor
 public class UserController {
     private UserService userService;
-    private ModelMapper modelMapper;
 
     @PostMapping
     public Map<String, Object> create(@Valid @RequestBody UserRegisterDto user) {
-        User userDb = this.userService.save(user);
-        Map<String, Object> map = this.userService.generateEmailVerification(userDb, null);
-        if (map.get(Strings.STATUS_CODE_RESPONSE).equals(HttpStatus.INTERNAL_SERVER_ERROR.value())) {
-            throw new ServiceUnavailableException(Strings.EMAIL_SEND_ERROR);
-        }
-        map.put("User", modelMapper.map(userDb, UserRegisterGetDto.class));
-        map.put(Strings.MESSAGE_RESPONSE,Strings.EMAIL_FOR_VERIFICATION_SENT);
-        return map;
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveAndSendVerifyEmail(user)).getBody();
     }
 
     @GetMapping()
@@ -66,9 +53,8 @@ public class UserController {
     }
 
     @GetMapping(Routes.RESET_PASSWORD_ROUTE + "/{email}")
-    public ResponseEntity<Map<String,Object>> resetPassword(@PathVariable String email) {
-        Map<String, Object> map = userService.generateResetPassword(email);
-        return ResponseEntity.status((HttpStatus) map.get("statusCode")).body(map);
+    public ResponseEntity<Map<String, Object>> resetPassword(@PathVariable String email) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.generateResetPassword(email));
     }
 
     @PutMapping(Routes.RESET_PASSWORD_ROUTE)
@@ -95,6 +81,7 @@ public class UserController {
     public Map<String, Object> getDetailsById(@PathVariable String email) {
         return userService.generateEmailVerification(null, email);
     }
+
     @PostMapping(Routes.EMAIL_VALIDATION_ROUTE + "/{email}")
     public Map<String, Object> validateEmail(@PathVariable String email) {
         return userService.verifyEmail(email);

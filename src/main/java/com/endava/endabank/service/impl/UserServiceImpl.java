@@ -8,9 +8,11 @@ import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
+import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import com.endava.endabank.exceptions.customexceptions.ResourceNotFoundException;
+import com.endava.endabank.exceptions.customexceptions.ServiceUnavailableException;
 import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
 import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.IdentifierType;
@@ -93,6 +95,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public UsernamePasswordAuthenticationToken getUsernamePasswordToken(Integer userId) {
@@ -108,9 +111,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserToApproveAccountDto updateUserAccountApprove(Integer id, boolean value) {
-        User user = userDao.findById(id).orElseThrow(() ->
-                new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        User user = this.findById(id);
         user.setIsApproved(value);
         userDao.save(user);
         return this.mapToUserToApproveDto(user);
@@ -154,7 +157,7 @@ public class UserServiceImpl implements UserService {
         Map<String, String> map = new HashMap<>();
         UserValidations.comparePasswords(updatePasswordDto.getPassword(), updatePasswordDto.getRePassword());
         int userId = UserValidations.validateUserForgotPasswordToken(
-                forgotUserPasswordTokenService, updatePasswordDto.getToken(),Strings.SECRET_JWT);
+                forgotUserPasswordTokenService, updatePasswordDto.getToken(), Strings.SECRET_JWT);
         User user = userDao.findById(userId).
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));
@@ -195,6 +198,19 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
+    @Override
+    @Transactional
+    public Map<String, Object> saveAndSendVerifyEmail(UserRegisterDto userRegisterDto) {
+        User userDb = this.save(userRegisterDto);
+        Map<String, Object> map = this.generateEmailVerification(userDb, null);
+        if (map.get(Strings.STATUS_CODE_RESPONSE).equals(HttpStatus.INTERNAL_SERVER_ERROR.value())) {
+            throw new ServiceUnavailableException(Strings.EMAIL_SEND_ERROR);
+        }
+        map.put("User", modelMapper.map(userDb, UserRegisterGetDto.class));
+        map.put(Strings.MESSAGE_RESPONSE, Strings.EMAIL_FOR_VERIFICATION_SENT);
+        return map;
+    }
+
     private UserToApproveAccountDto mapToUserToApproveDto(User user) {
         return modelMapper.map(user, UserToApproveAccountDto.class);
     }
@@ -214,10 +230,9 @@ public class UserServiceImpl implements UserService {
             httpStatus = response.getStatusCode();
             map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
         } catch (Exception e) {
-            httpStatus = HttpStatus.SERVICE_UNAVAILABLE.value();
-            System.out.println(e.getMessage());
+            throw new ServiceUnavailableException(e.getMessage());
         }
-        map.put(Strings.MESSAGE_RESPONSE, httpStatus == HttpStatus.ACCEPTED.value() ? Strings.MAIL_SENT : Strings.MAIL_FAIL);
+        map.put(Strings.MESSAGE_RESPONSE, Strings.MAIL_SENT);
         map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
         return map;
     }
