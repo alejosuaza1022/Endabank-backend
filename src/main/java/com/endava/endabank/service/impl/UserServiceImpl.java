@@ -202,7 +202,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Map<String, Object> saveAndSendVerifyEmail(UserRegisterDto userRegisterDto) {
         User userDb = this.save(userRegisterDto);
-        Map<String, Object> map = this.generateEmailVerification(userDb, null);
+        Map<String, Object> map = this.generateEmailVerification(userDb, userDb.getEmail());
         if (map.get(Strings.STATUS_CODE_RESPONSE).equals(HttpStatus.INTERNAL_SERVER_ERROR.value())) {
             throw new ServiceUnavailableException(Strings.EMAIL_SEND_ERROR);
         }
