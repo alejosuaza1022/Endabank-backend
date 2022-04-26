@@ -10,7 +10,9 @@ import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
+import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
+import com.endava.endabank.exceptions.customexceptions.ServiceUnavailableException;
 import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
 import com.endava.endabank.model.Permission;
 import com.endava.endabank.model.Role;
@@ -20,7 +22,6 @@ import com.endava.endabank.service.ForgotUserPasswordTokenService;
 import com.endava.endabank.utils.TestUtils;
 import com.endava.endabank.utils.user.UserValidations;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,6 +42,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -193,6 +196,24 @@ class UserServiceImplTest {
             Map<String, Object> map = userService.verifyEmail(token);
             assertEquals(Strings.EMAIL_VERIFIED, map.get(Strings.MESSAGE_RESPONSE));
         }
+    }
+
+    @Test
+    void saveAndSendVerifyEmailTest() {
+        User user = TestUtils.getUserNotAdmin();
+        UserRegisterDto userRegisterDto = TestUtils.getUserRegisterDto();
+        UserServiceImpl userService1 = Mockito.spy(userService);
+        doReturn(user).when(userService1).save(userRegisterDto);
+        Map<String, Object> map = new HashMap<>();
+        map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.ACCEPTED.value());
+        map.put(Strings.MESSAGE_RESPONSE, Strings.EMAIL_FOR_VERIFICATION_SENT);
+        doReturn(map).when(userService1).generateEmailVerification(user,user.getEmail());
+        UserRegisterGetDto userRegisterGetDto = TestUtils.getUserRegisterGetDto();
+        when(modelMapper.map(user, UserRegisterGetDto.class)).thenReturn(userRegisterGetDto);
+        Map<String, Object> mapRet = userService1.saveAndSendVerifyEmail(userRegisterDto);
+        assertEquals(HttpStatus.ACCEPTED.value(), mapRet.get(Strings.STATUS_CODE_RESPONSE));
+        assertEquals(Strings.EMAIL_FOR_VERIFICATION_SENT, mapRet.get(Strings.MESSAGE_RESPONSE));
+        assertEquals(userRegisterGetDto, mapRet.get(Strings.USER_BODY));
     }
 
 

@@ -29,8 +29,8 @@ public class UserAuthenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userOpt = userDao.findByEmail(username);
-        User user = userOpt.orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        User user = userDao.findByEmail(username).
+                orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         Role role = user.getRole();
         boolean isApproved = user.getIsApproved() != null && user.getIsApproved();
         ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -50,9 +50,9 @@ public class UserAuthenticationService implements UserDetailsService {
         final String token = JwtManage.generateToken(userAuthentication.getId(),
                 userAuthentication.getUsername(), Strings.SECRET_JWT);
         Map<String, Object> dataResponse = new HashMap<>();
-        dataResponse.put("access_token", token);
-        dataResponse.put("rol", role);
-        dataResponse.put("isApproved", userAuthentication.getIsApproved());
+        dataResponse.put(Strings.ACCESS_TOKEN, token);
+        dataResponse.put(Strings.ROL, role);
+        dataResponse.put(Strings.IS_APPROVED, userAuthentication.getIsApproved());
         return dataResponse;
     }
 

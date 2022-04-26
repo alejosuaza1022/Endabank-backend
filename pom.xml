@@ -22,14 +22,13 @@
             **/com/endava/endabank/constants/**,
             **/com/endava/endabank/exceptions/**,
             **/com/endava/endabank/EndabankApplication.java,
-            **/com/endava/endabank/SwaggerConfig/**,
-            **/com/endava/endabank/controller/**
+            **/com/endava/endabank/SwaggerConfig.java,
+            **/com/endava/endabank/controller/**,
             **/com/endava/endabank/security/WebMvcConfig.java,
             **/com/endava/endabank/security/WebSecurityConfig.java,
-            **/com/endava/endabank/security/jwt/JwtAuthenticationEntryPoint.java,
-            **/com/endava/endabank/security/UserAuthenticationFilter.java,
+            **/com/endava/endabank/security/jwtauthentication/JwtAuthenticationEntryPoint.java,
+            **/com/endava/endabank/security/UserAuthentication.java,
         </sonar.coverage.exclusions>
-
     </properties>
     <dependencies>
         <dependency>
@@ -116,8 +115,6 @@
             <version>0.8.7</version>
         </dependency>
     </dependencies>
-
-
     <build>
         <plugins>
             <plugin>
@@ -157,5 +154,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

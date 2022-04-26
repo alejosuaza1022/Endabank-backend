@@ -203,10 +203,7 @@ public class UserServiceImpl implements UserService {
     public Map<String, Object> saveAndSendVerifyEmail(UserRegisterDto userRegisterDto) {
         User userDb = this.save(userRegisterDto);
         Map<String, Object> map = this.generateEmailVerification(userDb, userDb.getEmail());
-        if (map.get(Strings.STATUS_CODE_RESPONSE).equals(HttpStatus.INTERNAL_SERVER_ERROR.value())) {
-            throw new ServiceUnavailableException(Strings.EMAIL_SEND_ERROR);
-        }
-        map.put("User", modelMapper.map(userDb, UserRegisterGetDto.class));
+        map.put(Strings.USER_BODY, modelMapper.map(userDb, UserRegisterGetDto.class));
         map.put(Strings.MESSAGE_RESPONSE, Strings.EMAIL_FOR_VERIFICATION_SENT);
         return map;
     }
