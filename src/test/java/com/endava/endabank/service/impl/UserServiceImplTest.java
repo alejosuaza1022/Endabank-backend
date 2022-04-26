@@ -18,6 +18,7 @@ import com.endava.endabank.model.User;
 import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.service.ForgotUserPasswordTokenService;
 import com.endava.endabank.utils.TestUtils;
+import com.endava.endabank.utils.user.UserValidations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -188,7 +189,7 @@ class UserServiceImplTest {
         String token = JwtManage.generateToken(1, user.getEmail(), TestUtils.SECRET_DUMMY);
         try (MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
             when(userDao.findById(1)).thenReturn(Optional.of(user));
-            utilities.when(()->JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
+            utilities.when(() -> JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
             Map<String, Object> map = userService.verifyEmail(token);
             assertEquals(Strings.EMAIL_VERIFIED, map.get(Strings.MESSAGE_RESPONSE));
         }
@@ -236,25 +237,24 @@ class UserServiceImplTest {
     }
 
     @Test
-    @Disabled
     void updateForgotPasswordShouldSuccess() {
         UpdatePasswordDto updatePasswordDto = TestUtils.getUpdatePasswordDto();
         User user = TestUtils.getUserNotAdmin();
         String secret_dummy = TestUtils.SECRET_DUMMY;
         String token = JwtManage.generateToken(user.getId(), user.getEmail(), secret_dummy);
-        when(forgotUserPasswordTokenService.findByUserId(user.getId())).thenReturn(TestUtils.getForgotUserPasswordToken(token));
         when(userDao.findById(user.getId())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         updatePasswordDto.setToken(token);
-        Map<String, String> map = userService.updateForgotPassword(updatePasswordDto);
-        assertEquals(Strings.PASSWORD_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
-        try(MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
-            utilities.when(()->JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
-            assertThrows(AccessDeniedException.class, () -> userService.updateForgotPassword(updatePasswordDto));
+        try (MockedStatic<UserValidations> utilities = Mockito.mockStatic(UserValidations.class)) {
+            utilities.when(() ->
+                    UserValidations.validateUserForgotPasswordToken(
+                            forgotUserPasswordTokenService, token,
+                            null)).thenReturn(1);
+            Map<String, String> map = userService.updateForgotPassword(updatePasswordDto);
+            assertEquals(Strings.PASSWORD_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
         }
     }
 
     @Test
-    @Disabled
     void updateForgotPasswordShouldThrowException() {
         UpdatePasswordDto updatePasswordDto = TestUtils.getUpdatePasswordDto();
         User user = TestUtils.getUserNotAdmin();
@@ -262,8 +262,8 @@ class UserServiceImplTest {
         String token = JwtManage.generateToken(user.getId(), user.getEmail(), secret_dummy);
         when(forgotUserPasswordTokenService.findByUserId(user.getId())).thenReturn(TestUtils.getForgotUserPasswordToken(token + "abc"));
         updatePasswordDto.setToken(token);
-        try(MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
-            utilities.when(()->JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
+        try (MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
+            utilities.when(() -> JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
             assertThrows(AccessDeniedException.class, () -> userService.updateForgotPassword(updatePasswordDto));
         }
     }
