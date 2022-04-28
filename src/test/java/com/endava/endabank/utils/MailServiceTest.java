@@ -17,12 +17,13 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 class MailServiceTest {
     private final String templateId = System.getenv("SEND_GRID_TEMPLATE_ID");
     private final String fromEmail = System.getenv("SENDGRID_MAIL_FROM");
-    private final String emailTo = "test1@test.com";
+    private final String emailTo = "alejandrosuaza.1022@gmail.com";
     private final String asName = "test";
     private final String name = "testUser";
     private final String link = "http://test.com";
@@ -30,22 +31,21 @@ class MailServiceTest {
     @Test
     @Disabled
     void sendEmailShouldWorkTest() throws IOException {
+        Response response1 = MailService.sendEmail(emailTo, name, link, templateId, asName);
         try (MockedStatic<MailService> utilities = Mockito.mockStatic(MailService.class)) {
-            Response response = new Response();
-            response.setStatusCode(202);
-            utilities.when(() ->
-                            MailService.invokeServiceEmail(any(Mail.class), any(SendGrid.class)))
-                    .thenReturn(response);
-            Response responseService = MailService.sendEmail(emailTo, name, link, templateId, asName);
-            assertEquals(202, responseService.getStatusCode());
-
-//            utilities.verify(() ->
-//                            MailService.invokeServiceEmail(argumentCaptor.capture(), any(SendGrid.class)),
-//                    times(1));
-//            Mail mail = argumentCaptor.getValue();
-//            assertEquals(fromEmail, mail.getFrom().getEmail());
-//            assertEquals(asName, mail.getFrom().getName());
-//            assertEquals(templateId, mail.getTemplateId());
+            Response response = TestUtils.getSendGridResponse();
+//            utilities.when(() ->
+//                            MailService.invokeServiceEmail(any(), any()))
+//                    .thenReturn(response);
+            assertEquals(response, response1);
+            ArgumentCaptor<Mail> argumentCaptor = ArgumentCaptor.forClass(Mail.class);
+            utilities.verify(() ->
+                            MailService.invokeServiceEmail(argumentCaptor.capture(), any(SendGrid.class)),
+                    times(1));
+            Mail mail = argumentCaptor.getValue();
+            assertEquals(fromEmail, mail.getFrom().getEmail());
+            assertEquals(asName, mail.getFrom().getName());
+            assertEquals(templateId, mail.getTemplateId());
         }
     }
 

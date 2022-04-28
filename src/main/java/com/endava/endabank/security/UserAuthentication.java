@@ -17,7 +17,7 @@ public class UserAuthentication extends User {
                               Integer id, Boolean isApproved, Boolean isEmailVerified) {
         super(username, password, authorities);
         this.id = id;
-        this.isApproved = isApproved;
+        this.isApproved = isApproved != null && isApproved;
         this.isEmailVerified = isEmailVerified;
     }
 

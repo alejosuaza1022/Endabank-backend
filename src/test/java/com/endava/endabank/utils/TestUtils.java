@@ -13,6 +13,7 @@ import com.endava.endabank.model.Permission;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.UserAuthentication;
+import com.sendgrid.Response;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,9 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -180,5 +183,15 @@ public final class TestUtils {
                 firstName("Endava").
                 phoneNumber("3210000000").
                 isApproved(true).build();
+    }
+    public static List<User> getUserList() {
+        return Arrays.asList(getUserNotAdmin(), getUserAdmin());
+    }
+    public static Response getSendGridResponse(){
+        Response response = new Response();
+        response.setStatusCode(202);
+        response.setBody("Success");
+        response.setHeaders(new HashMap<>());
+        return response;
     }
 }

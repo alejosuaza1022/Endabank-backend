@@ -32,12 +32,11 @@ public class UserAuthenticationService implements UserDetailsService {
         User user = userDao.findByEmail(username).
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         Role role = user.getRole();
-        boolean isApproved = user.getIsApproved() != null && user.getIsApproved();
         ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role.getName()));
         return new UserAuthentication(
                 user.getEmail(), user.getPassword(),
-                authorities, user.getId(), isApproved, user.getIsEmailVerified());
+                authorities, user.getId(), user.getIsApproved(), user.getIsEmailVerified());
     }
 
     public Map<String, Object> logInUser(Authentication authentication) throws BadDataException {
