@@ -31,22 +31,21 @@ class MailServiceTest {
     @Test
     @Disabled
     void sendEmailShouldWorkTest() throws IOException {
-        Response response1 = MailService.sendEmail(emailTo, name, link, templateId, asName);
         try (MockedStatic<MailService> utilities = Mockito.mockStatic(MailService.class)) {
             Response response = TestUtils.getSendGridResponse();
-//            utilities.when(() ->
-//                            MailService.invokeServiceEmail(any(), any()))
-//                    .thenReturn(response);
-            assertEquals(response, response1);
-            ArgumentCaptor<Mail> argumentCaptor = ArgumentCaptor.forClass(Mail.class);
-            utilities.verify(() ->
-                            MailService.invokeServiceEmail(argumentCaptor.capture(), any(SendGrid.class)),
-                    times(1));
-            Mail mail = argumentCaptor.getValue();
-            assertEquals(fromEmail, mail.getFrom().getEmail());
-            assertEquals(asName, mail.getFrom().getName());
-            assertEquals(templateId, mail.getTemplateId());
+            utilities.when(() ->
+                            MailService.invokeServiceEmail(any(), any()))
+                    .thenReturn(response);
+//            ArgumentCaptor<Mail> argumentCaptor = ArgumentCaptor.forClass(Mail.class);
+//            utilities.verify(() ->
+//                            MailService.invokeServiceEmail(argumentCaptor.capture(), any(SendGrid.class)),
+//                    times(1));
+//            Mail mail = argumentCaptor.getValue();
+//            assertEquals(fromEmail, mail.getFrom().getEmail());
+//            assertEquals(asName, mail.getFrom().getName());
+//            assertEquals(templateId, mail.getTemplateId());
         }
+        Response response1 = MailService.sendEmail(emailTo, name, link, templateId, asName);
     }
 
     @Test

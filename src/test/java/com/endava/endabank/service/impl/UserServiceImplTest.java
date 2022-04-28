@@ -14,6 +14,7 @@ import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.exceptions.customexceptions.ServiceUnavailableException;
+import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
 import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.Permission;
@@ -280,7 +281,7 @@ class UserServiceImplTest {
             jwtMock.when(() ->
                             JwtManage.generateToken(user.getId(), user.getEmail(), null)).
                     thenReturn("token");
-            BiFunction<User, String, String > callback = (u,t)-> "token";
+            BiFunction<User, String, String > callback = (u, t)-> "token";
             try (MockedStatic<MailService> emailServiceMock = Mockito.mockStatic(MailService.class)) {
                 emailServiceMock.when(() ->
                         MailService.sendEmail(any(), any(),any(),any(),any()))
@@ -290,6 +291,50 @@ class UserServiceImplTest {
             }
         }
     }
+
+    @Test
+    void generateEmailVerificationShouldSuccess() {
+        User user = TestUtils.getUserNotAdmin();
+        String email = user.getEmail();
+        try (MockedStatic<JwtManage> jwtMock = Mockito.mockStatic(JwtManage.class)) {
+            jwtMock.when(() ->
+                            JwtManage.generateToken(user.getId(), user.getEmail(), null)).
+                    thenReturn("token");
+            try (MockedStatic<MailService> emailServiceMock = Mockito.mockStatic(MailService.class)) {
+                String emailDb = "&email=" + email;
+                String link = Routes.EMAIL_VALIDATION_FRONTEND_ROUTE + "token" + emailDb;
+                Response response = TestUtils.getSendGridResponse();
+                emailServiceMock.when(() ->
+                        MailService.sendEmail(user.getEmail(), user.getFirstName(),
+                                link, System.getenv("SEND_GRID_TEMPLATE_ID_VERIFY"),
+                                Strings.EMAIL_AS_VERIFY_EMAIL)).thenReturn(response);
+                Map<String, Object> mapRet = userService.generateEmailVerification(user,email);
+                assertEquals(HttpStatus.ACCEPTED, mapRet.get(Strings.STATUS_CODE_RESPONSE));
+                assertEquals(Strings.MAIL_SENT, mapRet.get(Strings.MESSAGE_RESPONSE));
+            }
+        }
+    }
+
+    @Test
+    void generateEmailVerificationShouldThrowExceptionUsernameNotFoundException() {
+        assertThrows(UsernameNotFoundException.class,
+                () -> userService.generateEmailVerification(null, null));
+    }
+
+    @Test
+    void generateEmailVerificationShouldThrowExceptionBadDataException() {
+        User user = TestUtils.getUserNotAdmin();;
+        String email = user.getEmail();
+        user.setIsEmailVerified(true);
+        assertThrows(BadDataException.class,() -> userService.generateEmailVerification(user,email));
+    }
+
+    @Test
+    void mapToUserDetailsDto() {
+        UserPrincipalSecurity user = TestUtils.getUserPrincipalSecurity();
+        assertEquals(modelMapper.map(user, UserDetailsDto.class),userService.mapToUserDetailsDto(user));
+    }
+
 
     @Nested
     @DisplayName("User save test")
