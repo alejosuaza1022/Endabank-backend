@@ -31,4 +31,8 @@ public final class Strings {
     public static final String EMAIL_AS_VERIFY_EMAIL = "Email Verification";
     public static final String EMAIL_AS_RESET_PASSWORD = "Reset Password";
     public static final String BAD_DATA_FOR_TOKEN_VERIFICATION = "The data required for the verification is missing";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String ROL = "rol";
+    public static final String IS_APPROVED = "is_approved";
+    public static  final String USER_BODY = "user";
 }

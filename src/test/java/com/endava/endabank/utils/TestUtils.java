@@ -12,14 +12,20 @@ import com.endava.endabank.model.IdentifierType;
 import com.endava.endabank.model.Permission;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.User;
+import com.endava.endabank.security.UserAuthentication;
+import com.sendgrid.Response;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -36,6 +42,8 @@ public final class TestUtils {
                 identifier("1001000000").
                 firstName("Endava").
                 lastName("Admin").
+                password("$2a$10$bUcuzJbChZheTqPERIqk3u7COWhAF1CV6OU.LUkCG6iZYRhXydRqW").
+                isEmailVerified(true).
                 isApproved(true).
                 role(adminRole).
                 identifierType(cc).
@@ -107,14 +115,15 @@ public final class TestUtils {
                 identifier("1001000000").
                 firstName("Endava").
                 lastName("User").
-                password("Aa123456*").
+                password("$2a$10$bUcuzJbChZheTqPERIqk3u7COWhAF1CV6OU.LUkCG6iZYRhXydRqW").
                 typeIdentifierId(1).build();
     }
 
-    public static UserRegisterGetDto userRegisterGetDto() {
+    public static UserRegisterGetDto getUserRegisterGetDto() {
         return new ModelMapper().
                 map(getUserNotAdmin(), UserRegisterGetDto.class);
     }
+
     public static UserDetailsDto userDetailsGetDto(UserPrincipalSecurity user) {
         return new ModelMapper().
                 map(user, UserDetailsDto.class);
@@ -127,6 +136,14 @@ public final class TestUtils {
                 phoneNumber("3210000000").
                 firstName("principal").
                 isApproved(true).build();
+    }
+
+    public static UserAuthentication getUserAuthentication() {
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return new UserAuthentication("user@endava.com", "test-password",
+                authorities, 1,
+                true, true);
     }
 
     public static UpdatePasswordDto getUpdatePasswordDto() {
@@ -166,5 +183,15 @@ public final class TestUtils {
                 firstName("Endava").
                 phoneNumber("3210000000").
                 isApproved(true).build();
+    }
+    public static List<User> getUserList() {
+        return Arrays.asList(getUserNotAdmin(), getUserAdmin());
+    }
+    public static Response getSendGridResponse(){
+        Response response = new Response();
+        response.setStatusCode(202);
+        response.setBody("Success");
+        response.setHeaders(new HashMap<>());
+        return response;
     }
 }

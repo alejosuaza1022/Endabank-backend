@@ -1,6 +1,7 @@
 package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Permissions;
+import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.ForgotUserPasswordTokenDao;
 import com.endava.endabank.dao.IdentifierTypeDao;
@@ -10,27 +11,33 @@ import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
+import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
+import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.Permission;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.service.ForgotUserPasswordTokenService;
+import com.endava.endabank.utils.MailService;
 import com.endava.endabank.utils.TestUtils;
 import com.endava.endabank.utils.user.UserValidations;
+import com.sendgrid.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,6 +47,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +55,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -192,6 +203,69 @@ class UserServiceImplTest {
             utilities.when(() -> JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
             Map<String, Object> map = userService.verifyEmail(token);
             assertEquals(Strings.EMAIL_VERIFIED, map.get(Strings.MESSAGE_RESPONSE));
+        }
+    }
+
+    @Test
+    void saveAndSendVerifyEmailTest() {
+        User user = TestUtils.getUserNotAdmin();
+        UserRegisterDto userRegisterDto = TestUtils.getUserRegisterDto();
+        UserServiceImpl userService1 = Mockito.spy(userService);
+        doReturn(user).when(userService1).save(userRegisterDto);
+        Map<String, Object> map = new HashMap<>();
+        map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.ACCEPTED.value());
+        map.put(Strings.MESSAGE_RESPONSE, Strings.EMAIL_FOR_VERIFICATION_SENT);
+        doReturn(map).when(userService1).generateEmailVerification(user, user.getEmail());
+        UserRegisterGetDto userRegisterGetDto = TestUtils.getUserRegisterGetDto();
+        when(modelMapper.map(user, UserRegisterGetDto.class)).thenReturn(userRegisterGetDto);
+        Map<String, Object> mapRet = userService1.saveAndSendVerifyEmail(userRegisterDto);
+        assertEquals(HttpStatus.ACCEPTED.value(), mapRet.get(Strings.STATUS_CODE_RESPONSE));
+        assertEquals(Strings.EMAIL_FOR_VERIFICATION_SENT, mapRet.get(Strings.MESSAGE_RESPONSE));
+        assertEquals(userRegisterGetDto, mapRet.get(Strings.USER_BODY));
+    }
+
+    @Test
+    void usersToApprove() {
+        when(userDao.findAll()).thenReturn(TestUtils.getUserList());
+        UserServiceImpl userService1 = Mockito.spy(userService);
+        doReturn(TestUtils.getUserApprovedAccountDto()).when(userService1).mapToUserToApproveDto(any());
+        List<UserToApproveAccountDto> listUserToValidated = userService1.usersToApprove();
+        assertTrue(listUserToValidated.size() > 0);
+    }
+
+    @Test
+    void generateResetPasswordShouldFailOnNoUserOnDb(){
+        User user = TestUtils.getUserNotAdmin();
+        when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+        assertThrows(UsernameNotFoundException.class, ()-> userService.generateResetPassword(user.getEmail()));
+    }
+    @Test
+    void generateResetPassword() {
+        User user = TestUtils.getUserNotAdmin();
+        when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        try (MockedStatic<JwtManage> jwtMock = Mockito.mockStatic(JwtManage.class)) {
+            jwtMock.when(() ->
+                            JwtManage.generateToken(user.getId(), user.getEmail(), null)).
+                    thenReturn("token");
+            try (MockedStatic<MailService> emailServiceMock = Mockito.mockStatic(MailService.class)) {
+                String link = Routes.RESET_PASSWORD_FRONTEND_ROUTE + "token";
+                Response response = TestUtils.getSendGridResponse();
+                emailServiceMock.when(() ->
+                        MailService.sendEmail(user.getEmail(), user.getFirstName(),
+                                link, System.getenv("SEND_GRID_TEMPLATE_ID"),
+                                Strings.EMAIL_AS_RESET_PASSWORD)).thenReturn(response);
+                Map<String, Object> mapRet = userService.generateResetPassword(user.getEmail());
+                assertEquals(HttpStatus.ACCEPTED, mapRet.get(Strings.STATUS_CODE_RESPONSE));
+                assertEquals(Strings.MAIL_SENT, mapRet.get(Strings.MESSAGE_RESPONSE));
+                ArgumentCaptor<ForgotUserPasswordToken> argumentCaptor
+                        = ArgumentCaptor.forClass(ForgotUserPasswordToken.class);
+                verify(forgotUserPasswordTokenService,
+                        times(1)).save(argumentCaptor.capture());
+                ForgotUserPasswordToken forgotUserPasswordToken = argumentCaptor.getValue();
+                assertEquals(user.getId(), forgotUserPasswordToken.getUser().getId());
+                assertEquals(user.getEmail(), forgotUserPasswordToken.getUser().getEmail());
+                assertEquals("token", forgotUserPasswordToken.getToken());
+            }
         }
     }
 

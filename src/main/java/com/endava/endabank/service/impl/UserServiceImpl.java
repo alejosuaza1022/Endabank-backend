@@ -203,10 +203,7 @@ public class UserServiceImpl implements UserService {
     public Map<String, Object> saveAndSendVerifyEmail(UserRegisterDto userRegisterDto) {
         User userDb = this.save(userRegisterDto);
         Map<String, Object> map = this.generateEmailVerification(userDb, userDb.getEmail());
-        if (map.get(Strings.STATUS_CODE_RESPONSE).equals(HttpStatus.INTERNAL_SERVER_ERROR.value())) {
-            throw new ServiceUnavailableException(Strings.EMAIL_SEND_ERROR);
-        }
-        map.put("User", modelMapper.map(userDb, UserRegisterGetDto.class));
+        map.put(Strings.USER_BODY, modelMapper.map(userDb, UserRegisterGetDto.class));
         map.put(Strings.MESSAGE_RESPONSE, Strings.EMAIL_FOR_VERIFICATION_SENT);
         return map;
     }
@@ -222,18 +219,15 @@ public class UserServiceImpl implements UserService {
     private Map<String, Object> sendEmailToUser(String templateId, User user, String asName,
                                                 BiFunction<User, String, String> callback) {
         Map<String, Object> map = new HashMap<>();
-        int httpStatus;
         try {
             String token = JwtManage.generateToken(user.getId(), user.getEmail(), Strings.SECRET_JWT);
             String link = callback.apply(user, token);
             Response response = MailService.sendEmail(user.getEmail(), user.getFirstName(), link, templateId, asName);
-            httpStatus = response.getStatusCode();
-            map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
+            map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(response.getStatusCode()));
         } catch (Exception e) {
             throw new ServiceUnavailableException(e.getMessage());
         }
         map.put(Strings.MESSAGE_RESPONSE, Strings.MAIL_SENT);
-        map.put(Strings.STATUS_CODE_RESPONSE, HttpStatus.valueOf(httpStatus));
         return map;
     }
 
