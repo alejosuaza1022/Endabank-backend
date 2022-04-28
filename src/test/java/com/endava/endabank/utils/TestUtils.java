@@ -79,6 +79,7 @@ public final class TestUtils {
                 isApproved(true).
                 role(userRole).
                 identifierType(cc).
+                isEmailVerified(false).
                 bankAccounts(new ArrayList<>()).build();
     }
 
