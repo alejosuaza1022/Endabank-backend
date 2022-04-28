@@ -1,5 +1,6 @@
 package com.endava.endabank.utils.user;
 
+import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.service.ForgotUserPasswordTokenService;
@@ -22,6 +23,17 @@ class UserValidationsTest {
 
     @Mock
     private ForgotUserPasswordTokenService forgotUserPasswordTokenService;
+
+    @Test
+    void validateUserForgotPasswordTokenShouldSuccess() {
+        User user = TestUtils.getUserNotAdmin();
+        String secret_dummy = "ZHVtbXkgdmFsdWUK";
+        String token = JwtManage.generateToken(user.getId(), user.getEmail(), secret_dummy);
+        when(forgotUserPasswordTokenService.findByUserId(user.getId())).thenReturn(TestUtils.getForgotUserPasswordToken(token));
+        assertEquals(user.getId(),UserValidations.
+                validateUserForgotPasswordToken(forgotUserPasswordTokenService,token,secret_dummy));
+
+    }
 
     @Test
     void validateUserForgotPasswordTokenShouldThrowException() {
