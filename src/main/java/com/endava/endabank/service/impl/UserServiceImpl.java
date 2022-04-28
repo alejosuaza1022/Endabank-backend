@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserDetailsDto.class);
     }
 
-    private Map<String, Object> sendEmailToUser(String templateId, User user, String asName,
+    public Map<String, Object> sendEmailToUser(String templateId, User user, String asName,
                                                 BiFunction<User, String, String> callback) {
         Map<String, Object> map = new HashMap<>();
         try {

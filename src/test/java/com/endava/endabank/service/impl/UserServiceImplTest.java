@@ -13,6 +13,7 @@ import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
+import com.endava.endabank.exceptions.customexceptions.ServiceUnavailableException;
 import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
 import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.Permission;
@@ -51,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -236,9 +238,12 @@ class UserServiceImplTest {
     @Test
     void generateResetPasswordShouldFailOnNoUserOnDb(){
         User user = TestUtils.getUserNotAdmin();
+        String email = user.getEmail();
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.empty());
-        assertThrows(UsernameNotFoundException.class, ()-> userService.generateResetPassword(user.getEmail()));
+        assertThrows(UsernameNotFoundException.class, ()
+                -> userService.generateResetPassword(email));
     }
+
     @Test
     void generateResetPassword() {
         User user = TestUtils.getUserNotAdmin();
@@ -268,7 +273,23 @@ class UserServiceImplTest {
             }
         }
     }
-
+    @Test
+    void sendEmailToUserShouldFailOnServiceUnavailable(){
+        User user = TestUtils.getUserNotAdmin();
+        try (MockedStatic<JwtManage> jwtMock = Mockito.mockStatic(JwtManage.class)) {
+            jwtMock.when(() ->
+                            JwtManage.generateToken(user.getId(), user.getEmail(), null)).
+                    thenReturn("token");
+            BiFunction<User, String, String > callback = (u,t)-> "token";
+            try (MockedStatic<MailService> emailServiceMock = Mockito.mockStatic(MailService.class)) {
+                emailServiceMock.when(() ->
+                        MailService.sendEmail(any(), any(),any(),any(),any()))
+                        .thenReturn(null);
+                assertThrows(ServiceUnavailableException.class,
+                        ()-> userService.sendEmailToUser("templateId",user,"test", callback));
+            }
+        }
+    }
 
     @Nested
     @DisplayName("User save test")
