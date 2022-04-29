@@ -5,7 +5,9 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Email;
 import com.sendgrid.helpers.mail.objects.Personalization;
+import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -14,38 +16,39 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class MailServiceTest {
-    private final String templateId = System.getenv("SEND_GRID_TEMPLATE_ID");
-    private final String fromEmail = System.getenv("SENDGRID_MAIL_FROM");
+    private final String templateId = "d-432fd12818ba40b280f5f8ceeeea5063";
+    private final String fromEmail = "bmgabi95@hotmail.com";
     private final String emailTo = "alejandrosuaza.1022@gmail.com";
     private final String asName = "test";
     private final String name = "testUser";
     private final String link = "http://test.com";
 
     @Test
-    @Disabled
-    void sendEmailShouldWorkTest() throws IOException {
+    void sendEmailTries() throws IOException {
         try (MockedStatic<MailService> utilities = Mockito.mockStatic(MailService.class)) {
-            Response response = TestUtils.getSendGridResponse();
-            utilities.when(() ->
-                            MailService.invokeServiceEmail(any(), any()))
-                    .thenReturn(response);
-//            ArgumentCaptor<Mail> argumentCaptor = ArgumentCaptor.forClass(Mail.class);
-//            utilities.verify(() ->
-//                            MailService.invokeServiceEmail(argumentCaptor.capture(), any(SendGrid.class)),
-//                    times(1));
-//            Mail mail = argumentCaptor.getValue();
-//            assertEquals(fromEmail, mail.getFrom().getEmail());
-//            assertEquals(asName, mail.getFrom().getName());
-//            assertEquals(templateId, mail.getTemplateId());
+            SendGrid sg = Mockito.mock(SendGrid.class);
+            Mail mail = new Mail();
+            Email fromEmail = new Email();
+            fromEmail.setName(asName);
+            fromEmail.setEmail(this.fromEmail);
+            mail.setFrom(fromEmail);
+            mail.setTemplateId(templateId);
+            Personalization personalization = new Personalization();
+            personalization.addDynamicTemplateData("name", name);
+            personalization.addDynamicTemplateData("link", link);
+            personalization.addTo(new Email(emailTo));
+            mail.addPersonalization(personalization);
+            when(sg.api(any())).thenReturn(TestUtils.getSendGridResponse());
+            utilities.when(MailService::getSendGrid).thenReturn(sg);
+            utilities.when(() -> MailService.configureMail(templateId, asName, emailTo, name, link)).thenReturn(mail);
         }
-        Response response1 = MailService.sendEmail(emailTo, name, link, templateId, asName);
+        Response response = MailService.sendEmail(emailTo, name, link, templateId, asName);
+        assertNotNull(response);
     }
 
     @Test
