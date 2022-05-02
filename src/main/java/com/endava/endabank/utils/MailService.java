@@ -23,7 +23,14 @@ public final class MailService {
         if (emailTo.isEmpty() || name.isEmpty() || link.isEmpty() || templateId.isEmpty() || asName.isEmpty()) {
             throw new IllegalArgumentException("All parameters must be not empty");
         }
-        return invokeServiceEmail(configureMail(templateId, asName, emailTo, name, link));
+        SendGrid sg = getSendGrid();
+        return invokeServiceEmail(configureMail(templateId, asName, emailTo, name, link), sg);
+    }
+
+    public static SendGrid getSendGrid() {
+        return new SendGrid(
+                System.getenv("SENDGRID_API_KEY")
+        );
     }
 
     public static Personalization getPersonalization(String emailTo, String name, String link) {
@@ -46,10 +53,7 @@ public final class MailService {
         return mail;
     }
 
-    public static Response invokeServiceEmail(Mail mail) throws IOException {
-        SendGrid sg = new SendGrid(
-                System.getenv("SENDGRID_API_KEY")
-        );
+    public static Response invokeServiceEmail(Mail mail, SendGrid sg) throws IOException {
         Request request = new Request();
         request.setMethod(Method.POST);
         request.setEndpoint("mail/send");

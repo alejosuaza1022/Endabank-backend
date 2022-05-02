@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 import java.util.Objects;
 
+
 public class UserAuthentication extends User {
     private Integer id;
     private Boolean isApproved;
@@ -16,7 +17,7 @@ public class UserAuthentication extends User {
                               Integer id, Boolean isApproved, Boolean isEmailVerified) {
         super(username, password, authorities);
         this.id = id;
-        this.isApproved = isApproved;
+        this.isApproved = isApproved != null && isApproved;
         this.isEmailVerified = isEmailVerified;
     }
 
@@ -44,6 +45,9 @@ public class UserAuthentication extends User {
 
     public Boolean getIsEmailVerified() {
         return this.isEmailVerified;
+    }
+    public void setIsEmailVerified(Boolean value) {
+        this.isEmailVerified = value;
     }
 
     public UserAuthentication(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
