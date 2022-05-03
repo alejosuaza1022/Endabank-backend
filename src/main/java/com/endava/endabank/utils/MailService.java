@@ -28,12 +28,14 @@ public class MailService {
         if (emailTo.isEmpty() || name.isEmpty() || link.isEmpty() || templateId.isEmpty() || asName.isEmpty()) {
             throw new IllegalArgumentException("All parameters must be not empty");
         }
+
         return invokeServiceEmail(configureMail(templateId, asName, emailTo, name, link));
     }
 
     @VisibleForTesting
     SendGrid getSendGrid() {
         return new SendGrid(mailProperties.getApiKey());
+
     }
 
 
