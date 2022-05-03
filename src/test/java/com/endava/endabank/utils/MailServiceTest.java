@@ -1,90 +1,97 @@
 package com.endava.endabank.utils;
 
+import com.endava.endabank.configuration.MailProperties;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Personalization;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class MailServiceTest {
-    private final String templateId = System.getenv("SEND_GRID_TEMPLATE_ID");
-    private final String fromEmail = System.getenv("SENDGRID_MAIL_FROM");
-    private final String emailTo = "alejandrosuaza.1022@gmail.com";
+
+
+    private final String templateId = "test";
+    private final String emailTo = "test";
     private final String asName = "test";
     private final String name = "testUser";
     private final String link = "http://test.com";
+    private final MailProperties mailProperties = new MailProperties("test","test", "test", "test");
+
+    private MailService mailService;
+
+    @BeforeEach
+    void setUp() {
+        mailService = new MailService(mailProperties);
+    }
 
     @Test
-    @Disabled
     void sendEmailShouldWorkTest() throws IOException {
-        try (MockedStatic<MailService> utilities = Mockito.mockStatic(MailService.class)) {
-            Response response = TestUtils.getSendGridResponse();
-            utilities.when(() ->
-                            MailService.invokeServiceEmail(any(), any()))
-                    .thenReturn(response);
-//            ArgumentCaptor<Mail> argumentCaptor = ArgumentCaptor.forClass(Mail.class);
-//            utilities.verify(() ->
-//                            MailService.invokeServiceEmail(argumentCaptor.capture(), any(SendGrid.class)),
-//                    times(1));
-//            Mail mail = argumentCaptor.getValue();
-//            assertEquals(fromEmail, mail.getFrom().getEmail());
-//            assertEquals(asName, mail.getFrom().getName());
-//            assertEquals(templateId, mail.getTemplateId());
-        }
-        Response response1 = MailService.sendEmail(emailTo, name, link, templateId, asName);
+            MailService mailService1 = Mockito.spy(mailService);
+            Mail mail = mailService.configureMail(templateId, asName, emailTo, name, link);
+            SendGrid sg = Mockito.mock(SendGrid.class);
+            when(mailService1.getSendGrid()).thenReturn(sg);
+            when(mailService1.configureMail(templateId, asName, emailTo,name, link)).thenReturn(mail);
+            when(sg.api(any(Request.class))).thenReturn(TestUtils.getSendGridResponse());
+            Response response =  mailService1.sendEmail(emailTo, name, link, templateId, asName);
+            assertEquals(202, response.getStatusCode());
+            assertEquals("Success", response.getBody());
     }
 
     @Test
     void sendEmailShouldFailOnNullParametersTest() {
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(null, null, null, null, null));
+                mailService.sendEmail(null, null, null, null, null));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(null, name, link, templateId, asName));
+                mailService.sendEmail(null, name, link, templateId, asName));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(emailTo, null, link, templateId, asName));
+                mailService.sendEmail(emailTo, null, link, templateId, asName));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(emailTo, name, null, templateId, asName));
+                mailService.sendEmail(emailTo, name, null, templateId, asName));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(emailTo, name, link, null, asName));
+                mailService.sendEmail(emailTo, name, link, null, asName));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(emailTo, name, link, templateId, null));
+                mailService.sendEmail(emailTo, name, link, templateId, null));
     }
 
     @Test
     void sendEmailShouldFailOnEmptyParametersTest() {
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail("", "", "", "", ""));
+                mailService.sendEmail("", "", "", "", ""));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail("", name, link, templateId, asName));
+                mailService.sendEmail("", name, link, templateId, asName));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(emailTo, "", link, templateId, asName));
+                mailService.sendEmail(emailTo, "", link, templateId, asName));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(emailTo, name, "", templateId, asName));
+                mailService.sendEmail(emailTo, name, "", templateId, asName));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(emailTo, name, link, "", asName));
+                mailService.sendEmail(emailTo, name, link, "", asName));
         assertThrows(IllegalArgumentException.class, () ->
-                MailService.sendEmail(emailTo, name, link, templateId, ""));
+                mailService.sendEmail(emailTo, name, link, templateId, ""));
 
     }
 
 
     @Test
     void getPersonalizationTest() {
-        Personalization personalization = MailService.getPersonalization(emailTo, name, link);
+        Personalization personalization = mailService.getPersonalization(emailTo, name, link);
         assertEquals(emailTo, personalization.getTos().get(0).getEmail());
         assertEquals(name, personalization.getDynamicTemplateData().get("name"));
         assertEquals(link, personalization.getDynamicTemplateData().get("link"));
@@ -92,8 +99,8 @@ class MailServiceTest {
 
     @Test
     void configureMailTest() {
-        Mail mail = MailService.configureMail(templateId, asName, emailTo, name, link);
-        assertEquals(fromEmail, mail.getFrom().getEmail());
+        Mail mail = mailService.configureMail(templateId, asName, emailTo, name, link);
+        assertEquals(mailProperties.getFromEmail(), mail.getFrom().getEmail());
         assertEquals(asName, mail.getFrom().getName());
         assertEquals(templateId, mail.getTemplateId());
     }
@@ -101,8 +108,10 @@ class MailServiceTest {
     @Test
     void invokeServiceEmailTest() throws IOException {
         SendGrid sg = Mockito.mock(SendGrid.class);
-        Mail mail = MailService.configureMail(templateId, asName, emailTo, name, link);
-        MailService.invokeServiceEmail(mail, sg);
+        Mail mail = mailService.configureMail(templateId, asName, emailTo, name, link);
+        MailService mailService1 = Mockito.spy(mailService);
+        when(mailService1.getSendGrid()).thenReturn(sg);
+        mailService1.invokeServiceEmail(mail);
         ArgumentCaptor<Request> argumentCaptor
                 = ArgumentCaptor.forClass(Request.class);
         verify(sg, Mockito.times(1))
