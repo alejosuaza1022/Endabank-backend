@@ -37,10 +37,10 @@ public final class TestUtils {
         IdentifierType cc = TestUtils.identifierTypeCC();
         return User.builder().
                 id(1).
-                email("admin@endava.com").
+                email("admin@test.test").
                 phoneNumber("3212312321").
                 identifier("1001000000").
-                firstName("Endava").
+                firstName("User").
                 lastName("Admin").
                 password("$2a$10$bUcuzJbChZheTqPERIqk3u7COWhAF1CV6OU.LUkCG6iZYRhXydRqW").
                 isEmailVerified(true).
@@ -53,9 +53,9 @@ public final class TestUtils {
     public static UserToApproveAccountDto getUserApprovedAccountDto() {
         return UserToApproveAccountDto.builder().
                 id(1).
-                email("user@endava.com").
+                email("user@test.test").
                 isApproved(true).
-                firstName("Endava").
+                firstName("User").
                 lastName("User").build();
     }
 
@@ -70,10 +70,10 @@ public final class TestUtils {
         IdentifierType cc = TestUtils.identifierTypeCC();
         return User.builder().
                 id(1).
-                email("user@endava.com").
+                email("user@test.test").
                 phoneNumber("3210000000").
                 identifier("1001000000").
-                firstName("Endava").
+                firstName("User").
                 lastName("User").
                 password("$2a$10$bUcuzJbChZheTqPERIqk3u7COWhAF1CV6OU.LUkCG6iZYRhXydRqW").
                 isApproved(true).
@@ -87,7 +87,6 @@ public final class TestUtils {
         user.setIsApproved(false);
         return user;
     }
-
 
     public static Role adminRole() {
         return new Role(1, "ROLE_ADMIN", new ArrayList<>(), adminPermission());
@@ -110,10 +109,10 @@ public final class TestUtils {
 
     public static UserRegisterDto getUserRegisterDto() {
         return UserRegisterDto.builder().
-                email("user@endava.com").
+                email("user@test.test").
                 phoneNumber("3210000000").
                 identifier("1001000000").
-                firstName("Endava").
+                firstName("User").
                 lastName("User").
                 password("$2a$10$bUcuzJbChZheTqPERIqk3u7COWhAF1CV6OU.LUkCG6iZYRhXydRqW").
                 typeIdentifierId(1).build();
@@ -132,7 +131,7 @@ public final class TestUtils {
     public static UserPrincipalSecurity getUserPrincipalSecurity() {
         return UserPrincipalSecurity.builder().
                 id(1).
-                email("user@endava.com").
+                email("user@test.com").
                 phoneNumber("3210000000").
                 firstName("principal").
                 isApproved(true).build();
@@ -141,7 +140,7 @@ public final class TestUtils {
     public static UserAuthentication getUserAuthentication() {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UserAuthentication("user@endava.com", "test-password",
+        return new UserAuthentication("user@test.test", "test-password",
                 authorities, 1,
                 true, true);
     }
@@ -179,8 +178,8 @@ public final class TestUtils {
 
         return UserPrincipalSecurity.builder().
                 id(1).
-                email("admin@endava.com").
-                firstName("Endava").
+                email("admin@test.test").
+                firstName("User").
                 phoneNumber("3210000000").
                 isApproved(true).build();
     }

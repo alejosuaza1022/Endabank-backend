@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserService {
     private MailService mailService;
     private MailProperties mailProperties;
 
-
     @Override
     @Transactional(readOnly = true)
     public List<UserToApproveAccountDto> usersToApprove() {
@@ -98,7 +97,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public UsernamePasswordAuthenticationToken getUsernamePasswordToken(Integer userId) {
@@ -112,7 +110,6 @@ public class UserServiceImpl implements UserService {
         return
                 new UsernamePasswordAuthenticationToken(userPrincipalSecurity, null, authorities);
     }
-
     @Override
     @Transactional
     public UserToApproveAccountDto updateUserAccountApprove(Integer id, boolean value) {
@@ -121,7 +118,6 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
         return this.mapToUserToApproveDto(user);
     }
-
     @Override
     public Map<String, Object> generateResetPassword(String email) {
         email=email!=null ? email.toLowerCase() : null;
@@ -238,5 +234,4 @@ public class UserServiceImpl implements UserService {
         map.put(Strings.MESSAGE_RESPONSE, Strings.MAIL_SENT);
         return map;
     }
-
 }
