@@ -124,6 +124,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> generateResetPassword(String email) {
+        email=email!=null ? email.toLowerCase() : null;
         User userDb = userDao.findByEmail(email).
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         BiFunction<User, String, String> callback = (user, token) -> {
@@ -137,6 +138,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> generateEmailVerification(User userDb, String email) {
+        email=email!=null ? email.toLowerCase() : null;
         if (userDb == null) {
             userDb = userDao.findByEmail(email).
                     orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
