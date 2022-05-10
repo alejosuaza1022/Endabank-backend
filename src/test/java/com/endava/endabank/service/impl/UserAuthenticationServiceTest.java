@@ -81,7 +81,7 @@ class UserAuthenticationServiceTest {
             userAuthenticationService.logInUser(authentication);
              mockedJwtManage.when(()->
                      JwtManage.generateToken(userAuthentication.getId(),
-                             userAuthentication.getUsername(), Strings.SECRET_JWT)).thenReturn("token");
+                             userAuthentication.getUsername(), null)).thenReturn("token");
             Map<String, Object> map = userAuthenticationService.logInUser(authentication);
             assertEquals("token", map.get(Strings.ACCESS_TOKEN).toString());
             assertTrue((Boolean) map.get(Strings.IS_APPROVED));

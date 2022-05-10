@@ -88,6 +88,7 @@ class MailServiceTest {
 
     }
 
+
     @Test
     void getPersonalizationTest() {
         Personalization personalization = mailService.getPersonalization(emailTo, name, link);
@@ -120,4 +121,5 @@ class MailServiceTest {
         assertEquals(Method.POST, request.getMethod());
         assertEquals("mail/send", request.getEndpoint());
     }
+
 }

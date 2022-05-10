@@ -198,7 +198,7 @@ class UserServiceImplTest {
         String token = JwtManage.generateToken(1, user.getEmail(), TestUtils.SECRET_DUMMY);
         try (MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
             when(userDao.findById(1)).thenReturn(Optional.of(user));
-            utilities.when(() -> JwtManage.verifyToken("Bearer " + token, Strings.SECRET_JWT)).thenReturn(1);
+            utilities.when(() -> JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
             Map<String, Object> map = userService.verifyEmail(token);
             assertEquals(Strings.EMAIL_VERIFIED, map.get(Strings.MESSAGE_RESPONSE));
         }
@@ -246,7 +246,7 @@ class UserServiceImplTest {
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         try (MockedStatic<JwtManage> jwtMock = Mockito.mockStatic(JwtManage.class)) {
             jwtMock.when(() ->
-                            JwtManage.generateToken(user.getId(), user.getEmail(), Strings.SECRET_JWT)).
+                            JwtManage.generateToken(user.getId(), user.getEmail(), null)).
                     thenReturn("token");
             String link = Routes.RESET_PASSWORD_FRONTEND_ROUTE + "token";
             Response response = TestUtils.getSendGridResponse();
@@ -293,7 +293,7 @@ class UserServiceImplTest {
         String email = user.getEmail();
         try (MockedStatic<JwtManage> jwtMock = Mockito.mockStatic(JwtManage.class)) {
             jwtMock.when(() ->
-                            JwtManage.generateToken(user.getId(), user.getEmail(), Strings.SECRET_JWT)).
+                            JwtManage.generateToken(user.getId(), user.getEmail(), null)).
                     thenReturn("token");
             String emailDb = "&email=" + email;
             String link = Routes.EMAIL_VALIDATION_FRONTEND_ROUTE + "token" + emailDb;
@@ -309,11 +309,7 @@ class UserServiceImplTest {
             e.printStackTrace();
         }
     }
-    @Test
-    void generateResetPasswordShouldFailEmailNull(){
-        assertThrows(UsernameNotFoundException.class,
-                () -> userService.generateResetPassword( null));
-    }
+
     @Test
     void generateEmailVerificationShouldThrowExceptionUsernameNotFoundException() {
         assertThrows(UsernameNotFoundException.class,
@@ -388,7 +384,7 @@ class UserServiceImplTest {
             utilities.when(() ->
                     UserValidations.validateUserForgotPasswordToken(
                             forgotUserPasswordTokenService, token,
-                            Strings.SECRET_JWT)).thenReturn(1);
+                            null)).thenReturn(1);
             Map<String, String> map = userService.updateForgotPassword(updatePasswordDto);
             assertEquals(Strings.PASSWORD_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
         }
@@ -403,7 +399,7 @@ class UserServiceImplTest {
         when(forgotUserPasswordTokenService.findByUserId(user.getId())).thenReturn(TestUtils.getForgotUserPasswordToken(token + "abc"));
         updatePasswordDto.setToken(token);
         try (MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
-            utilities.when(() -> JwtManage.verifyToken("Bearer " + token, Strings.SECRET_JWT)).thenReturn(1);
+            utilities.when(() -> JwtManage.verifyToken("Bearer " + token, null)).thenReturn(1);
             assertThrows(AccessDeniedException.class, () -> userService.updateForgotPassword(updatePasswordDto));
         }
     }

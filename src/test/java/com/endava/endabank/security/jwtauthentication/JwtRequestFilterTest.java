@@ -1,6 +1,5 @@
 package com.endava.endabank.security.jwtauthentication;
 
-import com.endava.endabank.constants.Strings;
 import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.utils.JwtManage;
@@ -76,7 +75,7 @@ class JwtRequestFilterTest {
         when(request.getHeader("Authorization")).thenReturn("Bearer token");
         doReturn(new UsernamePasswordAuthenticationToken(user, "")).when(jwtRequestFilter1)
                 .getAuthenticationToken("Bearer token",
-                        Strings.SECRET_JWT, request);
+                        null, request);
         jwtRequestFilter1.doFilterInternal(request, response, filterChain);
         verify(filterChain, Mockito.times(1)).doFilter(request, response);
         User user1 = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

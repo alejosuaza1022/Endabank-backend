@@ -1,6 +1,8 @@
 package com.endava.endabank.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
@@ -18,9 +20,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
 public class ForgotUserPasswordToken {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +40,10 @@ public class ForgotUserPasswordToken {
         this.user = user;
     }
 
+    public ForgotUserPasswordToken() {
+
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,4 +56,5 @@ public class ForgotUserPasswordToken {
     public int hashCode() {
         return getClass().hashCode();
     }
+
 }
