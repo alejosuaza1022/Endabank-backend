@@ -26,7 +26,7 @@ class IdentifierTypeServiceImplTest {
     private IdentifierTypeServiceImpl identifierTypeService;
 
     @Test
-    void findByIdShouldThrowAndException() {
+    void testFindByIdShouldFailWhenIdentifierTypeNotFound() {
         IdentifierType identifierType = TestUtils.identifierTypeCC();
         Integer id = identifierType.getId();
         when(identifierTypeDao.findById(identifierType.getId())).thenReturn(Optional.empty());
@@ -34,7 +34,7 @@ class IdentifierTypeServiceImplTest {
     }
 
     @Test
-    void findByIdShouldSuccess() {
+    void testFindByIdShouldSuccessWhenDataCorrect() {
         IdentifierType identifierType = TestUtils.identifierTypeCC();
         Integer id = identifierType.getId();
         when(identifierTypeDao.findById(identifierType.getId())).thenReturn(Optional.of(identifierType));

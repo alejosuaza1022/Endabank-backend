@@ -27,7 +27,7 @@ class RoleServiceImplTest {
     private RoleServiceImpl roleService;
 
     @Test
-    void findByIdShouldThrowAndException() {
+    void testFindByIdShouldFailWhenIdNotFound() {
         Role role = TestUtils.getUserNotAdmin().getRole();
         Integer id = role.getId();
         when(roleDao.findById(role.getId())).thenReturn(Optional.empty());
@@ -35,7 +35,7 @@ class RoleServiceImplTest {
     }
 
     @Test
-    void findByIdShouldSuccess() {
+    void testFindByIdShouldSuccessWhenDataCorrect() {
         Role role = TestUtils.getUserNotAdmin().getRole();
         Integer id = role.getId();
         when(roleDao.findById(role.getId())).thenReturn(Optional.of(role));

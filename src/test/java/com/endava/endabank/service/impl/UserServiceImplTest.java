@@ -102,7 +102,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUsernamePasswordToken() {
+    void testGetUsernamePasswordTokenShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserAdmin();
         UserPrincipalSecurity userPrincipalSecurity = TestUtils.getUserAdminPrincipalSecurity();
         UserServiceImpl userService1 = Mockito.spy(userService);
@@ -125,7 +125,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findById() {
+    void testFindByIdShouldSuccessWhenDataCorrect() {
         User userNotAdmin = TestUtils.getUserNotAdmin();
         when(userDao.findById(1)).thenReturn(Optional.of(userNotAdmin));
         User user = userService.findById(1);
@@ -139,13 +139,13 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findByIdShouldThrowExceptionWhenNotFound() {
+    void testFindByIdShouldFailWhenUsernameNotFound() {
         when(userDao.findById(1)).thenReturn(Optional.empty());
         assertThrows(UsernameNotFoundException.class, () -> userService.findById(1));
     }
 
     @Test
-    void updateUserAccountApproveToTrue() {
+    void testUpdateUserAccountApproveToTrueShouldSuccessWhenDataCorrect() {
         User userNotAdmin = TestUtils.getUserNotAdminNonApproved();
         UserServiceImpl userService1 = Mockito.spy(userService);
         doReturn(userNotAdmin).when(userService1).findById(1);
@@ -160,7 +160,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUserAccountApproveToFalse() {
+    void testUpdateUserAccountApproveToFalseShouldSuccessWhenDataCorrect() {
         User userNotAdmin = TestUtils.getUserNotAdminNonApproved();
         UserServiceImpl userService1 = Mockito.spy(userService);
         doReturn(userNotAdmin).when(userService1).findById(1);
@@ -175,7 +175,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUserDetails() {
+    void testGetUserDetailsShouldSuccessWhenDataCorrect() {
         UserServiceImpl userService1 = Mockito.spy(userService);
         UserPrincipalSecurity userPrincipalSecurity = TestUtils.getUserPrincipalSecurity();
         doReturn(TestUtils.userDetailsGetDto(userPrincipalSecurity)).
@@ -193,7 +193,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void verifyEmail() {
+    void testVerifyEmailShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
         String token = JwtManage.generateToken(1, user.getEmail(), TestUtils.SECRET_DUMMY);
         try (MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
@@ -205,7 +205,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void saveAndSendVerifyEmailTest() {
+    void testSaveAndSendVerifyEmailTestShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
         UserRegisterDto userRegisterDto = TestUtils.getUserRegisterDto();
         UserServiceImpl userService1 = Mockito.spy(userService);
@@ -223,7 +223,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void usersToApprove() {
+    void testUsersToApproveShouldSuccessWhenDataCorrect() {
         when(userDao.findAll()).thenReturn(TestUtils.getUserList());
         UserServiceImpl userService1 = Mockito.spy(userService);
         doReturn(TestUtils.getUserApprovedAccountDto()).when(userService1).mapToUserToApproveDto(any());
@@ -232,7 +232,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void generateResetPasswordShouldFailOnNoUserOnDb() {
+    void testGenerateResetPasswordShouldFailWhenUserNotOnDb() {
         User user = TestUtils.getUserNotAdmin();
         String email = user.getEmail();
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.empty());
@@ -241,7 +241,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void generateResetPassword() {
+    void testGenerateResetPasswordShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         try (MockedStatic<JwtManage> jwtMock = Mockito.mockStatic(JwtManage.class)) {
@@ -271,7 +271,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void sendEmailToUserShouldFailOnServiceUnavailable() {
+    void testSendEmailToUserShouldFailWhenServiceUnavailable() {
         User user = TestUtils.getUserNotAdmin();
         try (MockedStatic<JwtManage> jwtMock = Mockito.mockStatic(JwtManage.class)) {
             jwtMock.when(() ->
@@ -288,7 +288,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void generateEmailVerificationShouldSuccess() {
+    void testGenerateEmailVerificationShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
         String email = user.getEmail();
         try (MockedStatic<JwtManage> jwtMock = Mockito.mockStatic(JwtManage.class)) {
@@ -310,18 +310,18 @@ class UserServiceImplTest {
         }
     }
     @Test
-    void generateResetPasswordShouldFailEmailNull(){
+    void testGenerateResetPasswordShouldFailWhenEmailNull(){
         assertThrows(UsernameNotFoundException.class,
                 () -> userService.generateResetPassword( null));
     }
     @Test
-    void generateEmailVerificationShouldThrowExceptionUsernameNotFoundException() {
+    void testGenerateEmailVerificationShouldFailWhenUsernameNotFound() {
         assertThrows(UsernameNotFoundException.class,
                 () -> userService.generateEmailVerification(null, null));
     }
 
     @Test
-    void generateEmailVerificationShouldThrowExceptionBadDataException() {
+    void testGenerateEmailVerificationShouldFailWhenDataIncorrect() {
         User user = TestUtils.getUserNotAdmin();
         ;
         String email = user.getEmail();
@@ -330,7 +330,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void mapToUserDetailsDto() {
+    void testMapToUserDetailsDtoShouldSuccessWhenDataCorrect() {
         UserPrincipalSecurity user = TestUtils.getUserPrincipalSecurity();
         assertEquals(modelMapper.map(user, UserDetailsDto.class), userService.mapToUserDetailsDto(user));
     }
@@ -348,20 +348,20 @@ class UserServiceImplTest {
         }
 
         @Test
-        void saveShouldThrowExceptionWhenUserEmailAlreadyExists() {
+        void testSaveShouldFailWhenUserEmailAlreadyExists() {
             when(userDao.findByEmail(userRegisterDto.getEmail())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
             assertThrows(UniqueConstraintViolationException.class, () -> userService.save(userRegisterDto));
         }
 
         @Test
-        void saveShouldThrowExceptionWhenUserIdentifierAlreadyExists() {
+        void testSaveShouldFailWhenUserIdentifierAlreadyExists() {
             when(userDao.findByEmail(userRegisterDto.getEmail())).thenReturn(Optional.empty());
             when(userDao.findByIdentifier(userRegisterDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
             assertThrows(UniqueConstraintViolationException.class, () -> userService.save(userRegisterDto));
         }
 
         @Test
-        void saveUserShouldSuccess() {
+        void testSaveUserShouldSuccessWhenDataCorrect() {
             when(userDao.findByEmail(userRegisterDto.getEmail())).thenReturn(Optional.empty());
             when(userDao.findByIdentifier(userRegisterDto.getIdentifier())).thenReturn(Optional.empty());
             when(roleService.findById(Permissions.ROLE_USER)).
@@ -377,7 +377,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateForgotPasswordShouldSuccess() {
+    void testUpdateForgotPasswordShouldSuccessWhenDataCorrect() {
         UpdatePasswordDto updatePasswordDto = TestUtils.getUpdatePasswordDto();
         User user = TestUtils.getUserNotAdmin();
         String secret_dummy = TestUtils.SECRET_DUMMY;
@@ -395,7 +395,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateForgotPasswordShouldThrowException() {
+    void testUpdateForgotPasswordShouldFailWhenTokenIncorrect() {
         UpdatePasswordDto updatePasswordDto = TestUtils.getUpdatePasswordDto();
         User user = TestUtils.getUserNotAdmin();
         String secret_dummy = TestUtils.SECRET_DUMMY;
@@ -409,7 +409,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updatePasswordShouldSuccess() {
+    void testUpdatePasswordShouldSuccessWhenDataCorrect() {
         UserPrincipalSecurity userPrincipalSecurity = TestUtils.getUserPrincipalSecurity();
         UpdatePasswordDto updatePasswordDto = TestUtils.getUpdatePasswordDto();
         when(userDao.findById(userPrincipalSecurity.getId())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
@@ -419,7 +419,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updatePasswordShouldThrowException() {
+    void testUpdatePasswordShouldFailWhenUserNotCorrect() {
         UserPrincipalSecurity userPrincipalSecurity = TestUtils.getUserPrincipalSecurity();
         UpdatePasswordDto updatePasswordDto = TestUtils.getUpdatePasswordDto();
         when(userDao.findById(userPrincipalSecurity.getId())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));

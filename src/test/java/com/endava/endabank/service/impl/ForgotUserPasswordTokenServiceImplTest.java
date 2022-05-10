@@ -35,19 +35,19 @@ class ForgotUserPasswordTokenServiceImplTest {
 
 
     @Test
-    void findByUserIdShouldThrowException() {
+    void testFindByUserIdShouldFailWhenUserNotFound() {
         when(forgotUserPasswordTokenDao.findByUserId(1)).thenReturn(Optional.empty());
         assertThrows(UsernameNotFoundException.class, () -> forgotUserPasswordTokenService.findByUserId(1));
     }
 
     @Test
-    void findByUserIdShouldReturnForgotPasswordToken() {
+    void testFindByUserIdShouldSuccessWhenReturnForgotPasswordToken() {
         when(forgotUserPasswordTokenDao.findByUserId(1)).thenReturn(Optional.of(TestUtils.getForgotUserPasswordToken("token")));
         assertEquals(TestUtils.getForgotUserPasswordToken("token"), forgotUserPasswordTokenService.findByUserId(1));
     }
 
     @Test
-    void saveWhenTokenExistOnTheBd() {
+    void testSaveShouldSuccessWhenTokenExistOnTheBd() {
         ForgotUserPasswordToken forgotUserPasswordToken =
                 TestUtils.getForgotUserPasswordToken("new-token");
         ForgotUserPasswordToken forgotUserPasswordTokenDb =
@@ -63,7 +63,7 @@ class ForgotUserPasswordTokenServiceImplTest {
     }
 
     @Test
-    void saveWhenTokenNotExistOnTheBd() {
+    void testSaveShouldSuccessWhenTokenNotExistOnTheBd() {
         ForgotUserPasswordToken forgotUserPasswordToken =
                 TestUtils.getForgotUserPasswordToken("new-token");
         when(forgotUserPasswordTokenDao.

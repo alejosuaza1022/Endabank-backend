@@ -19,7 +19,7 @@ class JwtManageTest {
     private final String secret_dummy = TestUtils.SECRET_DUMMY;
 
     @Test
-    void generateValidTokenTest() throws BadDataException {
+    void testGenerateTokenShouldSuccessWhenDataCorrect(){
         User user = TestUtils.getUserAdmin();
         String token = JwtManage.generateToken(user.getId(),
                 user.getEmail(), secret_dummy);
@@ -28,7 +28,7 @@ class JwtManageTest {
     }
 
     @Test
-    void generateInvalidTokenTest() {
+    void testGenerateTokenShouldFailWhenDataIncorrect() {
         assertThrows(BadDataException.class, () ->
                 JwtManage.generateToken(null, "a@a.com", secret_dummy));
         assertThrows(BadDataException.class, () ->
@@ -42,7 +42,7 @@ class JwtManageTest {
     }
 
     @Test
-    void verifyValidToken() throws BadDataException {
+    void testVerifyTokenShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserAdmin();
         String token = JwtManage.generateToken(user.getId(), user.getEmail(), secret_dummy);
         int idUser = JwtManage.verifyToken("Bearer " + token, secret_dummy);
@@ -50,7 +50,7 @@ class JwtManageTest {
     }
 
     @Test
-    void verifyInvalidToken() throws BadDataException {
+    void testVerifyTokenShouldFailWhenDataIncorrect() throws BadDataException {
         User user = TestUtils.getUserAdmin();
         String token = JwtManage.generateToken(user.getId(), user.getEmail(), secret_dummy);
         assertThrows(JWTVerificationException.class, () ->

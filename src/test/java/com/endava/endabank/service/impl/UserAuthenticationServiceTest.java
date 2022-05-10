@@ -36,7 +36,7 @@ class UserAuthenticationServiceTest {
     private UserAuthenticationService userAuthenticationService;
 
     @Test
-    void loadUserByUsernameShouldSuccesTest() {
+    void testLoadUserByUsernameShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserAdmin();
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         UserAuthentication userAuthentication = (UserAuthentication) userAuthenticationService.loadUserByUsername(user.getEmail());
@@ -49,7 +49,7 @@ class UserAuthenticationServiceTest {
     }
 
     @Test
-    void loadUserByUsernameShouldFailIfUserNotExist() {
+    void testLoadUserByUsernameShouldFailWhenUserNotExist() {
         User user = TestUtils.getUserAdmin();
         String email = user.getEmail();
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.empty());
@@ -58,7 +58,7 @@ class UserAuthenticationServiceTest {
     }
 
     @Test
-    void logInUserVerifiedShouldThrowAnException() {
+    void testLogInUserShouldFailWhenEmailNotVerified() {
         UserAuthentication userAuthentication = TestUtils.getUserAuthentication();
         userAuthentication.setIsEmailVerified(false);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userAuthentication, null);
@@ -66,7 +66,7 @@ class UserAuthenticationServiceTest {
     }
 
     @Test
-    void logInUserNullVerifiedShouldThrowAnException() {
+    void testLogInUserShouldFailWhenEmailNull() {
         UserAuthentication userAuthentication = TestUtils.getUserAuthentication();
         userAuthentication.setIsEmailVerified(null);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userAuthentication, null);
@@ -74,7 +74,7 @@ class UserAuthenticationServiceTest {
     }
 
     @Test
-    void logInUserShouldSuccess() {
+    void testLogInUserShouldSuccessWhenDataCorrect() {
         try (MockedStatic<JwtManage> mockedJwtManage = Mockito.mockStatic(JwtManage.class)) {
             UserAuthentication userAuthentication = TestUtils.getUserAuthentication();
             Authentication authentication = new UsernamePasswordAuthenticationToken(userAuthentication, null);

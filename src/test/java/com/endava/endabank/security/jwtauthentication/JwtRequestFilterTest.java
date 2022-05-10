@@ -44,7 +44,7 @@ class JwtRequestFilterTest {
     private JwtRequestFilter jwtRequestFilter;
 
     @Test
-    void doFilterJWTInternalTestWhenAuthorizationNull() throws ServletException, IOException {
+    void testDoFilterJWTInternalShouldFailWhenAuthorizationNull() throws ServletException, IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
@@ -55,7 +55,7 @@ class JwtRequestFilterTest {
     }
 
     @Test
-    void doFilterJWTInternalTestWhenAuthorizationNotBearer() throws ServletException, IOException {
+    void testDoFilterJWTInternalShouldFailWhenAuthorizationNotBearer() throws ServletException, IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
@@ -67,7 +67,7 @@ class JwtRequestFilterTest {
     }
 
     @Test
-    void doFilterJWTInternalTestShouldWork() throws ServletException, IOException {
+    void testDoFilterJWTInternalShouldSuccessWhenDataCorrect() throws ServletException, IOException {
         User user = TestUtils.getUserNotAdmin();
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -85,7 +85,7 @@ class JwtRequestFilterTest {
     }
 
     @Test
-    void doFilterJWTInternalTestShoulFailOnNotValidToken() throws ServletException, IOException {
+    void testDoFilterJWTInternalShouldFailWhenNotValidToken() throws ServletException, IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
@@ -97,12 +97,10 @@ class JwtRequestFilterTest {
                 jwtRequestFilter1.doFilterInternal(request, response, filterChain));
         verify(filterChain, never()).doFilter(request, response);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
-
-
     }
 
     @Test
-    void getAuthenticationTokenTest() {
+    void testGetAuthenticationTokenShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
         String token = JwtManage.generateToken(user.getId(), user.getEmail(), TestUtils.SECRET_DUMMY);
         ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);

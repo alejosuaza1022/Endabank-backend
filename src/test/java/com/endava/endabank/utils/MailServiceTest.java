@@ -42,7 +42,7 @@ class MailServiceTest {
     }
 
     @Test
-    void sendEmailShouldWorkTest() throws IOException {
+    void testSendEmailShouldSuccessWhenDataCorrect() throws IOException {
             MailService mailService1 = Mockito.spy(mailService);
             Mail mail = mailService.configureMail(templateId, asName, emailTo, name, link);
             SendGrid sg = Mockito.mock(SendGrid.class);
@@ -56,7 +56,7 @@ class MailServiceTest {
     }
 
     @Test
-    void sendEmailShouldFailOnNullParametersTest() {
+    void testSendEmailShouldFailWhenNullParameters() {
         assertThrows(IllegalArgumentException.class, () ->
                 mailService.sendEmail(null, null, null, null, null));
         assertThrows(IllegalArgumentException.class, () ->
@@ -72,7 +72,7 @@ class MailServiceTest {
     }
 
     @Test
-    void sendEmailShouldFailOnEmptyParametersTest() {
+    void testSendEmailShouldFailWhenEmptyParameters() {
         assertThrows(IllegalArgumentException.class, () ->
                 mailService.sendEmail("", "", "", "", ""));
         assertThrows(IllegalArgumentException.class, () ->
@@ -89,7 +89,7 @@ class MailServiceTest {
     }
 
     @Test
-    void getPersonalizationTest() {
+    void testGetPersonalizationTestShouldSuccessWhenDataCorrect() {
         Personalization personalization = mailService.getPersonalization(emailTo, name, link);
         assertEquals(emailTo, personalization.getTos().get(0).getEmail());
         assertEquals(name, personalization.getDynamicTemplateData().get("name"));
@@ -97,7 +97,7 @@ class MailServiceTest {
     }
 
     @Test
-    void configureMailTest() {
+    void testConfigureMailTestShouldSuccessWhenDataCorrect() {
         Mail mail = mailService.configureMail(templateId, asName, emailTo, name, link);
         assertEquals(mailProperties.getFromEmail(), mail.getFrom().getEmail());
         assertEquals(asName, mail.getFrom().getName());
@@ -105,7 +105,7 @@ class MailServiceTest {
     }
 
     @Test
-    void invokeServiceEmailTest() throws IOException {
+    void testInvokeServiceEmailShouldSuccessWhenDataCorrect() throws IOException {
         SendGrid sg = Mockito.mock(SendGrid.class);
         Mail mail = mailService.configureMail(templateId, asName, emailTo, name, link);
         MailService mailService1 = Mockito.spy(mailService);
