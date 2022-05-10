@@ -25,9 +25,8 @@ public class ForgotUserPasswordTokenServiceImpl implements ForgotUserPasswordTok
         Optional<ForgotUserPasswordToken> forgotUserPasswordTokenDbOpt =
                 forgotUserPasswordTokenDao.findByUserId(forgotUserPasswordTokenNew.getUser().getId());
         if (forgotUserPasswordTokenDbOpt.isPresent()) {
-            ForgotUserPasswordToken forgotUserPasswordTokenDb = forgotUserPasswordTokenDbOpt.get();
-            forgotUserPasswordTokenDb.setToken(forgotUserPasswordTokenNew.getToken());
-            forgotUserPasswordTokenNew = forgotUserPasswordTokenDb;
+            forgotUserPasswordTokenNew = forgotUserPasswordTokenDbOpt.get();
+            forgotUserPasswordTokenNew.setToken(forgotUserPasswordTokenNew.getToken());
         }
         forgotUserPasswordTokenDao.save(forgotUserPasswordTokenNew);
     }

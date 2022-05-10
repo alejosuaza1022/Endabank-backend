@@ -61,7 +61,6 @@ public class UserServiceImpl implements UserService {
     private ForgotUserPasswordTokenService forgotUserPasswordTokenService;
     private MailService mailService;
     private MailProperties mailProperties;
-
     @Override
     @Transactional(readOnly = true)
     public List<UserToApproveAccountDto> usersToApprove() {
@@ -103,8 +102,7 @@ public class UserServiceImpl implements UserService {
         User user = this.findById(userId);
         Role role = user.getRole();
         Set<Permission> permissions = role.getPermissions();
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role.getName()));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role.getName()));
         permissions.forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
         UserPrincipalSecurity userPrincipalSecurity = modelMapper.map(user, UserPrincipalSecurity.class);
         return
