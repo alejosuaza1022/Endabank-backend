@@ -1,5 +1,8 @@
 package com.endava.endabank.security;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -7,6 +10,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 
+@Getter
+@Setter
 public class UserAuthentication extends User {
     private Integer id;
     private Boolean isApproved;
@@ -21,10 +26,6 @@ public class UserAuthentication extends User {
         this.isEmailVerified = isEmailVerified;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -37,17 +38,6 @@ public class UserAuthentication extends User {
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.getUsername());
-    }
-
-    public Boolean getIsApproved() {
-        return isApproved;
-    }
-
-    public Boolean getIsEmailVerified() {
-        return this.isEmailVerified;
-    }
-    public void setIsEmailVerified(Boolean value) {
-        this.isEmailVerified = value;
     }
 
     public UserAuthentication(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {

@@ -25,7 +25,7 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping(value = Routes.LOGIN_ROUTE)
-    public ResponseEntity<Map<String, Object>> createAuthenticationToken(@Valid @RequestBody AuthenticationDto authenticationDto) throws BadDataException {
+    public ResponseEntity<Map<String, Object>> createAuthenticationToken(@Valid @RequestBody AuthenticationDto authenticationDto){
         Authentication authentication = authenticate(authenticationDto.getEmail(), authenticationDto.getPassword());
         return ResponseEntity.ok(userAuthenticationService.logInUser(authentication));
     }

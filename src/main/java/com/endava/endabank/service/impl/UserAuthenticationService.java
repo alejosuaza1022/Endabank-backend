@@ -39,7 +39,7 @@ public class UserAuthenticationService implements UserDetailsService {
                 authorities, user.getId(), user.getIsApproved(), user.getIsEmailVerified());
     }
 
-    public Map<String, Object> logInUser(Authentication authentication) throws BadDataException {
+    public Map<String, Object> logInUser(Authentication authentication) {
         UserAuthentication userAuthentication = (UserAuthentication) authentication.getPrincipal();
         boolean data = userAuthentication.getIsEmailVerified() == null || !userAuthentication.getIsEmailVerified();
         if (data) {
