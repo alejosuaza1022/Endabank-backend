@@ -2,7 +2,6 @@ package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.UserAuthentication;
@@ -15,11 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Service
@@ -32,8 +29,7 @@ public class UserAuthenticationService implements UserDetailsService {
         User user = userDao.findByEmail(username).
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         Role role = user.getRole();
-        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role.getName()));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role.getName()));
         return new UserAuthentication(
                 user.getEmail(), user.getPassword(),
                 authorities, user.getId(), user.getIsApproved(), user.getIsEmailVerified());
@@ -44,6 +40,9 @@ public class UserAuthenticationService implements UserDetailsService {
         boolean data = userAuthentication.getIsEmailVerified() == null || !userAuthentication.getIsEmailVerified();
         if (data) {
             throw new AccessDeniedException(Strings.EMAIL_NOT_VERIFIED);
+        }
+        if(userAuthentication.getAuthorities() == null){
+            throw new NullPointerException(Strings.AUTHORITIES_REQUIRED);
         }
         String role = userAuthentication.getAuthorities().toArray()[0].toString();
         final String token = JwtManage.generateToken(userAuthentication.getId(),

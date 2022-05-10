@@ -52,7 +52,6 @@ class MailServiceTest {
             Response response =  mailService1.sendEmail(emailTo, name, link, templateId, asName);
             assertEquals(202, response.getStatusCode());
             assertEquals("Success", response.getBody());
-
     }
 
     @Test
@@ -85,7 +84,6 @@ class MailServiceTest {
                 mailService.sendEmail(emailTo, name, link, "", asName));
         assertThrows(IllegalArgumentException.class, () ->
                 mailService.sendEmail(emailTo, name, link, templateId, ""));
-
     }
 
     @Test
