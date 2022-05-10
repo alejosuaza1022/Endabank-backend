@@ -15,5 +15,4 @@ public class UserPrincipalSecurity {
     private String phoneNumber;
     private String firstName;
     private boolean isApproved;
-
 }

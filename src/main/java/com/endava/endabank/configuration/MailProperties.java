@@ -17,5 +17,3 @@ public class MailProperties {
     private String fromEmail;
     private String apiKey;
 }
-
-
