@@ -2,6 +2,7 @@ package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
+import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.UserAuthentication;
 import com.endava.endabank.security.utils.JwtManage;
@@ -16,9 +17,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -71,6 +75,16 @@ class UserAuthenticationServiceTest {
         userAuthentication.setIsEmailVerified(null);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userAuthentication, null);
         assertThrows(AccessDeniedException.class, () -> userAuthenticationService.logInUser(authentication));
+    }
+
+    @Test
+    void testLogInUserShouldFailWhenAuthoritiesEmpty() {
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        UserAuthentication userAuthentication = new UserAuthentication("user@test.test", "test-password",
+                authorities, 1,
+                true, true);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userAuthentication, null);
+        assertThrows(BadDataException.class, () -> userAuthenticationService.logInUser(authentication));
     }
 
     @Test

@@ -17,6 +17,8 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -33,12 +35,9 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrorException(MethodArgumentNotValidException ex, WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
+        Map<String, String> errors = ex.getBindingResult().getAllErrors().stream() .
+                collect(Collectors.toMap(error -> ((FieldError) error).getField(),
+                        error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : ""));
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 

@@ -19,8 +19,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableWebMvc
 @EnableSwagger2
 public class EndabankApplication {
-
-
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
@@ -33,5 +31,4 @@ public class EndabankApplication {
     public static void main(String[] args) {
         SpringApplication.run(EndabankApplication.class, args);
     }
-
 }
