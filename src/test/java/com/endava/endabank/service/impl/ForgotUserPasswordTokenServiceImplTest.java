@@ -50,11 +50,9 @@ class ForgotUserPasswordTokenServiceImplTest {
     void testSaveShouldSuccessWhenTokenExistOnTheBd() {
         ForgotUserPasswordToken forgotUserPasswordToken =
                 TestUtils.getForgotUserPasswordToken("new-token");
-        ForgotUserPasswordToken forgotUserPasswordTokenDb =
-                TestUtils.getForgotUserPasswordToken("token");
         when(forgotUserPasswordTokenDao.
                 findByUserId(forgotUserPasswordToken.getUser().getId())).
-                thenReturn(Optional.of(forgotUserPasswordTokenDb));
+                thenReturn(Optional.of(forgotUserPasswordToken));
         forgotUserPasswordTokenService.save(forgotUserPasswordToken);
         ArgumentCaptor<ForgotUserPasswordToken> argumentCaptor = ArgumentCaptor.forClass(ForgotUserPasswordToken.class);
         verify(forgotUserPasswordTokenDao, times(1)).save(argumentCaptor.capture());
