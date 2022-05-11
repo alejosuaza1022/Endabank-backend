@@ -1,6 +1,7 @@
 package com.endava.endabank.utils;
 
 import com.endava.endabank.configuration.MailProperties;
+import com.endava.endabank.constants.Strings;
 import com.google.common.annotations.VisibleForTesting;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -23,10 +24,10 @@ public class MailService {
     public Response sendEmail(String emailTo, String name, String link,
                               String templateId, String asName) throws IOException {
         if (emailTo == null || name == null || link == null || templateId == null || asName == null) {
-            throw new IllegalArgumentException("All parameters must be not null");
+            throw new IllegalArgumentException(Strings.EMPTY_PARAMETERS);
         }
         if (emailTo.isEmpty() || name.isEmpty() || link.isEmpty() || templateId.isEmpty() || asName.isEmpty()) {
-            throw new IllegalArgumentException("All parameters must be not empty");
+            throw new IllegalArgumentException(Strings.EMPTY_PARAMETERS);
         }
 
         return invokeServiceEmail(configureMail(templateId, asName, emailTo, name, link));
