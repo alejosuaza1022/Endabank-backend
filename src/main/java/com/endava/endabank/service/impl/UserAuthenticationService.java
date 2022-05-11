@@ -2,6 +2,7 @@ package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
+import com.endava.endabank.exceptions.customexceptions.BadDataException;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.UserAuthentication;
@@ -41,8 +42,8 @@ public class UserAuthenticationService implements UserDetailsService {
         if (data) {
             throw new AccessDeniedException(Strings.EMAIL_NOT_VERIFIED);
         }
-        if(userAuthentication.getAuthorities() == null){
-            throw new NullPointerException(Strings.AUTHORITIES_REQUIRED);
+        if(userAuthentication.getAuthorities().toArray().length == 0){
+            throw new BadDataException(Strings.ROLE_REQUIRED);
         }
         String role = userAuthentication.getAuthorities().toArray()[0].toString();
         final String token = JwtManage.generateToken(userAuthentication.getId(),

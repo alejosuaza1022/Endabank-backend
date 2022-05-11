@@ -32,5 +32,5 @@ public final class Strings {
     public static final String ROL = "rol";
     public static final String IS_APPROVED = "isApproved";
     public static final String USER_BODY = "user";
-    public static final String AUTHORITIES_REQUIRED = "Authorities are required";
+    public static final String ROLE_REQUIRED = "Role is required";
 }
