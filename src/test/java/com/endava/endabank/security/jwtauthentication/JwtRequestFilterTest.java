@@ -60,7 +60,7 @@ class JwtRequestFilterTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
         JwtRequestFilter jwtRequestFilter1 = Mockito.spy(jwtRequestFilter);
-        when(request.getHeader("Authorization")).thenReturn("random");
+        when(request.getHeader(Strings.AUTHORIZATION_BODY)).thenReturn("random");
         jwtRequestFilter1.doFilterInternal(request, response, filterChain);
         verify(jwtRequestFilter1, never()).getAuthenticationToken(any(), any(), any());
         verify(filterChain, Mockito.times(1)).doFilter(request, response);
@@ -73,9 +73,9 @@ class JwtRequestFilterTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
         JwtRequestFilter jwtRequestFilter1 = Mockito.spy(jwtRequestFilter);
-        when(request.getHeader("Authorization")).thenReturn("Bearer token");
+        when(request.getHeader(Strings.AUTHORIZATION_BODY)).thenReturn(Strings.BEARER_TEST);
         doReturn(new UsernamePasswordAuthenticationToken(user, "")).when(jwtRequestFilter1)
-                .getAuthenticationToken("Bearer token",
+                .getAuthenticationToken(Strings.BEARER_TEST,
                         Strings.SECRET_JWT, request);
         jwtRequestFilter1.doFilterInternal(request, response, filterChain);
         verify(filterChain, Mockito.times(1)).doFilter(request, response);
@@ -90,7 +90,7 @@ class JwtRequestFilterTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         FilterChain filterChain = mock(FilterChain.class);
         JwtRequestFilter jwtRequestFilter1 = Mockito.spy(jwtRequestFilter);
-        when(request.getHeader("Authorization")).thenReturn("Bearer token");
+        when(request.getHeader(Strings.AUTHORIZATION_BODY)).thenReturn(Strings.BEARER_TEST);
         Mockito.doThrow(new AccessDeniedException("")).when(jwtRequestFilter1)
                 .getAuthenticationToken(any(), any(), any());
         assertThrows(BadDataException.class, () ->

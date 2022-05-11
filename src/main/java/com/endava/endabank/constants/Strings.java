@@ -34,4 +34,6 @@ public interface Strings {
     String ROLE_REQUIRED = "Role is required";
     String BEARER = "Bearer ";
     String JWT_ERROR_TOKEN_VERIFICATION = "The token is not valid for this user.";
+    String AUTHORIZATION_BODY = "Authorization";
+    String BEARER_TEST = "Bearer token";
 }
