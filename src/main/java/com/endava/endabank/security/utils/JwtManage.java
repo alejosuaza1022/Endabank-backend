@@ -24,7 +24,7 @@ public final class JwtManage {
                 || secret == null || "".equals(secret)) {
             throw new BadDataException(Strings.BAD_DATA_FOR_TOKEN_GENERATION);
         }
-        claims.put("userId", id);
+        claims.put(Strings.USER_ID_BODY, id);
         return doGenerateToken(claims, username, secret);
     }
 
@@ -46,7 +46,7 @@ public final class JwtManage {
         Algorithm algorithm = Algorithm.HMAC512(secret);
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(token);
-        Claim id = decodedJWT.getClaim("userId");
+        Claim id = decodedJWT.getClaim(Strings.USER_ID_BODY);
         return id.asInt();
     }
 }
