@@ -17,7 +17,6 @@ import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JwtManage {
-
     public static String generateToken(Integer id, String username, String secret) throws BadDataException {
         Map<String, Object> claims = new HashMap<>();
         if (id == null || username == null || "".equals(username)

@@ -32,4 +32,6 @@ public interface Strings {
     String EMPTY_PARAMETERS = "All parameters must be not null";
     String USER_ID_BODY = "userId";
     String ROLE_REQUIRED = "Role is required";
+    String BEARER = "Bearer ";
+    String JWT_ERROR_TOKEN_VERIFICATION = "The token is not valid for this user.";
 }
