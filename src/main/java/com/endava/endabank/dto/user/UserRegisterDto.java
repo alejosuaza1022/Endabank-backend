@@ -6,7 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
@@ -19,11 +24,11 @@ public class UserRegisterDto {
     private String email;
 
     @NotNull
-    @Size(min = 10,max = 20)
+    @Size(min = 10, max = 20)
     private String phoneNumber;
 
     @NotNull
-    @Size(min = 6,max = 20)
+    @Size(min = 6, max = 20)
     private String identifier;
 
     @NotNull
@@ -41,10 +46,6 @@ public class UserRegisterDto {
     private String password;
 
     @NotNull
-    @Digits(fraction = 0,integer = 2, message = "Number between 1 and 99")
+    @Digits(fraction = 0, integer = 2, message = "Number between 1 and 99")
     private Integer typeIdentifierId;
-
-    public void setEmail(String email){
-        this.email = email.toLowerCase();
-    }
 }

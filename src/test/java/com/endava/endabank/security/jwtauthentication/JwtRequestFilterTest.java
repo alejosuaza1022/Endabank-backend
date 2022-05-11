@@ -107,7 +107,7 @@ class JwtRequestFilterTest {
         when(userService.getUsernamePasswordToken(any(Integer.class))).
                 thenReturn(new UsernamePasswordAuthenticationToken(user, null));
         HttpServletRequest request = mock(HttpServletRequest.class);
-        jwtRequestFilter.getAuthenticationToken("Bearer " + token, TestUtils.SECRET_DUMMY, request);
+        jwtRequestFilter.getAuthenticationToken(Strings.BEARER + token, TestUtils.SECRET_DUMMY, request);
         verify(userService).getUsernamePasswordToken(idCaptor.capture());
         assertEquals(user.getId(), idCaptor.getValue());
     }

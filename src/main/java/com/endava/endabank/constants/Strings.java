@@ -33,4 +33,6 @@ public final class Strings {
     public static final String IS_APPROVED = "isApproved";
     public static final String USER_BODY = "user";
     public static final String AUTHORITIES_REQUIRED = "Authorities are required";
+    public static final String BEARER = "Bearer ";
+    public static final String JWT_ERROR_TOKEN_VERIFICATION = "The token is not valid.";
 }

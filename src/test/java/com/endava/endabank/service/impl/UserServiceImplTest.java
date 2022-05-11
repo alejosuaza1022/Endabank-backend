@@ -44,8 +44,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -198,7 +196,7 @@ class UserServiceImplTest {
         String token = JwtManage.generateToken(1, user.getEmail(), TestUtils.SECRET_DUMMY);
         try (MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
             when(userDao.findById(1)).thenReturn(Optional.of(user));
-            utilities.when(() -> JwtManage.verifyToken("Bearer " + token, Strings.SECRET_JWT)).thenReturn(1);
+            utilities.when(() -> JwtManage.verifyToken(Strings.BEARER + token, Strings.SECRET_JWT)).thenReturn(1);
             Map<String, Object> map = userService.verifyEmail(token);
             assertEquals(Strings.EMAIL_VERIFIED, map.get(Strings.MESSAGE_RESPONSE));
         }
@@ -309,11 +307,13 @@ class UserServiceImplTest {
             e.printStackTrace();
         }
     }
+
     @Test
-    void testGenerateResetPasswordShouldFailWhenEmailNull(){
+    void testGenerateResetPasswordShouldFailWhenEmailNull() {
         assertThrows(UsernameNotFoundException.class,
-                () -> userService.generateResetPassword( null));
+                () -> userService.generateResetPassword(null));
     }
+
     @Test
     void testGenerateEmailVerificationShouldFailWhenUsernameNotFound() {
         assertThrows(UsernameNotFoundException.class,
@@ -403,7 +403,7 @@ class UserServiceImplTest {
         when(forgotUserPasswordTokenService.findByUserId(user.getId())).thenReturn(TestUtils.getForgotUserPasswordToken(token + "abc"));
         updatePasswordDto.setToken(token);
         try (MockedStatic<JwtManage> utilities = Mockito.mockStatic(JwtManage.class)) {
-            utilities.when(() -> JwtManage.verifyToken("Bearer " + token, Strings.SECRET_JWT)).thenReturn(1);
+            utilities.when(() -> JwtManage.verifyToken(Strings.BEARER + token, Strings.SECRET_JWT)).thenReturn(1);
             assertThrows(AccessDeniedException.class, () -> userService.updateForgotPassword(updatePasswordDto));
         }
     }

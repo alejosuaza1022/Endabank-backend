@@ -42,7 +42,7 @@ public final class JwtManage {
                 || secret == null || "".equals(secret)) {
             throw new BadDataException(Strings.BAD_DATA_FOR_TOKEN_VERIFICATION);
         }
-        String token = authorizationHeader.substring("Bearer ".length());
+        String token = authorizationHeader.substring(Strings.BEARER.length());
         Algorithm algorithm = Algorithm.HMAC512(secret);
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(token);

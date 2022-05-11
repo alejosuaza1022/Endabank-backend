@@ -12,8 +12,4 @@ public class UserDetailsDto {
     private String firstName;
     private boolean isApproved;
     private Collection<String> authorities;
-
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities.stream().map(GrantedAuthority::getAuthority).toList();
-    }
 }

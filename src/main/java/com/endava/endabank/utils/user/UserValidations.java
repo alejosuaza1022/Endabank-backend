@@ -17,7 +17,7 @@ public final class UserValidations {
 
     public static int validateUserForgotPasswordToken(ForgotUserPasswordTokenService forgotUserPasswordTokenService,
                                                       String token, String secret) {
-        Integer userId = JwtManage.verifyToken("Bearer " + token, secret);
+        Integer userId = JwtManage.verifyToken(Strings.BEARER + token, secret);
         ForgotUserPasswordToken tokenModel = forgotUserPasswordTokenService.findByUserId(userId);
         String tokenDb = tokenModel.getToken();
         if (!(tokenDb.equals(token))) {

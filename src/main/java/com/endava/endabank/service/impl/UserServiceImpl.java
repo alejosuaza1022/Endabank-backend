@@ -182,13 +182,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailsDto getUserDetails(UserPrincipalSecurity user, Collection<GrantedAuthority> authorities) {
         UserDetailsDto userDetailsDto = mapToUserDetailsDto(user);
-        userDetailsDto.setAuthorities(authorities);
+        userDetailsDto.setAuthorities(authorities.stream().map(GrantedAuthority::getAuthority).toList());
         return userDetailsDto;
     }
 
     @Override
     public Map<String, Object> verifyEmail(String token) {
-        int userId = JwtManage.verifyToken("Bearer " + token, Strings.SECRET_JWT);
+        int userId = JwtManage.verifyToken(Strings.BEARER + token, Strings.SECRET_JWT);
         User user = userDao.findById(userId).
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         user.setIsEmailVerified(true);
@@ -201,6 +201,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Map<String, Object> saveAndSendVerifyEmail(UserRegisterDto userRegisterDto) {
+        userRegisterDto.setEmail(userRegisterDto.getEmail().toLowerCase());
         User userDb = this.save(userRegisterDto);
         Map<String, Object> map = this.generateEmailVerification(userDb, userDb.getEmail());
         map.put(Strings.USER_BODY, modelMapper.map(userDb, UserRegisterGetDto.class));

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -22,8 +21,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        Map<String, String> dataResponse = new HashMap<>();
-        dataResponse.put(Strings.MESSAGE_RESPONSE, authException.getMessage());
+        Map<String, String> dataResponse = Map.of(Strings.MESSAGE_RESPONSE, authException.getMessage());
         OBJECT_MAPPER.writeValue(response.getOutputStream(), dataResponse);
     }
 }

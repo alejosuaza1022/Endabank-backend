@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -26,7 +27,7 @@ public class AuthenticationController {
 
     @PostMapping(value = Routes.LOGIN_ROUTE)
     public ResponseEntity<Map<String, Object>> createAuthenticationToken(@Valid @RequestBody AuthenticationDto authenticationDto){
-        Authentication authentication = authenticate(authenticationDto.getEmail(), authenticationDto.getPassword());
+        Authentication authentication = authenticate(authenticationDto.getEmail().toLowerCase(), authenticationDto.getPassword());
         return ResponseEntity.ok(userAuthenticationService.logInUser(authentication));
     }
 

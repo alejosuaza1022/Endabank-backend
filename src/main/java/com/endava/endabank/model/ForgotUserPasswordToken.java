@@ -21,7 +21,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ForgotUserPasswordToken {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

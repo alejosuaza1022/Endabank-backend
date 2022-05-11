@@ -20,7 +20,4 @@ public class AuthenticationDto {
     @NotNull
     private String password;
 
-    public void setEmail(String email){
-        this.email = email.toLowerCase();
-    }
 }
