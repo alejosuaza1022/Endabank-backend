@@ -29,7 +29,7 @@ public interface Strings {
     String IS_APPROVED = "isApproved";
     String USER_BODY = "user";
     String AUTHORITIES_REQUIRED = "Authorities are required";
-    String EMPTY_PARAMETERS = "All parameters must be not null";
+    String EMPTY_PARAMETERS = "All parameters must not be null";
     String USER_ID_BODY = "userId";
     String ROLE_REQUIRED = "Role is required";
     String BEARER = "Bearer ";
