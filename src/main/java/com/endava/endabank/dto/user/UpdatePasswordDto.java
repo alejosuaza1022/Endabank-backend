@@ -18,10 +18,10 @@ public class UpdatePasswordDto {
     private String oldPassword;
     @Size(min = 8, max = 20)
     @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W]).{8,20})",
-            message = "1 Capital, 1 Special character, 1 Number and 8 to 20 digits,")
+            message ="{validation.updatePasswordDto.password.pattern}")
     private String password;
     @Size(min = 8, max = 20)
     @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W]).{8,20})",
-            message = "1 Capital, 1 Special character, 1 Number and 8 to 20 digits,")
+            message = "{validation.updatePasswordDto.password.pattern}")
     private String rePassword;
 }
