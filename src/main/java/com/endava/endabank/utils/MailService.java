@@ -36,7 +36,6 @@ public class MailService {
     @VisibleForTesting
     SendGrid getSendGrid() {
         return new SendGrid(mailProperties.getApiKey());
-
     }
 
 
