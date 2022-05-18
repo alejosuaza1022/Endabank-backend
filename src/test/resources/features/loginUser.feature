@@ -4,6 +4,7 @@ Feature: Login Endabank
   I want to access to the Endabank platform
   To use its services
 
+  @Login
   Scenario Outline: Login to the Endabank platform
     Given the user is on the Login page
       | Actor | <Actor> |
