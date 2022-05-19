@@ -4,11 +4,11 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SwaggerConstants {
+public final class Swagger {
     public static final String SWAGGER_UI = "swagger-ui.html";
     public static final String SWAGGER_LOCATION = "classpath:/META-INF/resources/";
     public static final String WEBJARS= "/webjars/**";
-    public static final String WEBJARS_LOCATION= "\"classpath:/META-INF/resources/webjars/\"";
+    public static final String WEBJARS_LOCATION= "classpath:/META-INF/resources/webjars/";
     public static final String BASE_PACKAGE= "com.endava.endabank";
     public static final String API_INFO_TITTLE= "Order Service API";
     public static final String API_INFO_DESCRIPTION= "Order Service API Description";
