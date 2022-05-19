@@ -1,5 +1,6 @@
 package com.endava.endabank.exceptions;
 
+import com.endava.endabank.constants.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,7 +17,7 @@ public class ErrorMessage {
 
     public ErrorMessage(int statusCode, Date date, String message, String description) {
         this.statusCode = statusCode;
-        this.date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        this.date = new SimpleDateFormat(Strings.DATE_PATTERN).format(date);
         this.message = message;
         this.description = description;
     }

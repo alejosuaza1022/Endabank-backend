@@ -1,4 +1,4 @@
-package com.endava.endabank.exceptions.customexceptions;
+package com.endava.endabank.exceptions.custom;
 
 
 public class ResourceNotFoundException extends RuntimeException {
