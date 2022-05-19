@@ -1,6 +1,7 @@
 package com.endava.endabank.configuration;
 
 
+import com.endava.endabank.constants.SwaggerConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -21,12 +22,12 @@ public class SwaggerConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         registry
-                .addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
+                .addResourceHandler(SwaggerConstants.SWAGGER_UI)
+                .addResourceLocations(SwaggerConstants.SWAGGER_LOCATION);
 
         registry
-                .addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+                .addResourceHandler(SwaggerConstants.WEBJARS)
+                .addResourceLocations(SwaggerConstants.WEBJARS_LOCATION);
     }
 
 
@@ -34,7 +35,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     public Docket apiDocket() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.endava.endabank"))
+            .apis(RequestHandlerSelectors.basePackage(SwaggerConstants.BASE_PACKAGE))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(getApiInfo())
@@ -43,13 +44,13 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     private ApiInfo getApiInfo() {
         return new ApiInfo(
-                "Order Service API",
-                "Order Service API Description",
-                "1.0",
-                "http://codmind.com/terms",
-                new Contact("Codmind", "https://codmind.com", "apis@codmind.com"),
-                "LICENSE",
-                "LICENSE URL",
+                SwaggerConstants.API_INFO_TITTLE,
+                SwaggerConstants.API_INFO_DESCRIPTION,
+                SwaggerConstants.API_INFO_VERSION,
+                SwaggerConstants.API_INFO_TERM_OF_SERVICE_URL,
+                new Contact(SwaggerConstants.API_INFO_CONTACT_NAME, SwaggerConstants.API_INFO_CONTACT_URL, SwaggerConstants.API_INFO_CONTACT_EMAIL),
+                SwaggerConstants.API_INFO_LICENSE,
+                SwaggerConstants.API_INFO_LICENSE_URL,
                 Collections.emptyList()
         );
     }
