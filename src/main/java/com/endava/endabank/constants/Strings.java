@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Strings {
     public static final String ROLE_NOT_FOUND = "The role was not found on the database.";
+    public static final String FORMAT_PASSWORD = "1 Capital, 1 Special character, 1 Number and 8 to 20 digits,";
     public static final String IDENTIFIER_TYPE_NOT_FOUND = "The identifier type was not found on the database.";
     public static final String USER_NOT_FOUND = "The user was not found on the database.";
     public static final String MAIL_SENT = "Mail Sent";
@@ -32,7 +33,6 @@ public final class Strings {
     public static final String ROL = "rol";
     public static final String IS_APPROVED = "isApproved";
     public static final String USER_BODY = "user";
-    public static final String AUTHORITIES_REQUIRED = "Authorities are required";
     public static final String EMPTY_PARAMETERS = "All parameters must not be null";
     public static final String USER_ID_BODY = "userId";
     public static final String ROLE_REQUIRED = "Role is required";
@@ -40,4 +40,5 @@ public final class Strings {
     public static final String JWT_ERROR_TOKEN_VERIFICATION = "The token is not valid for this user.";
     public static final String AUTHORIZATION_BODY = "Authorization";
     public static final String BEARER_TEST = "Bearer token";
+    public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 }

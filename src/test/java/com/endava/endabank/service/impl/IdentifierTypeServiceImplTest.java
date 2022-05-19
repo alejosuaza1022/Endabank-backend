@@ -1,7 +1,7 @@
 package com.endava.endabank.service.impl;
 
 import com.endava.endabank.dao.IdentifierTypeDao;
-import com.endava.endabank.exceptions.customexceptions.ResourceNotFoundException;
+import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
 import com.endava.endabank.model.IdentifierType;
 import com.endava.endabank.utils.TestUtils;
 import org.junit.jupiter.api.Test;

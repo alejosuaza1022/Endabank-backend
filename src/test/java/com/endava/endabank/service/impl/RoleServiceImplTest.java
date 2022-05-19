@@ -1,9 +1,8 @@
 package com.endava.endabank.service.impl;
 
 import com.endava.endabank.dao.RoleDao;
-import com.endava.endabank.exceptions.customexceptions.ResourceNotFoundException;
+import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
 import com.endava.endabank.model.Role;
-import com.endava.endabank.service.RoleService;
 import com.endava.endabank.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
