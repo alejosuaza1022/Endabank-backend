@@ -11,11 +11,11 @@ Feature: Login Endabank
       | URL   | <URL>   |
       | Path  | <Path>  |
     When the user logs in using its credentials
-      | user     | <user>     |
+      | email    | <email>    |
       | password | <password> |
     Then the user should be allowed to access to the application
       | field | <field> |
 
     Examples:
-      | Actor    | URL                              | Path   | user           | password  | field      |
-      | endabank | http://35.202.242.69:3000/api/v1 | /login | test@gmail.com | Alexis17* | isApproved |
+      | Actor    | URL                               | Path   | email          | password  | field      |
+      | endabank | http://35.184.160.92:30022/api/v1 | /login | test@gmail.com | Alexis17* | isApproved |

@@ -32,6 +32,7 @@ public class LoginUserStepDefinition {
     }
     @When("the user logs in using its credentials")
     public void theUserLogsInUsingItsCredentials(Map<String,String> credentials) {
+        System.out.println(ConvertToJSON.bodyJSON(credentials));
         theActorInTheSpotlight().attemptsTo(ExecutePost.executePost(path, ConvertToJSON.bodyJSON(credentials)));
     }
     @Then("the user should be allowed to access to the application")
