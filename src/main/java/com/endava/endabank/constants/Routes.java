@@ -25,4 +25,5 @@ public final class Routes {
     public static final String EMAIL_VALIDATION_FRONTEND_ROUTE = FRONTEND_ROUTE + "/verify-email/?token=";
     public static final String EMAIL_VALIDATION_ROUTE =  "/verify-email";
     public static final String SECRET_JWT_DEFAULT = "secret";
+
 }
