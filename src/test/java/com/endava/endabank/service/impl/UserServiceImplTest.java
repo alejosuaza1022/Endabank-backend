@@ -362,12 +362,14 @@ class UserServiceImplTest {
 
         @Test
         void testSaveUserShouldSuccessWhenDataCorrect() {
+            User user = TestUtils.getUserNotAdmin();
             when(userDao.findByEmail(userRegisterDto.getEmail())).thenReturn(Optional.empty());
             when(userDao.findByIdentifier(userRegisterDto.getIdentifier())).thenReturn(Optional.empty());
             when(roleService.findById(Permissions.ROLE_USER)).
                     thenReturn(TestUtils.userRole());
             when(identifierTypeService.findById(userRegisterDto.
                     getTypeIdentifierId())).thenReturn(TestUtils.identifierTypeCC());
+           when(userDao.save(user)).thenReturn(user);
             User userDb = userService.save(userRegisterDto);
             assertEquals(userDb.getEmail(), userRegisterDto.getEmail());
             assertEquals(Permissions.ROLE_USER, userDb.getRole().getId());

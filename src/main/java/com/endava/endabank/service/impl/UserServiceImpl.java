@@ -1,5 +1,6 @@
 package com.endava.endabank.service.impl;
 
+import com.endava.endabank.configuration.MailProperties;
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
@@ -18,7 +19,6 @@ import com.endava.endabank.model.IdentifierType;
 import com.endava.endabank.model.Permission;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.User;
-import com.endava.endabank.configuration.MailProperties;
 import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.service.ForgotUserPasswordTokenService;
 import com.endava.endabank.service.IdentifierTypeService;
@@ -91,8 +91,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         user.setIdentifierType(identifierType);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDao.save(user);
-        return user;
+        return userDao.save(user);
     }
 
     @Override
@@ -108,17 +107,18 @@ public class UserServiceImpl implements UserService {
         return
                 new UsernamePasswordAuthenticationToken(userPrincipalSecurity, null, authorities);
     }
+
     @Override
     @Transactional
     public UserToApproveAccountDto updateUserAccountApprove(Integer id, boolean value) {
         User user = this.findById(id);
         user.setIsApproved(value);
-        userDao.save(user);
-        return this.mapToUserToApproveDto(user);
+        return this.mapToUserToApproveDto(userDao.save(user));
     }
+
     @Override
     public Map<String, Object> generateResetPassword(String email) {
-        email=getLowerCaseEmail(email);
+        email = getLowerCaseEmail(email);
         User userDb = userDao.findByEmail(email).
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         BiFunction<User, String, String> callback = (user, token) -> {
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> generateEmailVerification(User userDb, String email) {
-        email=getLowerCaseEmail(email);
+        email = getLowerCaseEmail(email);
         if (userDb == null) {
             userDb = userDao.findByEmail(email).
                     orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
@@ -234,8 +234,8 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
-    public String getLowerCaseEmail(String email){
-        return email!=null ? email.toLowerCase() : null;
+    public String getLowerCaseEmail(String email) {
+        return email != null ? email.toLowerCase() : null;
     }
 
 }

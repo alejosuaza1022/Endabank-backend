@@ -1,6 +1,5 @@
 package com.endava.endabank.dto.user;
 
-
 import com.endava.endabank.constants.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
