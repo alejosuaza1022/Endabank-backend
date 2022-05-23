@@ -80,10 +80,11 @@ class UserAuthenticationServiceTest {
     @Test
     void testLogInUserShouldFailWhenAuthoritiesEmpty() {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        UserAuthentication userAuthentication = new UserAuthentication("user@test.test", "test-password",
-                authorities, 1,
-                true, true);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userAuthentication, null);
+        UserAuthentication userAuth = new UserAuthentication("user@test.test", "test-password", authorities);
+        userAuth.setId(1);
+        userAuth.setIsApproved(true);
+        userAuth.setIsEmailVerified(true);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userAuth, null);
         assertThrows(BadDataException.class, () -> userAuthenticationService.logInUser(authentication));
     }
 

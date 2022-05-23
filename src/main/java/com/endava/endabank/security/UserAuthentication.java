@@ -17,12 +17,8 @@ public class UserAuthentication extends User {
     private Boolean isEmailVerified;
 
     public UserAuthentication(String username, String password,
-                              Collection<? extends GrantedAuthority> authorities,
-                              Integer id, Boolean isApproved, Boolean isEmailVerified) {
+                              Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
-        this.id = id;
-        this.isApproved = isApproved != null && isApproved;
-        this.isEmailVerified = isEmailVerified;
     }
 
     @Override
@@ -37,9 +33,5 @@ public class UserAuthentication extends User {
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.getUsername());
-    }
-
-    public UserAuthentication(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
     }
 }
