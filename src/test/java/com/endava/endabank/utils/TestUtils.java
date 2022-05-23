@@ -140,9 +140,11 @@ public final class TestUtils {
     public static UserAuthentication getUserAuthentication() {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UserAuthentication("user@test.test", "test-password",
-                authorities, 1,
-                true, true);
+        UserAuthentication userAuth = new UserAuthentication("user@test.test", "test-password", authorities);
+        userAuth.setId(1);
+        userAuth.setIsApproved(true);
+        userAuth.setIsEmailVerified(true);
+        return userAuth;
     }
 
     public static UpdatePasswordDto getUpdatePasswordDto() {

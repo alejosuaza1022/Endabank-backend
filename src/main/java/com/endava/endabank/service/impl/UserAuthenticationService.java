@@ -31,9 +31,12 @@ public class UserAuthenticationService implements UserDetailsService {
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         Role role = user.getRole();
         List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role.getName()));
-        return new UserAuthentication(
-                user.getEmail(), user.getPassword(),
-                authorities, user.getId(), user.getIsApproved(), user.getIsEmailVerified());
+        UserAuthentication userAuth = new UserAuthentication(user.getEmail(), user.getPassword(),authorities);
+        userAuth.setId(user.getId());
+        userAuth.setIsApproved(user.getIsApproved());
+        userAuth.setIsEmailVerified(user.getIsEmailVerified());
+
+        return userAuth;
     }
 
     public Map<String, Object> logInUser(Authentication authentication) {

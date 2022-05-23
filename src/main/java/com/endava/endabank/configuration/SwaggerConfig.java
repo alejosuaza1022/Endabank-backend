@@ -29,7 +29,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .addResourceLocations(Swagger.WEBJARS_LOCATION);
     }
 
-
     @Bean
     public Docket apiDocket() {
         return new Docket(DocumentationType.SWAGGER_2)

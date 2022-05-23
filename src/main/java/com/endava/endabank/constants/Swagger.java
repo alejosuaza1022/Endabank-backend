@@ -19,7 +19,4 @@ public final class Swagger {
     public static final String API_INFO_CONTACT_EMAIL= "apis@codmind.com";
     public static final String API_INFO_LICENSE= "LICENSE";
     public static final String API_INFO_LICENSE_URL= "LICENSE URL";
-
-
-
 }
