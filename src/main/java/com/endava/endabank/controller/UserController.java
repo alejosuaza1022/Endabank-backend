@@ -52,7 +52,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUserAccountApprove(id, map.get("value")));
     }
 
-    @GetMapping(Routes.RESET_PASSWORD_ROUTE + "/{email}")
+    @GetMapping(Routes.RESET_PASSWORD_ROUTE + Routes.EMAIL)
     public ResponseEntity<Map<String, Object>> resetPassword(@PathVariable String email) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.generateResetPassword(email));
     }
@@ -77,12 +77,12 @@ public class UserController {
         return userService.getUserDetails(user, authorities);
     }
 
-    @GetMapping(Routes.EMAIL_VALIDATION_ROUTE + "/{email}")
+    @GetMapping(Routes.EMAIL_VALIDATION_ROUTE + Routes.EMAIL)
     public Map<String, Object> getDetailsById(@PathVariable String email) {
         return userService.generateEmailVerification(null, email);
     }
 
-    @PostMapping(Routes.EMAIL_VALIDATION_ROUTE + "/{email}")
+    @PostMapping(Routes.EMAIL_VALIDATION_ROUTE + Routes.EMAIL)
     public Map<String, Object> validateEmail(@PathVariable String email) {
         return userService.verifyEmail(email);
     }

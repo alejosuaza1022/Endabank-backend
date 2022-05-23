@@ -1,7 +1,7 @@
 package com.endava.endabank.security.jwtauthentication;
 
 import com.endava.endabank.constants.Strings;
-import com.endava.endabank.exceptions.customexceptions.BadDataException;
+import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.service.UserService;
 import lombok.AllArgsConstructor;

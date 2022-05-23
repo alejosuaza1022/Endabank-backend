@@ -1,8 +1,8 @@
 package com.endava.endabank.exceptions;
 
-import com.endava.endabank.exceptions.customexceptions.ResourceNotFoundException;
-import com.endava.endabank.exceptions.customexceptions.ServiceUnavailableException;
-import com.endava.endabank.exceptions.customexceptions.UniqueConstraintViolationException;
+import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
+import com.endava.endabank.exceptions.custom.ServiceUnavailableException;
+import com.endava.endabank.exceptions.custom.UniqueConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ControllerAdvice

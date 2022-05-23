@@ -2,7 +2,7 @@ package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.exceptions.customexceptions.BadDataException;
+import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.UserAuthentication;
 import com.endava.endabank.security.utils.JwtManage;
