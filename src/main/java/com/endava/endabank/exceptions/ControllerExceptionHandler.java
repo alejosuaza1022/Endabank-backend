@@ -71,7 +71,6 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorMessage> handleAuthenticationException(Exception ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
