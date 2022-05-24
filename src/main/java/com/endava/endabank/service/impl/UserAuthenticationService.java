@@ -51,10 +51,16 @@ public class UserAuthenticationService implements UserDetailsService {
         String role = userAuthentication.getAuthorities().toArray()[0].toString();
         final String token = JwtManage.generateToken(userAuthentication.getId(),
                 userAuthentication.getUsername(), Strings.SECRET_JWT);
+
+        return getAuthDataResponse(token,role,userAuthentication.getIsApproved());
+    }
+
+    public Map<String, Object> getAuthDataResponse(String token, String role, boolean isUserApproved ){
         Map<String, Object> dataResponse = new HashMap<>();
         dataResponse.put(Strings.ACCESS_TOKEN, token);
         dataResponse.put(Strings.ROL, role);
-        dataResponse.put(Strings.IS_APPROVED, userAuthentication.getIsApproved());
+        dataResponse.put(Strings.IS_APPROVED, isUserApproved);
+
         return dataResponse;
     }
 
