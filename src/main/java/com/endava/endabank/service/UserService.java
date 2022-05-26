@@ -1,5 +1,6 @@
 package com.endava.endabank.service;
 
+import com.endava.endabank.dto.BankAccountDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;

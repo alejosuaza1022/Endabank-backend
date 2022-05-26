@@ -25,4 +25,8 @@ public final class Routes {
     public static final String RESOURCE_DETAILS = "/details";
     public static final String EMAIL_VALIDATION_FRONTEND_ROUTE = FRONTEND_ROUTE + "/verify-email/?token=";
     public static final String EMAIL_VALIDATION_ROUTE =  "/verify-email";
+    public static final String ACCOUNT = "/accounts";
+    public static final String DETAILS="/details/{id}";
+    public static final String SUMMARY="/summary/{id}";
+
 }

@@ -2,6 +2,7 @@ package com.endava.endabank.controller;
 
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
+import com.endava.endabank.dto.BankAccountDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
