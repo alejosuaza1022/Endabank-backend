@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(Routes.API_ROUTE + Routes.ACCOUNT)
 @AllArgsConstructor
@@ -24,8 +26,8 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getAccountDetails(id));
     }
 
-    /*@GetMapping(Routes.SUMMARY)
-    public ResponseEntity<TransactionDto> getTransactionsSummary(@PathVariable Integer id){
+    @GetMapping(Routes.SUMMARY)
+    public ResponseEntity<List<TransactionDto>> getTransactionsSummary(@PathVariable Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getTransactionsSummary(id));
-    }*/
+    }
 }
