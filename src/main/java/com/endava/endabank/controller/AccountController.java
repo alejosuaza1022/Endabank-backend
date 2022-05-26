@@ -2,7 +2,9 @@ package com.endava.endabank.controller;
 
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.dto.BankAccountDto;
+import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.service.BankAccountService;
+import com.endava.endabank.service.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,4 +23,9 @@ public class AccountController {
     public ResponseEntity<BankAccountDto> getAccountSummary(@PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getAccountDetails(id));
     }
+
+    /*@GetMapping(Routes.SUMMARY)
+    public ResponseEntity<TransactionDto> getTransactionsSummary(@PathVariable Integer id){
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getTransactionsSummary(id));
+    }*/
 }

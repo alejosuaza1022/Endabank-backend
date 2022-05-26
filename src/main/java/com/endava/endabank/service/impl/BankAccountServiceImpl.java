@@ -8,9 +8,8 @@ import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.User;
 import com.endava.endabank.service.BankAccountService;
-import com.endava.endabank.service.UserService;
-import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -21,21 +20,27 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class BankAccountServiceImpl implements BankAccountService {
-    private BankAccountDao bankAccountDao;
     private ModelMapper modelMapper;
+    private UserDao userDao;
 
-    public BankAccount findByUserId(Integer id) {
-        return bankAccountDao.findByUserId(id).
-                orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
-    }
+
     @Override
     @Transactional(readOnly = true)
     public BankAccountDto getAccountDetails(Integer id) {
-        BankAccount userBankAccount = findByUserId(id);
-        if(userBankAccount == null){
+        User user = userDao.findById(id).orElseThrow(()-> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+        List<BankAccount> bankAccount=user.getBankAccounts();
+        if(bankAccount.size() == 0){
             throw new BadDataException(Strings.ACCOUNT_NOT_FOUND);
         }
+        BankAccount userBankAccount = bankAccount.get(0);//When there is more than one bank account, it can be received as an input parameter.
         return modelMapper.map(userBankAccount,BankAccountDto.class);
     }
-
+    /*@Override
+    public List<TransactionDto> getTransactionsSummary(Integer id){
+        BankAccount userBankAccount = findByUserId(id);
+    }*/
+    /*@VisibleForTesting
+    UserToApproveAccountDto mapToUserToApproveDto(BankAccount bankAccount) {
+        return modelMapper.map(bankAccount, UserToApproveAccountDto.class);
+    }*/
 }

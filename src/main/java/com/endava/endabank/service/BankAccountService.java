@@ -1,9 +1,9 @@
 package com.endava.endabank.service;
 
 import com.endava.endabank.dto.BankAccountDto;
-import com.endava.endabank.model.BankAccount;
+import com.endava.endabank.dto.TransactionDto;
 
 public interface BankAccountService {
-    BankAccount findByUserId(Integer id);
-    BankAccountDto getAccountDetails(Integer id);
+    BankAccountDto getAccountDetails(Integer id);/*
+    TransactionDto getTransactionsSummary(Integer id);*/
 }
