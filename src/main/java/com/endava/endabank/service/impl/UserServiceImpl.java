@@ -4,6 +4,7 @@ import com.endava.endabank.configuration.MailProperties;
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
+import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
@@ -14,16 +15,9 @@ import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ServiceUnavailableException;
 import com.endava.endabank.exceptions.custom.UniqueConstraintViolationException;
-import com.endava.endabank.model.ForgotUserPasswordToken;
-import com.endava.endabank.model.IdentifierType;
-import com.endava.endabank.model.Permission;
-import com.endava.endabank.model.Role;
-import com.endava.endabank.model.User;
+import com.endava.endabank.model.*;
 import com.endava.endabank.security.utils.JwtManage;
-import com.endava.endabank.service.ForgotUserPasswordTokenService;
-import com.endava.endabank.service.IdentifierTypeService;
-import com.endava.endabank.service.RoleService;
-import com.endava.endabank.service.UserService;
+import com.endava.endabank.service.*;
 import com.endava.endabank.utils.MailService;
 import com.endava.endabank.utils.user.UserValidations;
 import com.google.common.annotations.VisibleForTesting;
@@ -60,6 +54,9 @@ public class UserServiceImpl implements UserService {
     private ForgotUserPasswordTokenService forgotUserPasswordTokenService;
     private MailService mailService;
     private MailProperties mailProperties;
+    private BankAccountDao bankAccountDao;
+    private BankAccountService bankAccountService;
+
     @Override
     @Transactional(readOnly = true)
     public List<UserToApproveAccountDto> usersToApprove() {
@@ -91,6 +88,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         user.setIdentifierType(identifierType);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setIsApproved(false);
         return userDao.save(user);
     }
 
@@ -113,6 +111,9 @@ public class UserServiceImpl implements UserService {
     public UserToApproveAccountDto updateUserAccountApprove(Integer id, boolean value) {
         User user = this.findById(id);
         user.setIsApproved(value);
+        if((bankAccountDao.findByUser(user).isEmpty())){
+            bankAccountService.save(user);
+        }
         return this.mapToUserToApproveDto(userDao.save(user));
     }
 

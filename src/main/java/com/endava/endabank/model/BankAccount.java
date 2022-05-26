@@ -36,7 +36,7 @@ public class BankAccount {
     @Column(nullable = false)
     private Integer id;
 
-    @Column(nullable = false, length = 8)
+    @Column(nullable = false)
     private String password;
 
     private Float balance;
