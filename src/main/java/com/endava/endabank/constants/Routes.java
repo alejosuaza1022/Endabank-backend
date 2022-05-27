@@ -27,6 +27,6 @@ public final class Routes {
     public static final String EMAIL_VALIDATION_ROUTE =  "/verify-email";
     public static final String ACCOUNT = "/accounts";
     public static final String DETAILS="/details/{id}";
-    public static final String SUMMARY="/summary/{id}";
+    public static final String SUMMARY="/summary/{id}/{page}";
 
 }

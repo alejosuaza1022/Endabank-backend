@@ -10,13 +10,19 @@ import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.Transaction;
 import com.endava.endabank.model.User;
 import com.endava.endabank.service.BankAccountService;
+import com.endava.endabank.utils.Pagination;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,6 +31,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     private ModelMapper modelMapper;
     private UserDao userDao;
     private TransactionDao transactionDao;
+    private Pagination pagination;
 
     public BankAccount findBankAccountUser(Integer id){
         User user= userDao.findById(id).orElseThrow(()-> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
@@ -41,12 +48,10 @@ public class BankAccountServiceImpl implements BankAccountService {
         return modelMapper.map(userBankAccount,BankAccountDto.class);
     }
     @Override
-    public List<TransactionDto> getTransactionsSummary(Integer id){
+    public Page<TransactionDto> getTransactionsSummary(Integer id, Integer page){
         BankAccount userBankAccount = findBankAccountUser(id);
-        List<Transaction> transactions = transactionDao.findAllByBankAccountIssuerOrBankAccountReceiver(userBankAccount,userBankAccount);
-        /*if (transactions.get(0).getBankAccountReceiver()==userBankAccount){
-        }*/
-        return transactions.stream().map(this::mapToTransactionsToTransactionDto).toList();
+        Sort sort = Sort.by("create_at").descending();
+        return transactionDao.getListTransactionsSummary(userBankAccount.getId(), pagination.getPageable(page,sort));
     }
     @VisibleForTesting
     TransactionDto mapToTransactionsToTransactionDto(Transaction transactions) {
