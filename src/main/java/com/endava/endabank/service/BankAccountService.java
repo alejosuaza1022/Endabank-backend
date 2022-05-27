@@ -1,8 +1,9 @@
 package com.endava.endabank.service;
 
-import com.endava.endabank.model.BankAccount;
-import com.endava.endabank.model.User;
+import com.endava.endabank.dto.CreateBankAccountDto;
+
+import java.util.Map;
 
 public interface BankAccountService {
-    BankAccount save(User user);
+    Map<String, String> save(CreateBankAccountDto banckAccount);
 }

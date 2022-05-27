@@ -6,6 +6,7 @@ import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.UserDao;
+import com.endava.endabank.dto.CreateBankAccountDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
@@ -111,8 +112,10 @@ public class UserServiceImpl implements UserService {
     public UserToApproveAccountDto updateUserAccountApprove(Integer id, boolean value) {
         User user = this.findById(id);
         user.setIsApproved(value);
+        CreateBankAccountDto createBankAccountDto = new CreateBankAccountDto();
+        createBankAccountDto.setUser(user);
         if((bankAccountDao.findByUser(user).isEmpty())){
-            bankAccountService.save(user);
+            bankAccountService.save(createBankAccountDto);
         }
         return this.mapToUserToApproveDto(userDao.save(user));
     }
