@@ -1,7 +1,5 @@
 package com.endava.endabank.dto;
 
-import java.time.LocalDateTime;
-
 
 public interface TransactionDto {
     String getDescription();

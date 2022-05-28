@@ -1,17 +1,15 @@
 package com.endava.endabank.utils;
 
 import com.endava.endabank.constants.Strings;
+import com.endava.endabank.dto.BankAccountDto;
+import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
-import com.endava.endabank.model.ForgotUserPasswordToken;
-import com.endava.endabank.model.IdentifierType;
-import com.endava.endabank.model.Permission;
-import com.endava.endabank.model.Role;
-import com.endava.endabank.model.User;
+import com.endava.endabank.model.*;
 import com.endava.endabank.security.UserAuthentication;
 import com.sendgrid.Response;
 import lombok.AccessLevel;
@@ -59,7 +57,7 @@ public final class TestUtils {
                 lastName("User").build();
     }
 
-    public static UserToApproveAccountDto getUserNotAprrovedAccountDto() {
+    public static UserToApproveAccountDto getUserNotApprovedAccountDto() {
         UserToApproveAccountDto userToApproveAccountDto = getUserApprovedAccountDto();
         userToApproveAccountDto.setApproved(false);
         return userToApproveAccountDto;
@@ -194,5 +192,26 @@ public final class TestUtils {
         response.setBody("Success");
         response.setHeaders(new HashMap<>());
         return response;
+    }
+
+    public static AccountType getAccountType() {
+        return new AccountType(1, "DEBIT", new ArrayList<>());
+    }
+    public static BankAccountDto getBankAccountDto() {
+        return BankAccountDto.builder().
+                id(1).
+                accountNumber("1111111111111111").
+                balance(1000000F).build();
+    }
+    public static BankAccount getBankAccount() {
+        AccountType accountType = TestUtils.getAccountType();
+        User user = TestUtils.getUserAdmin();
+        return BankAccount.builder().
+                id(1).
+                accountNumber("1111111111111111").
+                accountType(accountType).
+                balance(1000000F).
+                password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
+                user(user).build();
     }
 }

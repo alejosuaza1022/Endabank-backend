@@ -42,4 +42,5 @@ public final class Strings {
     public static final String AUTHORIZATION_BODY = "Authorization";
     public static final String BEARER_TEST = "Bearer token";
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String ACCOUNT_SUMMARY_SORT = "create_at";
 }
