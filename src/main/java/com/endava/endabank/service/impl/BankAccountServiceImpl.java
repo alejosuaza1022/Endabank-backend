@@ -43,7 +43,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     private Pagination pagination;
 
     @Override
-    public Map<String, String> save(CreateBankAccountDto banckAccountDto) {
+    public Map<String, String> save(CreateBankAccountDto bankAccountDto) {
         BankAccount account = new BankAccount();
         AccountType accountType = accountTypeService.findById(AccountTypes.DEBIT);
         BigInteger accountNumber = BigInteger.valueOf(Long.parseLong(this.genereteRamdomNumber(16)));
@@ -51,7 +51,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         account.setBalance(1000000F);
         account.setAccountType(accountType);
         account.setPassword(passwordEncoder.encode(genereteRamdomNumber(4)));
-        account.setUser(banckAccountDto.getUser());
+        account.setUser(bankAccountDto.getUser());
         bankAccountDao.save(account);
         Map<String, String> map = new HashMap<>();
         map.put(Strings.MESSAGE_RESPONSE, Strings.ACCOUNT_CREATED);
