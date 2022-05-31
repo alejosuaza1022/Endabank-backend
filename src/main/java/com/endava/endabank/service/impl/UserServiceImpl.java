@@ -5,20 +5,11 @@ import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.dto.user.UpdatePasswordDto;
-import com.endava.endabank.dto.user.UserDetailsDto;
-import com.endava.endabank.dto.user.UserPrincipalSecurity;
-import com.endava.endabank.dto.user.UserRegisterDto;
-import com.endava.endabank.dto.user.UserRegisterGetDto;
-import com.endava.endabank.dto.user.UserToApproveAccountDto;
+import com.endava.endabank.dto.user.*;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ServiceUnavailableException;
 import com.endava.endabank.exceptions.custom.UniqueConstraintViolationException;
-import com.endava.endabank.model.ForgotUserPasswordToken;
-import com.endava.endabank.model.IdentifierType;
-import com.endava.endabank.model.Permission;
-import com.endava.endabank.model.Role;
-import com.endava.endabank.model.User;
+import com.endava.endabank.model.*;
 import com.endava.endabank.security.utils.JwtManage;
 import com.endava.endabank.service.ForgotUserPasswordTokenService;
 import com.endava.endabank.service.IdentifierTypeService;
@@ -40,13 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 
 @Service
@@ -91,6 +76,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         user.setIdentifierType(identifierType);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setIsApproved(false);
         return userDao.save(user);
     }
 
@@ -237,5 +223,6 @@ public class UserServiceImpl implements UserService {
     public String getLowerCaseEmail(String email) {
         return email != null ? email.toLowerCase() : null;
     }
+
 
 }
