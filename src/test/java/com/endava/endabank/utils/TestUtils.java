@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -214,10 +215,22 @@ public final class TestUtils {
         User user = TestUtils.getUserAdmin();
         return BankAccount.builder().
                 id(1).
-                accountNumber("1111111111111111").
+                accountNumber(BigInteger.valueOf(Long.parseLong("1000000000000000"))).
                 accountType(accountType).
                 balance(1000000F).
                 password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
                 user(user).build();
+    }
+
+    public static BankAccount getBadBankAccount() {
+        AccountType accountType = TestUtils.getAccountType();
+        User user = TestUtils.getUserAdmin();
+        return BankAccount.builder().
+                id(1).
+                accountNumber(BigInteger.valueOf(Long.parseLong("10000000000001"))).
+                accountType(accountType).
+                balance(1000000F).
+                password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
+                        user(user).build();
     }
 }

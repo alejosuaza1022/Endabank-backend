@@ -11,13 +11,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.Optional;
 
@@ -49,15 +52,30 @@ class BankAccountServiceImplTest {
     }
 
     @Test
-    void testSaveShouldCreateAnotherNumberWhenAlreadyExist() {
+    void testValidateAccountNumberShouldReturnAccountSuccess() {
         BankAccount account = TestUtils.getBankAccount();
-        AccountType accountType = TestUtils.getAccountType();
-        CreateBankAccountDto createBankAccountDto = TestUtils.getCreateBankAccountDto();
-        when(accountTypeService.findById(1)).thenReturn(accountType);
-        when(bankAccountDao.findByAccountNumber(any())).thenReturn(Optional.ofNullable(account)).thenReturn(Optional.empty());
-        Map<String, String> map = bankAccount.save(createBankAccountDto);
-        assertEquals(Strings.ACCOUNT_CREATED, map.get(Strings.MESSAGE_RESPONSE));
+        when(bankAccountDao.findByAccountNumber(any())).thenReturn(Optional.empty());
+        BigInteger accountNumber = bankAccount.validateAccountNumber(account.getAccountNumber());
+        assertNotNull(accountNumber);
     }
+
+    @Test
+    void testValidateAccountNumberShouldGenerateAnotherAccountWhenAlreadyExist() {
+        BankAccount account = TestUtils.getBankAccount();
+        account.setAccountNumber(BigInteger.valueOf(Long.parseLong("10000000000000")));
+        when(bankAccountDao.findByAccountNumber(any())).thenReturn(Optional.of(account)).thenReturn(Optional.empty());
+        BigInteger accountNumber = bankAccount.validateAccountNumber(account.getAccountNumber());
+        assertNotNull(accountNumber);
+    }
+
+    /*@Test
+    void testValidateAccountNumberShouldGenerateAnotherAccountWhenIsLess() {
+        BankAccount account = TestUtils.getBadBankAccount();
+        when(bankAccountDao.findByAccountNumber(any())).thenReturn(Optional.empty());
+        verify(bankAccountDao,times(1)).findByAccountNumber(account.getAccountNumber());
+        BigInteger accountNumber = bankAccount.validateAccountNumber(account.getAccountNumber());
+        assertNotNull(accountNumber);
+    }*/
 
     @Test
     void testGenereteRamdomNumberShouldSuccessWhenDataCorrect() {

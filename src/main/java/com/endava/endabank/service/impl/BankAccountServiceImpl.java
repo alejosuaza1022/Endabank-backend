@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,11 +28,8 @@ public class BankAccountServiceImpl implements BankAccountService {
     public Map<String, String> save(CreateBankAccountDto banckAccountDto) {
         BankAccount account = new BankAccount();
         AccountType accountType = accountTypeService.findById(AccountTypes.DEBIT);
-        String accountNumber = this.genereteRamdomNumber(16);
-        while(bankAccountDao.findByAccountNumber(accountNumber).isPresent()){
-            accountNumber = genereteRamdomNumber(16);
-        }
-        account.setAccountNumber(accountNumber);
+        BigInteger accountNumber = BigInteger.valueOf(Long.parseLong(this.genereteRamdomNumber(16)));
+        account.setAccountNumber(validateAccountNumber(accountNumber));
         account.setBalance(1000000F);
         account.setAccountType(accountType);
         account.setPassword(passwordEncoder.encode(genereteRamdomNumber(4)));
@@ -40,6 +38,14 @@ public class BankAccountServiceImpl implements BankAccountService {
         Map<String, String> map = new HashMap<>();
         map.put(Strings.MESSAGE_RESPONSE, Strings.ACCOUNT_CREATED);
         return map;
+    }
+
+    public BigInteger validateAccountNumber(BigInteger account){
+        BigInteger comp = BigInteger.valueOf(Long.parseLong("1000000000000000"));
+        while(bankAccountDao.findByAccountNumber(account).isPresent() || account.compareTo(comp) < 0){
+            account = BigInteger.valueOf(Long.parseLong(this.genereteRamdomNumber(16)));
+        }
+        return account;
     }
 
     public String genereteRamdomNumber(Integer len){

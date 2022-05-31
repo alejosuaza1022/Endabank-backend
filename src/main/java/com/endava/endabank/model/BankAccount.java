@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,8 +42,8 @@ public class BankAccount {
 
     private Float balance;
 
-    @Column(nullable = false, length = 20)
-    private String accountNumber;
+    @Column(nullable = false)
+    private BigInteger accountNumber;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "account_type_id", nullable = false)

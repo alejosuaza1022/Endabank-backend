@@ -17,7 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(Routes.API_ROUTE)
 @AllArgsConstructor
-public class BankAccountController {
+public class AccountController {
 
     private BankAccountService bankAccountService;
 
