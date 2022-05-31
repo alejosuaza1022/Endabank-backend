@@ -6,12 +6,7 @@ import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.dto.user.UpdatePasswordDto;
-import com.endava.endabank.dto.user.UserDetailsDto;
-import com.endava.endabank.dto.user.UserPrincipalSecurity;
-import com.endava.endabank.dto.user.UserRegisterDto;
-import com.endava.endabank.dto.user.UserRegisterGetDto;
-import com.endava.endabank.dto.user.UserToApproveAccountDto;
+import com.endava.endabank.dto.user.*;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ServiceUnavailableException;
 import com.endava.endabank.exceptions.custom.UniqueConstraintViolationException;
@@ -48,22 +43,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -172,7 +157,7 @@ class UserServiceImplTest {
         when(userDao.save(TestUtils.getUserNotAdmin())).thenReturn(userNotAdmin);
 
         when(modelMapper.map(TestUtils.getUserNotAdmin(), UserToApproveAccountDto.class)).
-                thenReturn(TestUtils.getUserNotAprrovedAccountDto());
+                thenReturn(TestUtils.getUserNotApprovedAccountDto());
         UserToApproveAccountDto userToApproveAccountDto = userService1.updateUserAccountApprove(1, false);
         assertEquals(userNotAdmin.getEmail(), userToApproveAccountDto.getEmail());
         assertEquals(userNotAdmin.getId(), userToApproveAccountDto.getId());

@@ -2,6 +2,7 @@ package com.endava.endabank.utils;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dto.CreateBankAccountDto;
+import com.endava.endabank.dto.BankAccountDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
@@ -57,7 +58,7 @@ public final class TestUtils {
                 lastName("User").build();
     }
 
-    public static UserToApproveAccountDto getUserNotAprrovedAccountDto() {
+    public static UserToApproveAccountDto getUserNotApprovedAccountDto() {
         UserToApproveAccountDto userToApproveAccountDto = getUserApprovedAccountDto();
         userToApproveAccountDto.setApproved(false);
         return userToApproveAccountDto;
@@ -210,6 +211,12 @@ public final class TestUtils {
                 user(user).build();
     }
 
+    public static BankAccountDto getBankAccountDto() {
+        return BankAccountDto.builder().
+                id(1).
+                accountNumber("1111111111111111").
+                balance(1000000F).build();
+    }
     public static BankAccount getBankAccount() {
         AccountType accountType = TestUtils.getAccountType();
         User user = TestUtils.getUserAdmin();

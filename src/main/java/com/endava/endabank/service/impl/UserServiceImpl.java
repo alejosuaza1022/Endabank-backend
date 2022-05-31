@@ -35,13 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 
 @Service
@@ -241,5 +235,6 @@ public class UserServiceImpl implements UserService {
     public String getLowerCaseEmail(String email) {
         return email != null ? email.toLowerCase() : null;
     }
+
 
 }
