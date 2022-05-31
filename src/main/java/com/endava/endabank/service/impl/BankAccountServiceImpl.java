@@ -29,8 +29,8 @@ public class BankAccountServiceImpl implements BankAccountService {
     private TransactionDao transactionDao;
     private Pagination pagination;
 
-    public BankAccount findBankAccountUser(Integer id){
-        User user= userDao.findById(id).orElseThrow(()-> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+    public BankAccount findBankAccountUser(String email){
+        User user= userDao.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         List<BankAccount> bankAccount=user.getBankAccounts();
         if(bankAccount.isEmpty()){
             throw new BadDataException(Strings.ACCOUNT_NOT_FOUND);
@@ -39,13 +39,13 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
     @Override
     @Transactional(readOnly = true)
-    public BankAccountDto getAccountDetails(Integer id) {
-        BankAccount userBankAccount = findBankAccountUser(id);
+    public BankAccountDto getAccountDetails(String email) {
+        BankAccount userBankAccount = findBankAccountUser(email);
         return modelMapper.map(userBankAccount,BankAccountDto.class);
     }
     @Override
-    public Page<TransactionDto> getTransactionsSummary(Integer id, Integer page){
-        BankAccount userBankAccount = findBankAccountUser(id);
+    public Page<TransactionDto> getTransactionsSummary(String email, Integer page){
+        BankAccount userBankAccount = findBankAccountUser(email);
         Sort sort = Sort.by(Strings.ACCOUNT_SUMMARY_SORT).descending();
         return transactionDao.getListTransactionsSummary(userBankAccount.getId(), pagination.getPageable(page,sort));
     }

@@ -46,16 +46,16 @@ class BankAccountServiceImplTest {
     }
     @Test
     void testFindBankAccountUserShouldFailWhenUserNotFound(){
-        when(userDao.findById(1)).thenReturn(Optional.empty());
-        assertThrows(UsernameNotFoundException.class, () -> bankAccountService.findBankAccountUser(1));
+        when(userDao.findByEmail(TestUtils.getUserNotAdmin().getEmail())).thenReturn(Optional.empty());
+        assertThrows(UsernameNotFoundException.class, () -> bankAccountService.findBankAccountUser(TestUtils.getUserNotAdmin().getEmail()));
     }
     @Test
     void testFindBankAccountUserShouldFailWhenUserHasNoBankAccount(){
         User user = TestUtils.getUserNotAdmin();
         user.setBankAccounts(emptyList());
-        Integer id = user.getId();
-        when(userDao.findById(id)).thenReturn(Optional.of(user));
-        assertThrows(BadDataException.class, () -> bankAccountService.findBankAccountUser(id));
+        String email = user.getEmail();
+        when(userDao.findByEmail(email)).thenReturn(Optional.of(user));
+        assertThrows(BadDataException.class, () -> bankAccountService.findBankAccountUser(email));
     }
     @Test
     void testFindBankAccountUserShouldSuccessWhenDataCorrect(){
@@ -63,9 +63,9 @@ class BankAccountServiceImplTest {
         ArrayList<BankAccount> bankAccounts = new ArrayList<>();
         bankAccounts.add(TestUtils.getBankAccount());
         user.setBankAccounts(bankAccounts);
-        when(userDao.findById(1)).thenReturn(Optional.of(user));
+        when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(modelMapper.map(user.getBankAccounts().get(0),BankAccountDto.class)).thenReturn(TestUtils.getBankAccountDto());
-        BankAccountDto bankAccountsUser = bankAccountService.getAccountDetails(user.getId());
+        BankAccountDto bankAccountsUser = bankAccountService.getAccountDetails(user.getEmail());
         assertEquals (bankAccountsUser.getId(), user.getBankAccounts().get(0).getId());
         assertEquals(bankAccountsUser.getBalance(), user.getBankAccounts().get(0).getBalance());
     }
@@ -75,10 +75,10 @@ class BankAccountServiceImplTest {
         ArrayList<BankAccount> bankAccounts = new ArrayList<>();
         bankAccounts.add(TestUtils.getBankAccount());
         user.setBankAccounts(bankAccounts);
-        when(userDao.findById(1)).thenReturn(Optional.of(user));
+        when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         Sort sort = Sort.by(Strings.ACCOUNT_SUMMARY_SORT).descending();
         when(transactionDao.getListTransactionsSummary(1,pagination.getPageable(0,sort))).thenReturn(Page.empty());
-        Page<TransactionDto> transactionDaoPage = bankAccountService.getTransactionsSummary(user.getId(),1);
+        Page<TransactionDto> transactionDaoPage = bankAccountService.getTransactionsSummary(user.getEmail(),1);
         assertEquals(0, transactionDaoPage.getTotalElements());
     }
 }

@@ -20,12 +20,12 @@ public class AccountController {
     private BankAccountService bankAccountService;
 
     @GetMapping(Routes.DETAILS)
-    public ResponseEntity<BankAccountDto> getAccountSummary(@PathVariable Integer id) {
-        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getAccountDetails(id));
+    public ResponseEntity<BankAccountDto> getAccountSummary(@PathVariable String email) {
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getAccountDetails(email));
     }
 
     @GetMapping(Routes.SUMMARY)
-    public ResponseEntity<Page<TransactionDto>> getTransactionsSummary(@PathVariable Integer id, @PathVariable Integer page) {
-        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getTransactionsSummary(id, page));
+    public ResponseEntity<Page<TransactionDto>> getTransactionsSummary(@PathVariable String email, @PathVariable Integer page) {
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getTransactionsSummary(email, page));
     }
 }

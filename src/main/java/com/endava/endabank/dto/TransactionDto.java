@@ -3,7 +3,7 @@ package com.endava.endabank.dto;
 
 public interface TransactionDto {
     String getDescription();
-    String getAmount();
+    Double getAmount();
     Boolean getWasReceived();
     String getCreateAt();
     Integer getStateTypeId();
