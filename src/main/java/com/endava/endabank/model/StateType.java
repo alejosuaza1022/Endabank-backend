@@ -32,7 +32,6 @@ public class StateType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private Integer id;
 
     @Column(length = 40, nullable = false)

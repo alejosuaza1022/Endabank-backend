@@ -39,7 +39,7 @@ public class BankAccount {
     @Column(nullable = false)
     private String password;
 
-    private Float balance;
+    private Double balance;
 
     @Column(nullable = false, length = 20)
     private String accountNumber;

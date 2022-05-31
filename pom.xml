@@ -140,6 +140,7 @@
                     <url>${env.ENDABANK_DB_URL}</url>
                     <user>${env.ENDABANK_DB_USERNAME}</user>
                     <password>${env.ENDABANK_DB_PASSWORD}</password>
+                    <outOfOrder>true</outOfOrder>
                 </configuration>
             </plugin>
             <plugin>

@@ -40,7 +40,6 @@ public class UserRegisterDto {
     private String lastName;
 
     @NotNull
-    @Size(min = 8, max = 20)
     @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W]).{8,20})",
             message = "1 Capital, 1 Special character, 1 Number and 8 to 20 digits,")
     private String password;

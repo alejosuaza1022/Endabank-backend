@@ -32,13 +32,12 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private Integer id;
 
     private String description;
 
     @Column(nullable = false)
-    private float amount;
+    private Double amount;
 
     @Column(length = 40)
     private String address;
