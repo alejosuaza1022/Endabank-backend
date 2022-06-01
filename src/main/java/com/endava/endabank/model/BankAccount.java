@@ -3,7 +3,17 @@ package com.endava.endabank.model;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,8 +37,8 @@ public class BankAccount {
 
     private Float balance;
 
-    @Column(nullable = false, length = 20)
-    private String accountNumber;
+    @Column(nullable = false)
+    private BigInteger accountNumber;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "account_type_id", nullable = false)

@@ -3,9 +3,16 @@ package com.endava.endabank.model;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -43,9 +50,20 @@ public class Transaction {
     @JoinColumn(name = "transaction_type_id", nullable = false)
     private TransactionType transactionType;
 
-    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private List<TransactionState> transactionStates = new ArrayList<>();
+    @Column(name = "state_description")
+    private String stateDescription;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "state_type_id", nullable = false)
+    private StateType stateType;
+
+    @Column(name = "create_at", nullable = false)
+    private LocalDateTime createAt;
+
+    @PrePersist
+    private void beforeSaving() {
+        createAt = LocalDateTime.now();
+    }
 
     @Override
     public boolean equals(Object o) {

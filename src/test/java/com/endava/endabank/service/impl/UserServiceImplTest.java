@@ -4,6 +4,7 @@ import com.endava.endabank.configuration.MailProperties;
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
+import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.*;
 import com.endava.endabank.exceptions.custom.BadDataException;
@@ -14,6 +15,7 @@ import com.endava.endabank.model.Permission;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.utils.JwtManage;
+import com.endava.endabank.service.BankAccountService;
 import com.endava.endabank.service.ForgotUserPasswordTokenService;
 import com.endava.endabank.service.IdentifierTypeService;
 import com.endava.endabank.service.RoleService;
@@ -75,13 +77,18 @@ class UserServiceImplTest {
 
     private final MailProperties mailProperties = new MailProperties("test", "test", "test", "test");
 
+    @Mock
+    private BankAccountDao bankAccountDao;
+
+    @Mock
+    private BankAccountService bankAccountService;
     private UserServiceImpl userService;
 
     @BeforeEach
     void setUp() {
         userService =
                 new UserServiceImpl(userDao, modelMapper, identifierTypeService, roleService,
-                        passwordEncoder, forgotUserPasswordTokenService, mailService, mailProperties);
+                        passwordEncoder, forgotUserPasswordTokenService, mailService, mailProperties,bankAccountDao,bankAccountService);
     }
 
     @Test
@@ -132,6 +139,7 @@ class UserServiceImplTest {
         User userNotAdmin = TestUtils.getUserNotAdminNonApproved();
         UserServiceImpl userService1 = Mockito.spy(userService);
         doReturn(userNotAdmin).when(userService1).findById(1);
+        when(bankAccountDao.findByUser(userNotAdmin)).thenReturn(Optional.ofNullable(TestUtils.getBankAccount()));
         when(userDao.save(TestUtils.getUserNotAdmin())).thenReturn(userNotAdmin);
         when(modelMapper.map(TestUtils.getUserNotAdmin(), UserToApproveAccountDto.class)).
                 thenReturn(TestUtils.getUserApprovedAccountDto());
@@ -139,7 +147,6 @@ class UserServiceImplTest {
         assertEquals(userNotAdmin.getEmail(), userToApproveAccountDto.getEmail());
         assertEquals(userNotAdmin.getId(), userToApproveAccountDto.getId());
         assertTrue(userToApproveAccountDto.isApproved());
-
     }
 
     @Test

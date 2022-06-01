@@ -4,17 +4,21 @@ import com.endava.endabank.configuration.MailProperties;
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
+import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.dto.user.*;
+import com.endava.endabank.dto.CreateBankAccountDto;
+import com.endava.endabank.dto.user.UpdatePasswordDto;
+import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserPrincipalSecurity;
+import com.endava.endabank.dto.user.UserRegisterDto;
+import com.endava.endabank.dto.user.UserRegisterGetDto;
+import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ServiceUnavailableException;
 import com.endava.endabank.exceptions.custom.UniqueConstraintViolationException;
 import com.endava.endabank.model.*;
 import com.endava.endabank.security.utils.JwtManage;
-import com.endava.endabank.service.ForgotUserPasswordTokenService;
-import com.endava.endabank.service.IdentifierTypeService;
-import com.endava.endabank.service.RoleService;
-import com.endava.endabank.service.UserService;
+import com.endava.endabank.service.*;
 import com.endava.endabank.utils.MailService;
 import com.endava.endabank.utils.user.UserValidations;
 import com.google.common.annotations.VisibleForTesting;
@@ -45,6 +49,9 @@ public class UserServiceImpl implements UserService {
     private ForgotUserPasswordTokenService forgotUserPasswordTokenService;
     private MailService mailService;
     private MailProperties mailProperties;
+    private BankAccountDao bankAccountDao;
+    private BankAccountService bankAccountService;
+
     @Override
     @Transactional(readOnly = true)
     public List<UserToApproveAccountDto> usersToApprove() {
@@ -99,6 +106,11 @@ public class UserServiceImpl implements UserService {
     public UserToApproveAccountDto updateUserAccountApprove(Integer id, boolean value) {
         User user = this.findById(id);
         user.setIsApproved(value);
+        CreateBankAccountDto createBankAccountDto = new CreateBankAccountDto();
+        createBankAccountDto.setUser(user);
+        if((bankAccountDao.findByUser(user).isEmpty())){
+            bankAccountService.save(createBankAccountDto);
+        }
         return this.mapToUserToApproveDto(userDao.save(user));
     }
 

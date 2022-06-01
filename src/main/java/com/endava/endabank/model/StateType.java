@@ -1,7 +1,9 @@
 package com.endava.endabank.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
@@ -16,7 +18,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class StateType {
 
     @Id
@@ -29,7 +33,7 @@ public class StateType {
 
     @OneToMany(mappedBy = "stateType", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<TransactionState> transactionStates = new ArrayList<>();
+    private List<Transaction> transactions = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
