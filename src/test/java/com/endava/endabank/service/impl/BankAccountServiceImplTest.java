@@ -130,14 +130,12 @@ class BankAccountServiceImplTest {
         assertNotNull(accountNumber);
     }
 
-    /*@Test
+    @Test
     void testValidateAccountNumberShouldGenerateAnotherAccountWhenIsLess() {
         BankAccount account = TestUtils.getBadBankAccount();
-        when(bankAccountDao.findByAccountNumber(any())).thenReturn(Optional.empty());
-        verify(bankAccountDao,times(1)).findByAccountNumber(account.getAccountNumber());
-        BigInteger accountNumber = bankAccount.validateAccountNumber(account.getAccountNumber());
+        BigInteger accountNumber = bankAccountService.validateAccountNumber(account.getAccountNumber());
         assertNotNull(accountNumber);
-    }*/
+    }
 
     @Test
     void testGenereteRamdomNumberShouldSuccessWhenDataCorrect() {

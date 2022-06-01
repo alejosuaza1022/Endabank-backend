@@ -8,6 +8,7 @@ import com.endava.endabank.model.AccountType;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.service.AccountTypeService;
 import com.endava.endabank.service.BankAccountService;
+import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         return account;
     }
 
+    @VisibleForTesting
     public String genereteRamdomNumber(Integer len){
         char [] chars = "0123456789".toCharArray();
         int charsLength = chars.length;
@@ -74,7 +76,9 @@ public class BankAccountServiceImpl implements BankAccountService {
         for (int i=0;i<len;i++){
             buffer.append(chars[random.nextInt(charsLength)]);
         }
-        return buffer.toString();}
+        return buffer.toString();
+    }
+
     public BankAccount findBankAccountUser(String email){
         User user= userDao.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
         List<BankAccount> bankAccount=user.getBankAccounts();
