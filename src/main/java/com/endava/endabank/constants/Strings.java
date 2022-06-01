@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Strings {
     public static final String ROLE_NOT_FOUND = "The role was not found on the database.";
+    public static final String ACCOUNT_NOT_FOUND = "The account was not found on the database.";
     public static final String FORMAT_PASSWORD = "1 Capital, 1 Special character, 1 Number and 8 to 20 digits,";
     public static final String IDENTIFIER_TYPE_NOT_FOUND = "The identifier type was not found on the database.";
     public static final String USER_NOT_FOUND = "The user was not found on the database.";
@@ -41,4 +42,7 @@ public final class Strings {
     public static final String AUTHORIZATION_BODY = "Authorization";
     public static final String BEARER_TEST = "Bearer token";
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String ACCOUNT_TYPE_NOT_FOUND = "The account type was not found on the database.";
+    public static final String ACCOUNT_CREATED = "The bank account was successfully created.";
+    public static final String ACCOUNT_SUMMARY_SORT = "create_at";
 }
