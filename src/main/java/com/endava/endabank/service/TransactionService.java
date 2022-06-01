@@ -8,5 +8,5 @@ import com.endava.endabank.model.Transaction;
 public interface TransactionService {
     TransactionCreatedDto createTransaction(Integer userId, TransactionCreateDto transactionCreateDto);
     void setStateAndBalanceOfTransaction(Transaction transaction, BankAccount bankAccountIssuer,
-                                   BankAccount bankAccountReceiver,TransactionCreateDto transactionCreateDto);
+                                   BankAccount bankAccountReceiver,Double  amount);
 }

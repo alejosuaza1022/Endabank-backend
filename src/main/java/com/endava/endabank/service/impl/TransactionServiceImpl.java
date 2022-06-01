@@ -11,7 +11,6 @@ import com.endava.endabank.model.TransactionType;
 import com.endava.endabank.service.BankAccountService;
 import com.endava.endabank.service.TransactionService;
 import com.endava.endabank.utils.transaction.TransactionValidations;
-import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class TransactionServiceImpl implements TransactionService {
                 findByAccountNumber(transactionCreateDto.getBankAccountNumberIssuer());
         BankAccount bankAccountReceiver = bankAccountService.
                 findByAccountNumber(transactionCreateDto.getBankAccountNumberReceiver());
-        transactionValidations.validateTransaction(userId, bankAccountIssuer, transactionCreateDto);
+        transactionValidations.validateTransaction(userId, bankAccountIssuer, bankAccountReceiver,transactionCreateDto);
         TransactionType transactionType = TransactionType.builder().id(1).build();
         Transaction transaction = Transaction.
                 builder().amount(transactionCreateDto.getAmount()).
@@ -44,24 +43,26 @@ public class TransactionServiceImpl implements TransactionService {
                 address(transactionCreateDto.getAddress()).
                 transactionType(transactionType).bankAccountIssuer(bankAccountIssuer).
                 bankAccountReceiver(bankAccountReceiver).build();
-        setStateAndBalanceOfTransaction(transaction, bankAccountIssuer, bankAccountReceiver, transactionCreateDto);
-        return modelMapper.map(transactionDao.save(transaction), TransactionCreatedDto.class);
+        setStateAndBalanceOfTransaction(transaction, bankAccountIssuer, bankAccountReceiver,
+                transactionCreateDto.getAmount());
+        transaction = transactionDao.save(transaction);
+        return modelMapper.map(transaction, TransactionCreatedDto.class);
     }
 
     @Transactional
     @Override
     public void setStateAndBalanceOfTransaction(Transaction transaction,
-                                          BankAccount bankAccountIssuer,
-                                          BankAccount bankAccountReceiver, TransactionCreateDto transactionCreateDto) {
+                                                BankAccount bankAccountIssuer,
+                                                BankAccount bankAccountReceiver, Double amount) {
         StateType stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_APPROVED_STATE);
-        if (transactionCreateDto.getAmount() > bankAccountIssuer.getBalance()) {
+        if (amount > bankAccountIssuer.getBalance()) {
             stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_FAILED_STATE);
             transaction.setStateType(stateType);
             transaction.setStateDescription(Strings.NOT_FOUNDS_ENOUGH);
             return;
         }
-        bankAccountService.reduceBalance(bankAccountIssuer, transactionCreateDto.getAmount());
-        bankAccountService.increaseBalance(bankAccountReceiver, transactionCreateDto.getAmount());
+        bankAccountService.reduceBalance(bankAccountIssuer, amount);
+        bankAccountService.increaseBalance(bankAccountReceiver, amount);
         transaction.setStateType(stateType);
         transaction.setStateDescription(Strings.TRANSACTION_COMPLETED);
     }

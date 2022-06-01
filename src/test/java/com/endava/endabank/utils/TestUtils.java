@@ -1,16 +1,26 @@
 package com.endava.endabank.utils;
 
 import com.endava.endabank.constants.Strings;
+import com.endava.endabank.dto.BankAccountDto;
+import com.endava.endabank.dto.BankAccountMinimalDto;
+import com.endava.endabank.dto.StateTypeDto;
+import com.endava.endabank.dto.Transaction.TransactionCreateDto;
+import com.endava.endabank.dto.Transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
+import com.endava.endabank.model.AccountType;
+import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.IdentifierType;
 import com.endava.endabank.model.Permission;
 import com.endava.endabank.model.Role;
+import com.endava.endabank.model.StateType;
+import com.endava.endabank.model.Transaction;
+import com.endava.endabank.model.TransactionType;
 import com.endava.endabank.model.User;
 import com.endava.endabank.security.UserAuthentication;
 import com.sendgrid.Response;
@@ -185,14 +195,90 @@ public final class TestUtils {
                 phoneNumber("3210000000").
                 isApproved(true).build();
     }
+
     public static List<User> getUserList() {
         return Arrays.asList(getUserNotAdmin(), getUserAdmin());
     }
-    public static Response getSendGridResponse(){
+
+    public static Response getSendGridResponse() {
         Response response = new Response();
         response.setStatusCode(202);
         response.setBody("Success");
         response.setHeaders(new HashMap<>());
         return response;
+    }
+
+    public static TransactionCreateDto getTransactionCreateDto() {
+        return TransactionCreateDto.builder().
+                amount(10000.0).
+                description("description").
+                bankAccountNumberIssuer("1111111111111111").
+                bankAccountNumberReceiver("0000000000000001").
+                address("235.30.171.21").build();
+    }
+
+    public static Transaction getTransaction() {
+        TransactionType transactionType = TransactionType.builder().id(1).build();
+        BankAccount bankAccountIssuer = getBankAccount();
+        BankAccount bankAccountReceiver = getBankAccount2();
+        return Transaction.
+                builder().amount(10000.0).
+                description("description").
+                address("235.30.171.21").
+                transactionType(transactionType).bankAccountIssuer(bankAccountIssuer)
+                .stateDescription(Strings.TRANSACTION_COMPLETED).
+                bankAccountReceiver(bankAccountReceiver).build();
+    }
+
+    public static TransactionCreatedDto getTransactionCreatedDto() {
+        StateTypeDto stateTypeDto = StateTypeDto.builder().id(1).name("APPROVED").build();
+        return TransactionCreatedDto.builder().
+                id(1).
+                amount(1000.0).bankAccountIssuer(getBankAccountDto()).
+                bankAccountReceiver(getBankAccountMinimalDto()).
+                stateType(stateTypeDto).stateDescription(Strings.TRANSACTION_COMPLETED).build();
+    }
+
+    public static StateType getStateTypeApproved() {
+        return StateType.builder().id(1).name("APPROVED").build();
+    }
+
+    public static StateType getStateTypeFailed() {
+        return StateType.builder().id(1).name("FAILED").build();
+    }
+
+    public static AccountType getAccountType() {
+        return new AccountType(1, "DEBIT", new ArrayList<>());
+    }
+
+    public static BankAccountDto getBankAccountDto() {
+        return BankAccountDto.builder().
+                id(1).
+                accountNumber("1111111111111111").
+                balance(1000000.0).build();
+    }
+
+    public static BankAccountMinimalDto getBankAccountMinimalDto() {
+        return BankAccountMinimalDto.builder().
+                id(1).
+                accountNumber("0000000000000001").build();
+    }
+
+    public static BankAccount getBankAccount() {
+        AccountType accountType = TestUtils.getAccountType();
+        User user = TestUtils.getUserAdmin();
+        return BankAccount.builder().
+                id(1).
+                accountNumber("1111111111111111").
+                accountType(accountType).
+                balance(1000000.0).
+                password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
+                        user(user).build();
+    }
+
+    public static BankAccount getBankAccount2() {
+        BankAccount bankAccount = getBankAccount();
+        bankAccount.setAccountNumber("0000000000000001");
+        return bankAccount;
     }
 }

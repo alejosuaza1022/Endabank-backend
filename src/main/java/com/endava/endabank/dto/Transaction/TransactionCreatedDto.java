@@ -3,9 +3,11 @@ package com.endava.endabank.dto.Transaction;
 import com.endava.endabank.dto.BankAccountDto;
 import com.endava.endabank.dto.BankAccountMinimalDto;
 import com.endava.endabank.dto.StateTypeDto;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class TransactionCreatedDto {
     private Double amount;
     private StateTypeDto stateType;

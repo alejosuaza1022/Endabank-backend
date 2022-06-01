@@ -48,4 +48,5 @@ public final class Strings {
     public static final Integer TRANSACTION_APPROVED_STATE = 1;
     public static final Integer TRANSACTION_FAILED_STATE = 2;
     public static final String AMOUNT_NOT_VALID = "The amount to be transferred has to be greater than 0.";
+    public static final String TRANSACTION_SAME_ACCOUNT = "The account to be transferred is the same as the one used.";
 }
