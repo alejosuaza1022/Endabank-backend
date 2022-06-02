@@ -67,6 +67,13 @@ public class UserController {
         return userService.getUserDetails(user, authorities);
     }
 
+    @GetMapping("/general")
+    public UserGeneralInfoDto getGeneralInfo(Principal principal){
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
+        UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
+        return userService.getUserGeneralInfo(user);
+    }
+
     @GetMapping(Routes.EMAIL_VALIDATION_ROUTE + Routes.EMAIL)
     public Map<String, Object> getDetailsById(@PathVariable String email) {
         return userService.generateEmailVerification(null, email);
