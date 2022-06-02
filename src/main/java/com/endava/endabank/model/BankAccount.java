@@ -10,6 +10,7 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,8 +43,8 @@ public class BankAccount {
 
     private Double balance;
 
-    @Column(nullable = false, length = 20)
-    private String accountNumber;
+    @Column(nullable = false)
+    private BigInteger accountNumber;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "account_type_id", nullable = false)
@@ -52,7 +54,7 @@ public class BankAccount {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(mappedBy = "bankAccount")
+    @OneToOne(mappedBy = "bankAccount", fetch = FetchType.LAZY)
     private Card card;
 
     @OneToMany(mappedBy = "bankAccountIssuer")

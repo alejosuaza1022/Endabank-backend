@@ -7,6 +7,7 @@ import com.endava.endabank.service.ForgotUserPasswordTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -25,8 +26,9 @@ public class ForgotUserPasswordTokenServiceImpl implements ForgotUserPasswordTok
         Optional<ForgotUserPasswordToken> forgotUserPasswordTokenDbOpt =
                 forgotUserPasswordTokenDao.findByUserId(forgotUserPasswordTokenNew.getUser().getId());
         if (forgotUserPasswordTokenDbOpt.isPresent()) {
-            forgotUserPasswordTokenNew = forgotUserPasswordTokenDbOpt.get();
-            forgotUserPasswordTokenNew.setToken(forgotUserPasswordTokenNew.getToken());
+            ForgotUserPasswordToken forgotUserPasswordTokenDb = forgotUserPasswordTokenDbOpt.get();
+            forgotUserPasswordTokenDb.setToken(forgotUserPasswordTokenNew.getToken());
+            forgotUserPasswordTokenNew = forgotUserPasswordTokenDb;
         }
         forgotUserPasswordTokenDao.save(forgotUserPasswordTokenNew);
     }

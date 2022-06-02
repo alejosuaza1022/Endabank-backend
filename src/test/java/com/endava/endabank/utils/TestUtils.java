@@ -3,6 +3,7 @@ package com.endava.endabank.utils;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dto.BankAccountDto;
 import com.endava.endabank.dto.BankAccountMinimalDto;
+import com.endava.endabank.dto.CreateBankAccountDto;
 import com.endava.endabank.dto.StateTypeDto;
 import com.endava.endabank.dto.Transaction.TransactionCreateDto;
 import com.endava.endabank.dto.Transaction.TransactionCreatedDto;
@@ -30,6 +31,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -208,12 +210,47 @@ public final class TestUtils {
         return response;
     }
 
+    public static UserToApproveAccountDto getUserNotApprovedAccountDto() {
+        UserToApproveAccountDto userToApproveAccountDto = getUserApprovedAccountDto();
+        userToApproveAccountDto.setApproved(false);
+        return userToApproveAccountDto;
+    }
+
+    public static AccountType getAccountType() {
+        return new AccountType(1, "DEBIT", new ArrayList<>());
+    }
+
+    public static CreateBankAccountDto getCreateBankAccountDto() {
+        AccountType accountType = TestUtils.getAccountType();
+        User user = TestUtils.getUserAdmin();
+        return CreateBankAccountDto.builder().
+                id(1).
+                accountNumber("1111111111111111").
+                accountType(accountType).
+                balance(1000000.0).
+                password("1111").
+                user(user).build();
+    }
+
+
+    public static BankAccount getBadBankAccount() {
+        AccountType accountType = TestUtils.getAccountType();
+        User user = TestUtils.getUserAdmin();
+        return BankAccount.builder().
+                id(1).
+                accountNumber(BigInteger.valueOf(Long.parseLong("10000000000001"))).
+                accountType(accountType).
+                balance(1000000.0).
+                password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
+                        user(user).build();
+    }
+
     public static TransactionCreateDto getTransactionCreateDto() {
         return TransactionCreateDto.builder().
                 amount(10000.0).
                 description("description").
-                bankAccountNumberIssuer("1111111111111111").
-                bankAccountNumberReceiver("0000000000000001").
+                bankAccountNumberIssuer(BigInteger.valueOf(Long.parseLong("1111111111111111"))).
+                bankAccountNumberReceiver(BigInteger.valueOf(Long.parseLong("0000000000000001"))).
                 address("235.30.171.21").build();
     }
 
@@ -247,21 +284,17 @@ public final class TestUtils {
         return StateType.builder().id(1).name("FAILED").build();
     }
 
-    public static AccountType getAccountType() {
-        return new AccountType(1, "DEBIT", new ArrayList<>());
-    }
-
     public static BankAccountDto getBankAccountDto() {
         return BankAccountDto.builder().
                 id(1).
-                accountNumber("1111111111111111").
+                accountNumber(BigInteger.valueOf(Long.parseLong("1111111111111111"))).
                 balance(1000000.0).build();
     }
 
     public static BankAccountMinimalDto getBankAccountMinimalDto() {
         return BankAccountMinimalDto.builder().
                 id(1).
-                accountNumber("0000000000000001").build();
+                accountNumber(BigInteger.valueOf(Long.parseLong("0000000000000001"))).build();
     }
 
     public static BankAccount getBankAccount() {
@@ -269,7 +302,7 @@ public final class TestUtils {
         User user = TestUtils.getUserAdmin();
         return BankAccount.builder().
                 id(1).
-                accountNumber("1111111111111111").
+                accountNumber(BigInteger.valueOf(Long.parseLong("1111111111111111"))).
                 accountType(accountType).
                 balance(1000000.0).
                 password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
@@ -278,7 +311,7 @@ public final class TestUtils {
 
     public static BankAccount getBankAccount2() {
         BankAccount bankAccount = getBankAccount();
-        bankAccount.setAccountNumber("0000000000000001");
+        bankAccount.setAccountNumber(BigInteger.valueOf(Long.parseLong("0000000000000001")));
         return bankAccount;
     }
 }

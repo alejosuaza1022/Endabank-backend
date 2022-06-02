@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigInteger;
 
 @Data
 @Builder
@@ -17,11 +18,11 @@ public class TransactionCreateDto {
     @NotNull
     private Double amount;
 
-    @Size(min = 16, max = 20)
-    private String bankAccountNumberIssuer;
+    @NotNull
+    private BigInteger bankAccountNumberIssuer;
 
-    @Size(min = 16, max = 20)
-    private String bankAccountNumberReceiver;
+    @NotNull
+    private BigInteger bankAccountNumberReceiver;
 
     private String description;
 
