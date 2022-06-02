@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 public class UserPrincipalSecurity {
     private Integer id;
     private String email;
+    private String identifier;
+    private String identifierName;
     private String phoneNumber;
     private String firstName;
+    private String lastName;
     private boolean isApproved;
 }
