@@ -8,6 +8,7 @@ import com.endava.endabank.model.AccountType;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.service.AccountTypeService;
 import com.endava.endabank.service.BankAccountService;
+import com.endava.endabank.utils.BankAccountUtils;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,11 +48,11 @@ public class BankAccountServiceImpl implements BankAccountService {
     public Map<String, String> save(CreateBankAccountDto bankAccountDto) {
         BankAccount account = new BankAccount();
         AccountType accountType = accountTypeService.findById(AccountTypes.DEBIT);
-        BigInteger accountNumber = BigInteger.valueOf(Long.parseLong(this.genereteRamdomNumber(16)));
+        BigInteger accountNumber = BigInteger.valueOf(Long.parseLong(BankAccountUtils.genereteRamdomNumber(16)));
         account.setAccountNumber(validateAccountNumber(accountNumber));
         account.setBalance(1000000F);
         account.setAccountType(accountType);
-        account.setPassword(passwordEncoder.encode(genereteRamdomNumber(4)));
+        account.setPassword(passwordEncoder.encode(BankAccountUtils.genereteRamdomNumber(4)));
         account.setUser(bankAccountDto.getUser());
         bankAccountDao.save(account);
         Map<String, String> map = new HashMap<>();
@@ -62,12 +63,12 @@ public class BankAccountServiceImpl implements BankAccountService {
     public BigInteger validateAccountNumber(BigInteger account){
         BigInteger comp = BigInteger.valueOf(Long.parseLong("1000000000000000"));
         while(bankAccountDao.findByAccountNumber(account).isPresent() || account.compareTo(comp) < 0){
-            account = BigInteger.valueOf(Long.parseLong(this.genereteRamdomNumber(16)));
+            account = BigInteger.valueOf(Long.parseLong(BankAccountUtils.genereteRamdomNumber(16)));
         }
         return account;
     }
 
-    @VisibleForTesting
+    /*@VisibleForTesting
     public String genereteRamdomNumber(Integer len){
         char [] chars = "0123456789".toCharArray();
         int charsLength = chars.length;
@@ -77,7 +78,7 @@ public class BankAccountServiceImpl implements BankAccountService {
             buffer.append(chars[random.nextInt(charsLength)]);
         }
         return buffer.toString();
-    }
+    }*/
 
     public BankAccount findBankAccountUser(String email){
         User user= userDao.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException(Strings.USER_NOT_FOUND));

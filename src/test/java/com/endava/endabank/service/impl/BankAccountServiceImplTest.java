@@ -137,10 +137,6 @@ class BankAccountServiceImplTest {
         assertNotNull(accountNumber);
     }
 
-    @Test
-    void testGenereteRamdomNumberShouldSuccessWhenDataCorrect() {
-        String number = bankAccountService.genereteRamdomNumber(4);
-        assertEquals(number.length(),4);
-    }
+
 }
 
