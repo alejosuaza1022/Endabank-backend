@@ -5,14 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BankAccountDto {
-    private BigInteger accountNumber;
-    private Double balance;
+public class StateTypeDto {
     private Integer id;
+    private String name;
 }
