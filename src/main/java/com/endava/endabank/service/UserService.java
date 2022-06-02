@@ -31,6 +31,8 @@ public interface UserService {
 
     UserDetailsDto getUserDetails(UserPrincipalSecurity user, Collection<GrantedAuthority> authorities);
 
+    UserGeneralInfoDto getUserGeneralInfo(UserPrincipalSecurity user);
+
     Map<String, Object> verifyEmail(String email);
 
     Map<String, Object> saveAndSendVerifyEmail(UserRegisterDto userRegisterDto);

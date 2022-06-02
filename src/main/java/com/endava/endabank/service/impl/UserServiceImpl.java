@@ -9,6 +9,7 @@ import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.CreateBankAccountDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
@@ -184,6 +185,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserGeneralInfoDto getUserGeneralInfo(UserPrincipalSecurity user) {
+        return mapToUserGeneralInfoDto(user);
+    }
+
+    @Override
     public Map<String, Object> verifyEmail(String token) {
         int userId = JwtManage.verifyToken(Strings.BEARER + token, Strings.SECRET_JWT);
         User user = userDao.findById(userId).
@@ -214,6 +220,11 @@ public class UserServiceImpl implements UserService {
     @VisibleForTesting
     UserDetailsDto mapToUserDetailsDto(UserPrincipalSecurity user) {
         return modelMapper.map(user, UserDetailsDto.class);
+    }
+
+    @VisibleForTesting
+    UserGeneralInfoDto mapToUserGeneralInfoDto(UserPrincipalSecurity user) {
+        return modelMapper.map(user, UserGeneralInfoDto.class);
     }
 
     @VisibleForTesting
