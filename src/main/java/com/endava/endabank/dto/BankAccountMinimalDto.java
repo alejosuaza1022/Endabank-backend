@@ -11,8 +11,7 @@ import java.math.BigInteger;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BankAccountDto {
+public class BankAccountMinimalDto {
     private BigInteger accountNumber;
-    private Double balance;
     private Integer id;
 }

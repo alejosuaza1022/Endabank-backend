@@ -18,22 +18,17 @@ public class CreateBankAccountDto {
     private Integer id;
 
     @NotNull
-    @NotBlank
     private String password;
 
     @NotNull
-    @NotBlank
-    private Float balance;
+    private Double balance;
 
-    @NotNull
     @NotBlank
     private String accountNumber;
 
     @NotNull
-    @NotBlank
     private AccountType accountType;
 
     @NotNull
-    @NotBlank
     private User user;
 }

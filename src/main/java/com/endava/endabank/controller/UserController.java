@@ -2,7 +2,11 @@ package com.endava.endabank.controller;
 
 import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
-import com.endava.endabank.dto.user.*;
+import com.endava.endabank.dto.user.UpdatePasswordDto;
+import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserPrincipalSecurity;
+import com.endava.endabank.dto.user.UserRegisterDto;
+import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,7 +15,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.security.Principal;
