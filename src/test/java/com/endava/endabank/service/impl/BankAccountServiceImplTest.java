@@ -140,35 +140,5 @@ class BankAccountServiceImplTest {
         Map<String, String> map = bankAccountService.save(createBankAccountDto);
         assertEquals(Strings.ACCOUNT_CREATED, map.get(Strings.MESSAGE_RESPONSE));
     }
-
-    @Test
-    void testValidateAccountNumberShouldReturnAccountSuccess() {
-        BankAccount account = TestUtils.getBankAccount();
-        when(bankAccountDao.findByAccountNumber(any())).thenReturn(Optional.empty());
-        BigInteger accountNumber = bankAccountService.validateAccountNumber(account.getAccountNumber());
-        assertNotNull(accountNumber);
-    }
-
-    @Test
-    void testValidateAccountNumberShouldGenerateAnotherAccountWhenAlreadyExist() {
-        BankAccount account = TestUtils.getBankAccount();
-        account.setAccountNumber(BigInteger.valueOf(Long.parseLong("10000000000000")));
-        when(bankAccountDao.findByAccountNumber(any())).thenReturn(Optional.of(account)).thenReturn(Optional.empty());
-        BigInteger accountNumber = bankAccountService.validateAccountNumber(account.getAccountNumber());
-        assertNotNull(accountNumber);
-    }
-
-    @Test
-    void testValidateAccountNumberShouldGenerateAnotherAccountWhenIsLess() {
-        BankAccount account = TestUtils.getBadBankAccount();
-        BigInteger accountNumber = bankAccountService.validateAccountNumber(account.getAccountNumber());
-        assertNotNull(accountNumber);
-    }
-
-    @Test
-    void testGenerateRandomNumberShouldSuccessWhenDataCorrect() {
-        String number = bankAccountService.genereteRamdomNumber(4);
-        assertEquals(4, number.length());
-    }
 }
 
