@@ -67,7 +67,7 @@ public class UserController {
         return userService.getUserDetails(user, authorities);
     }
 
-    @GetMapping("/general")
+    @GetMapping("/general-info")
     public UserGeneralInfoDto getGeneralInfo(Principal principal){
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();

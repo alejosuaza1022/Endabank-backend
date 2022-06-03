@@ -38,11 +38,9 @@ public class Merchant {
     @Column(nullable = false)
     private String taxId;
 
-    @Column(nullable = false)
     private String apiId;
 
-    @Column(nullable = false)
-    private String key;
+    private String merchantKey;
 
     @Column(nullable = false)
     private String address;
@@ -53,6 +51,7 @@ public class Merchant {
     @Column( nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column( nullable = false)
     private String storeName;
 
     @ManyToOne(optional = false)
@@ -63,8 +62,8 @@ public class Merchant {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "reviewing_user_id")
     private User reviewedBy;
 
     @PrePersist
