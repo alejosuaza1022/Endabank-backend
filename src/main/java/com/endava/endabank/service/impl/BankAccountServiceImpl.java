@@ -9,43 +9,28 @@ import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.service.AccountTypeService;
 import com.endava.endabank.service.BankAccountService;
 import com.endava.endabank.utils.BankAccountUtils;
-import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import com.endava.endabank.dao.TransactionDao;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.BankAccountDto;
-import com.endava.endabank.dto.CreateBankAccountDto;
 import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
-import com.endava.endabank.model.AccountType;
-import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.User;
-import com.endava.endabank.service.AccountTypeService;
-import com.endava.endabank.service.BankAccountService;
 import com.endava.endabank.utils.Pagination;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -91,14 +76,6 @@ public class BankAccountServiceImpl implements BankAccountService {
         map.put(Strings.MESSAGE_RESPONSE, Strings.ACCOUNT_CREATED);
         return map;
     }
-
-    /*public BigInteger validateAccountNumber(BigInteger account) {
-        BigInteger comp = BigInteger.valueOf(Long.parseLong("1000000000000000"));
-        while(bankAccountDao.findByAccountNumber(account).isPresent() || account.compareTo(comp) < 0){
-            account = BigInteger.valueOf(Long.parseLong(BankAccountUtils.genereteRamdomNumber(16)));
-        }
-        return account;
-    }*/
 
     public BankAccount findBankAccountUser(String email) {
         User user = userDao.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
