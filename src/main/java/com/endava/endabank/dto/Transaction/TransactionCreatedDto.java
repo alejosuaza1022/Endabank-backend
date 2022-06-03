@@ -19,4 +19,5 @@ public class TransactionCreatedDto {
     private BankAccountMinimalDto bankAccountReceiver;
     private BankAccountDto bankAccountIssuer;
     private Integer id;
+    private String createAt;
 }
