@@ -42,6 +42,14 @@ public final class Strings {
     public static final String AUTHORIZATION_BODY = "Authorization";
     public static final String BEARER_TEST = "Bearer token";
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String BANK_ACCOUNT_NOT_FOUND = "The bank account provided does not exist.";
+    public static final String USER_NOT_OWN_BANK_ACCOUNT = "The user not owns the bank account used.";
+    public static final String NOT_FOUNDS_ENOUGH = "The user has not balance enough to make the transaction.";
+    public static final String TRANSACTION_COMPLETED = "The transaction was successfully completed";
+    public static final Integer TRANSACTION_APPROVED_STATE = 1;
+    public static final Integer TRANSACTION_FAILED_STATE = 2;
+    public static final String AMOUNT_NOT_VALID = "The amount to be transferred has to be greater than 0.";
+    public static final String TRANSACTION_SAME_ACCOUNT = "The account to be transferred is the same as the one used.";
     public static final String ACCOUNT_TYPE_NOT_FOUND = "The account type was not found on the database.";
     public static final String ACCOUNT_CREATED = "The bank account was successfully created.";
     public static final String ACCOUNT_SUMMARY_SORT = "create_at";

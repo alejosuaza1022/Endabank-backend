@@ -17,9 +17,17 @@ import com.endava.endabank.dto.user.UserToApproveAccountDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ServiceUnavailableException;
 import com.endava.endabank.exceptions.custom.UniqueConstraintViolationException;
-import com.endava.endabank.model.*;
+import com.endava.endabank.model.ForgotUserPasswordToken;
+import com.endava.endabank.model.IdentifierType;
+import com.endava.endabank.model.Permission;
+import com.endava.endabank.model.Role;
+import com.endava.endabank.model.User;
 import com.endava.endabank.security.utils.JwtManage;
-import com.endava.endabank.service.*;
+import com.endava.endabank.service.BankAccountService;
+import com.endava.endabank.service.ForgotUserPasswordTokenService;
+import com.endava.endabank.service.IdentifierTypeService;
+import com.endava.endabank.service.RoleService;
+import com.endava.endabank.service.UserService;
 import com.endava.endabank.utils.MailService;
 import com.endava.endabank.utils.user.UserValidations;
 import com.google.common.annotations.VisibleForTesting;
@@ -36,7 +44,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 @Service
