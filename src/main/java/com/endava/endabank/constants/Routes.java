@@ -30,5 +30,7 @@ public final class Routes {
     public static final String ACCOUNT = "/accounts";
     public static final String DETAILS="/details/{email}";
     public static final String SUMMARY="/summary/{email}/{page}";
+    public static final String TRANSACTIONS = "/transactions";
+    public static final String SEND_MONEY = "/send-money";
 
 }

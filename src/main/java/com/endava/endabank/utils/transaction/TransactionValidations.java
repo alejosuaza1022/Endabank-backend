@@ -15,11 +15,11 @@ import java.util.Objects;
 public class TransactionValidations {
 
     public void validateTransaction(Integer userId, BankAccount bankAccountIssuer,
-                                    BankAccount bankAccountReciver,
+                                    BankAccount bankAccountReceiver,
                                     TransactionCreateDto transactionCreateDto) {
         validateOwner(userId, bankAccountIssuer);
         validateAmount(transactionCreateDto.getAmount());
-        validateSameAccount(bankAccountIssuer, bankAccountReciver);
+        validateSameAccount(bankAccountIssuer, bankAccountReceiver);
     }
 
     @VisibleForTesting

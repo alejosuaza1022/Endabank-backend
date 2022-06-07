@@ -18,12 +18,12 @@ import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
-@RequestMapping(Routes.API_ROUTE + "/transactions")
+@RequestMapping(Routes.API_ROUTE + Routes.TRANSACTIONS)
 @AllArgsConstructor
 public class TransactionController {
     private TransactionService transactionService;
 
-    @PostMapping("/send-money")
+    @PostMapping(Routes.SEND_MONEY)
     public ResponseEntity<TransactionCreatedDto> createTransaction(Principal principal, @Valid @RequestBody TransactionCreateDto transactionCreateDto) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
