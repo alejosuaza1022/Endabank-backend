@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 public final class Routes {
     public static final String API_ROUTE = "/api/v1";
     public static final String USERS_ROUTE = "/users";
+    public static final String MERCHANTS_ROUTE = "/merchants";
+    public static final String CREATE_MERCHANT_REQUEST = "/create-request";
     public static final String EMAIL = "/{email}";
     public static final String API_USERS_ROUTE = API_ROUTE + USERS_ROUTE;
     public static final String LOGIN_ROUTE = "/login";
