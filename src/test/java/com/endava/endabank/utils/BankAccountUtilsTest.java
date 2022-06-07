@@ -11,7 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -23,9 +24,9 @@ class BankAccountUtilsTest {
     private BankAccountDao bankAccountDao;
 
     @Test
-    void testGenereteRamdomNumberShouldSuccessWhenDataCorrect() {
+    void testGenerateRandomNumberShouldSuccessWhenDataCorrect() {
         String number = BankAccountUtils.genereteRamdomNumber(4);
-        assertEquals(number.length(),4);
+        assertEquals(4, number.length());
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.endava.endabank.service;
 
-import com.endava.endabank.dto.Transaction.TransactionCreateDto;
-import com.endava.endabank.dto.Transaction.TransactionCreatedDto;
+import com.endava.endabank.dto.transaction.TransactionCreateDto;
+import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.Transaction;
 
