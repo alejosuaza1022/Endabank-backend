@@ -9,6 +9,7 @@ public final class Strings {
     public static final String ACCOUNT_NOT_FOUND = "The account was not found on the database.";
     public static final String FORMAT_PASSWORD = "1 Capital, 1 Special character, 1 Number and 8 to 20 digits,";
     public static final String IDENTIFIER_TYPE_NOT_FOUND = "The identifier type was not found on the database.";
+    public static final String MERCHANT_REQUEST_STATE_NOT_FOUND = "The merchant request state was not found on the database.";
     public static final String USER_NOT_FOUND = "The user was not found on the database.";
     public static final String MAIL_SENT = "Mail Sent";
     public static final String MAIL_FAIL = "There was an error sending the mail.";
@@ -18,6 +19,7 @@ public final class Strings {
     public static final String USER_TOKEN_NOT_FOUND = "The token for this user was not found on the database.";
     public static final String PASSWORD_UPDATED = "Password updated.";
     public static final String CONSTRAINT_IDENTIFIER_VIOLATED = "There is already a user registered with this identifier.";
+    public static final String CONSTRAINT_TAX_ID_VIOLATED = "There is already a merchant registered with this tax id";
     public static final String CONSTRAINT_EMAIL_VIOLATED = "There is already a user registered with this email.";
     public static final String SECRET_JWT = System.getenv("JWT_ENDABANK_SECRET");
     public static final String MESSAGE_RESPONSE = "message";
@@ -51,6 +53,8 @@ public final class Strings {
     public static final String AMOUNT_NOT_VALID = "The amount to be transferred has to be greater than 0.";
     public static final String TRANSACTION_SAME_ACCOUNT = "The account to be transferred is the same as the one used.";
     public static final String ACCOUNT_TYPE_NOT_FOUND = "The account type was not found on the database.";
+    public static final String MERCHANT_NOT_FOUND = "The merchant was not found in the database";
     public static final String ACCOUNT_CREATED = "The bank account was successfully created.";
+    public static final String MERCHANT_REQUEST_CREATED = "The request to become a merchant was successfully created.";
     public static final String ACCOUNT_SUMMARY_SORT = "create_at";
 }

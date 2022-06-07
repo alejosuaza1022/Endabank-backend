@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaLiquibaseChangesConfig">
+    <exclude-change idName="identifier_types" tagName="createTable" />
+    <exclude-change idName="bank_accounts" tagName="createTable" />
+    <exclude-change idName="forgot_user_password_token" tagName="createTable" />
+    <exclude-change idName="account_types" tagName="createTable" />
+    <exclude-change idName="cards" tagName="createTable" />
+    <exclude-change idName="permissions" tagName="createTable" />
+    <exclude-change idName="roles" tagName="createTable" />
+    <exclude-change idName="roles_permissions" tagName="createTable" />
+    <exclude-change idName="transaction_states" tagName="createTable" />
+    <exclude-change idName="state_types" tagName="createTable" />
+    <exclude-change idName="transaction_types" tagName="createTable" />
+    <exclude-change idName="transactions" tagName="createTable" />
+    <exclude-change idName="users" tagName="createTable" />
+    <exclude-change idName="forgot_user_password_token#token" tagName="addUniqueConstraint" />
+    <exclude-change idName="forgot_user_password_token#user_id" tagName="addUniqueConstraint" />
+    <exclude-change idName="FK_BANK_ACCOUNTS_ON_ACCOUNT_TYPE" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="users#identifier" tagName="addUniqueConstraint" />
+    <exclude-change idName="FK_BANK_ACCOUNTS_ON_USER" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_CARDS_ON_BANK_ACCOUNT" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_FORGOT_USER_PASSWORD_TOKEN_ON_USER" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_TRANSACTIONS_ON_BANK_ACCOUNT_ISSUER" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_TRANSACTIONS_ON_BANK_ACCOUNT_RECEIVER" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_TRANSACTIONS_ON_TRANSACTION_TYPE" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_TRANSACTIONS_ON_STATE_TYPE" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_TRANSACTION_STATES_ON_STATE_TYPE" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_TRANSACTION_STATES_ON_TRANSACTION" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_USERS_ON_IDENTIFIER_TYPE" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_USERS_ON_ROLE" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="fk_rolper_on_permission" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="fk_rolper_on_role" tagName="addForeignKeyConstraint" />
+  </component>
+</project>
