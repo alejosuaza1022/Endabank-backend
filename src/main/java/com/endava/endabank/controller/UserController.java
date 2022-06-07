@@ -4,6 +4,7 @@ import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
