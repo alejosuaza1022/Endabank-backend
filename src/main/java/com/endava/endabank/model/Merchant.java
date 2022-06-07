@@ -48,7 +48,6 @@ public class Merchant {
     @Column(nullable = false)
     private LocalDateTime createAt;
 
-    @Column( nullable = false)
     private LocalDateTime updatedAt;
 
     @Column( nullable = false)
