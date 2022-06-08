@@ -13,6 +13,7 @@ public interface TransactionDao extends JpaRepository<Transaction, Integer> {
             " where state_type_id  = 1 and (bank_account_issuer_id = ?1 or bank_account_receiver_id = ?1 )",
             countQuery = "select count(*) from transactions where state_type_id  = 1 and (bank_account_issuer_id = ?1 " +
                     "or bank_account_receiver_id = ?1 )",nativeQuery = true)
+    
     Page<TransactionDto> getListTransactionsSummary(Integer id, Pageable pageable);
 
 

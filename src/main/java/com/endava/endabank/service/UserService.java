@@ -2,6 +2,7 @@ package com.endava.endabank.service;
 
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
@@ -34,6 +35,8 @@ public interface UserService {
     Map<String, String> updatePassword(UserPrincipalSecurity user, UpdatePasswordDto updatePasswordDto) throws AccessDeniedException;
 
     UserDetailsDto getUserDetails(UserPrincipalSecurity user, Collection<GrantedAuthority> authorities);
+
+    UserGeneralInfoDto getUserGeneralInfo(UserPrincipalSecurity user);
 
     Map<String, Object> verifyEmail(String email);
 

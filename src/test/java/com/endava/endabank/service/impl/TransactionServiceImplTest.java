@@ -2,15 +2,14 @@ package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.TransactionDao;
-import com.endava.endabank.dto.Transaction.TransactionCreateDto;
-import com.endava.endabank.dto.Transaction.TransactionCreatedDto;
+import com.endava.endabank.dto.transaction.TransactionCreateDto;
+import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.StateType;
 import com.endava.endabank.model.Transaction;
 import com.endava.endabank.service.BankAccountService;
 import com.endava.endabank.utils.TestUtils;
 import com.endava.endabank.utils.transaction.TransactionValidations;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

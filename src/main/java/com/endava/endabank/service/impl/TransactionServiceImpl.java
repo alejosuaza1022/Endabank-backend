@@ -2,9 +2,9 @@ package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.TransactionDao;
-import com.endava.endabank.dto.Transaction.TransactionCreateDto;
-import com.endava.endabank.dto.Transaction.TransactionCreatedDto;
-import com.endava.endabank.dto.Transaction.TransferFromMerchantDto;
+import com.endava.endabank.dto.transaction.TransactionCreateDto;
+import com.endava.endabank.dto.transaction.TransactionCreatedDto;
+import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.StateType;
 import com.endava.endabank.model.Transaction;
@@ -70,7 +70,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Transactional
     @Override
-    public TransactionCreatedDto createTransactionFromMerchant(TransferFromMerchantDto transferFromMerchantDto){
+    public TransactionCreatedDto createTransactionFromMerchant(TransactionFromMerchantDto transferFromMerchantDto){
         String api_id = transferFromMerchantDto.getApiId();
         String merchant_key = transferFromMerchantDto.getMerchantKey();
 

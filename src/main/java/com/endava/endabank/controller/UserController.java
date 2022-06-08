@@ -4,6 +4,7 @@ import com.endava.endabank.constants.Permissions;
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
@@ -75,6 +76,13 @@ public class UserController {
         Collection<GrantedAuthority> authorities = usernamePasswordAuthenticationToken.getAuthorities();
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
         return userService.getUserDetails(user, authorities);
+    }
+
+    @GetMapping("/general-info")
+    public UserGeneralInfoDto getGeneralInfo(Principal principal){
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
+        UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
+        return userService.getUserGeneralInfo(user);
     }
 
     @GetMapping(Routes.EMAIL_VALIDATION_ROUTE + Routes.EMAIL)

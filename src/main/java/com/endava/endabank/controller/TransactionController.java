@@ -1,9 +1,9 @@
 package com.endava.endabank.controller;
 
 import com.endava.endabank.constants.Routes;
-import com.endava.endabank.dto.Transaction.TransactionCreateDto;
-import com.endava.endabank.dto.Transaction.TransactionCreatedDto;
-import com.endava.endabank.dto.Transaction.TransferFromMerchantDto;
+import com.endava.endabank.dto.transaction.TransactionCreateDto;
+import com.endava.endabank.dto.transaction.TransactionCreatedDto;
+import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.service.TransactionService;
 import lombok.AllArgsConstructor;
@@ -19,12 +19,12 @@ import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
-@RequestMapping(Routes.API_ROUTE + "/transactions")
+@RequestMapping(Routes.API_ROUTE + Routes.TRANSACTIONS)
 @AllArgsConstructor
 public class TransactionController {
     private TransactionService transactionService;
 
-    @PostMapping("/send-money")
+    @PostMapping(Routes.SEND_MONEY)
     public ResponseEntity<TransactionCreatedDto> createTransaction(Principal principal, @Valid @RequestBody TransactionCreateDto transactionCreateDto) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
@@ -32,7 +32,7 @@ public class TransactionController {
     }
 
     @PostMapping("/pay")
-    public ResponseEntity<TransactionCreatedDto> createPayTransaction(@Valid @RequestBody TransferFromMerchantDto transferFromMerchantDto) {
+    public ResponseEntity<TransactionCreatedDto> createPayTransaction(@Valid @RequestBody TransactionFromMerchantDto transferFromMerchantDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.createTransactionFromMerchant(transferFromMerchantDto));
     }
 }

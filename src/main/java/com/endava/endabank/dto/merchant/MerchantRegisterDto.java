@@ -1,32 +1,30 @@
-package com.endava.endabank.dto.Transaction;
+package com.endava.endabank.dto.merchant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.math.BigInteger;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionCreateDto {
+public class MerchantRegisterDto {
+    private Integer id;
 
     @NotNull
-    private Double amount;
+    @Size(min = 10, max = 11)
+    private String taxId;
 
     @NotNull
-    private BigInteger bankAccountNumberIssuer;
-
-    @NotNull
-    private BigInteger bankAccountNumberReceiver;
-
-    private String description;
-
-    @Size(min = 6, max = 15)
+    @NotBlank
     private String address;
 
+    @NotNull
+    @NotBlank
+    private String storeName;
 }

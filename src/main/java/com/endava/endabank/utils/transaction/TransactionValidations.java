@@ -1,7 +1,7 @@
 package com.endava.endabank.utils.transaction;
 
 import com.endava.endabank.constants.Strings;
-import com.endava.endabank.dto.Transaction.TransactionCreateDto;
+import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.model.BankAccount;
 import com.google.common.annotations.VisibleForTesting;
@@ -15,11 +15,11 @@ import java.util.Objects;
 public class TransactionValidations {
 
     public void validateTransaction(Integer userId, BankAccount bankAccountIssuer,
-                                    BankAccount bankAccountReciver,
+                                    BankAccount bankAccountReceiver,
                                     TransactionCreateDto transactionCreateDto) {
         validateOwner(userId, bankAccountIssuer);
         validateAmount(transactionCreateDto.getAmount());
-        validateSameAccount(bankAccountIssuer, bankAccountReciver);
+        validateSameAccount(bankAccountIssuer, bankAccountReceiver);
     }
 
     @VisibleForTesting

@@ -1,4 +1,4 @@
-package com.endava.endabank.dto.Transaction;
+package com.endava.endabank.dto.transaction;
 
 import com.endava.endabank.dto.BankAccountDto;
 import com.endava.endabank.dto.BankAccountMinimalDto;
