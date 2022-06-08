@@ -1,9 +1,9 @@
 package com.endava.endabank.utils;
 
 import com.endava.endabank.constants.Strings;
-import com.endava.endabank.dto.BankAccountDto;
-import com.endava.endabank.dto.BankAccountMinimalDto;
-import com.endava.endabank.dto.CreateBankAccountDto;
+import com.endava.endabank.dto.bankaccount.BankAccountDto;
+import com.endava.endabank.dto.bankaccount.BankAccountMinimalDto;
+import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
 import com.endava.endabank.dto.StateTypeDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;

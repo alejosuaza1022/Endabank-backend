@@ -1,7 +1,7 @@
 package com.endava.endabank.dto.transaction;
 
-import com.endava.endabank.dto.BankAccountDto;
-import com.endava.endabank.dto.BankAccountMinimalDto;
+import com.endava.endabank.dto.bankaccount.BankAccountDto;
+import com.endava.endabank.dto.bankaccount.BankAccountMinimalDto;
 import com.endava.endabank.dto.StateTypeDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
