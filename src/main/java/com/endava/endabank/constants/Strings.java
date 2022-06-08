@@ -20,6 +20,7 @@ public final class Strings {
     public static final String PASSWORD_UPDATED = "Password updated.";
     public static final String CONSTRAINT_IDENTIFIER_VIOLATED = "There is already a user registered with this identifier.";
     public static final String CONSTRAINT_TAX_ID_VIOLATED = "There is already a merchant registered with this tax id";
+    public static final String CONSTRAINT_MERCHANT_VIOLATED = "There is already a request registered for the current user";
     public static final String CONSTRAINT_EMAIL_VIOLATED = "There is already a user registered with this email.";
     public static final String SECRET_JWT = System.getenv("JWT_ENDABANK_SECRET");
     public static final String MESSAGE_RESPONSE = "message";
