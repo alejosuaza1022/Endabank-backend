@@ -1,6 +1,5 @@
 package com.endava.endabank.dto.merchant;
 
-import com.endava.endabank.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

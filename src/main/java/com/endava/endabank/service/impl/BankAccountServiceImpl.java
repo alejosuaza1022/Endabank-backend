@@ -3,34 +3,33 @@ package com.endava.endabank.service.impl;
 import com.endava.endabank.constants.AccountTypes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.BankAccountDao;
-import com.endava.endabank.dto.CreateBankAccountDto;
-import com.endava.endabank.model.AccountType;
-import com.endava.endabank.model.BankAccount;
-import com.endava.endabank.service.AccountTypeService;
-import com.endava.endabank.service.BankAccountService;
-import com.endava.endabank.utils.BankAccountUtils;
-import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 import com.endava.endabank.dao.TransactionDao;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.BankAccountDto;
+import com.endava.endabank.dto.CreateBankAccountDto;
 import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
+import com.endava.endabank.model.AccountType;
+import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.User;
+import com.endava.endabank.service.AccountTypeService;
+import com.endava.endabank.service.BankAccountService;
+import com.endava.endabank.utils.BankAccountUtils;
 import com.endava.endabank.utils.Pagination;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
