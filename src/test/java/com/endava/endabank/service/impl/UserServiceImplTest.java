@@ -8,6 +8,7 @@ import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
@@ -198,6 +199,20 @@ class UserServiceImplTest {
     }
 
     @Test
+    void testGetGeneralUserInfoShouldSuccessWhenDataCorrect(){
+        UserServiceImpl userService1 = Mockito.spy(userService);
+        UserPrincipalSecurity userPrincipalSecurity = TestUtils.getUserPrincipalSecurity();
+        doReturn(TestUtils.getUserGeneralInfoDto(userPrincipalSecurity))
+                .when(userService1).mapToUserGeneralInfoDto(userPrincipalSecurity);
+        UserGeneralInfoDto userGeneralInfoDto = userService1.getUserGeneralInfo(userPrincipalSecurity);
+        assertEquals(userPrincipalSecurity.getIdentifier(),userGeneralInfoDto.getIdentifier());
+        assertEquals(userPrincipalSecurity.getIdentifierName(),userGeneralInfoDto.getIdentifierName());
+        assertEquals(userPrincipalSecurity.getFirstName(),userGeneralInfoDto.getFirstName());
+                assertEquals(userPrincipalSecurity.getLastName(),userGeneralInfoDto.getLastName());
+
+    }
+
+    @Test
     void testVerifyEmailShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
         String token = JwtManage.generateToken(1, user.getEmail(), TestUtils.SECRET_DUMMY);
@@ -330,7 +345,6 @@ class UserServiceImplTest {
     @Test
     void testGenerateEmailVerificationShouldFailWhenDataIncorrect() {
         User user = TestUtils.getUserNotAdmin();
-        ;
         String email = user.getEmail();
         user.setIsEmailVerified(true);
         assertThrows(BadDataException.class, () -> userService.generateEmailVerification(user, email));
@@ -340,6 +354,12 @@ class UserServiceImplTest {
     void testMapToUserDetailsDtoShouldSuccessWhenDataCorrect() {
         UserPrincipalSecurity user = TestUtils.getUserPrincipalSecurity();
         assertEquals(modelMapper.map(user, UserDetailsDto.class), userService.mapToUserDetailsDto(user));
+    }
+
+    @Test
+    void testMapToUserGeneralInfoDtoShouldSuccessWhenDataCorrect(){
+        UserPrincipalSecurity user = TestUtils.getUserPrincipalSecurity();
+        assertEquals(modelMapper.map(user,UserGeneralInfoDto.class),userService.mapToUserGeneralInfoDto(user));
     }
 
 

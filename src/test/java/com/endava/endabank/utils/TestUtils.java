@@ -1,14 +1,17 @@
 package com.endava.endabank.utils;
 
+import com.endava.endabank.constants.MerchantStates;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dto.BankAccountDto;
 import com.endava.endabank.dto.BankAccountMinimalDto;
 import com.endava.endabank.dto.CreateBankAccountDto;
 import com.endava.endabank.dto.StateTypeDto;
+import com.endava.endabank.dto.merchant.MerchantRegisterDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
@@ -17,6 +20,8 @@ import com.endava.endabank.model.AccountType;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.IdentifierType;
+import com.endava.endabank.model.Merchant;
+import com.endava.endabank.model.MerchantRequestState;
 import com.endava.endabank.model.Permission;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.StateType;
@@ -119,6 +124,32 @@ public final class TestUtils {
         return new IdentifierType(1, "CC", new ArrayList<>());
     }
 
+    public static MerchantRequestState getPendingMerchantRequestState(){
+        return new MerchantRequestState(1,"PENDING",new ArrayList<>());
+    }
+
+    public static Merchant getMerchantNotReviewed(){
+        MerchantRequestState pendingMerchantRequestState = TestUtils.getPendingMerchantRequestState();
+        User user = TestUtils.getUserNotAdmin();
+
+        return Merchant.builder()
+                .id(1)
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .merchantRequestState(pendingMerchantRequestState)
+                .user(user)
+                .build();
+    }
+
+    public static MerchantRegisterDto getMerchantRegisterDto(){
+        return MerchantRegisterDto.builder()
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .build();
+    }
+
     public static UserRegisterDto getUserRegisterDto() {
         return UserRegisterDto.builder().
                 email("user@test.test").
@@ -140,13 +171,20 @@ public final class TestUtils {
                 map(user, UserDetailsDto.class);
     }
 
+    public static UserGeneralInfoDto getUserGeneralInfoDto(UserPrincipalSecurity user){
+        return new ModelMapper().map(user,UserGeneralInfoDto.class);
+    }
+
     public static UserPrincipalSecurity getUserPrincipalSecurity() {
         return UserPrincipalSecurity.builder().
                 id(1).
                 email("user@test.com").
                 phoneNumber("3210000000").
                 firstName("principal").
-                isApproved(true).build();
+                isApproved(true).
+                identifier("123456789").
+                identifierName("CC").
+                lastName("Security").build();
     }
 
     public static UserAuthentication getUserAuthentication() {
