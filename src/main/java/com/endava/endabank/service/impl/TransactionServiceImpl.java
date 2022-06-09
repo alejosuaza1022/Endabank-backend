@@ -1,19 +1,22 @@
 package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
+import com.endava.endabank.dao.BankAccountDao;
+import com.endava.endabank.dao.MerchantDao;
 import com.endava.endabank.dao.TransactionDao;
+import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
-import com.endava.endabank.model.BankAccount;
-import com.endava.endabank.model.StateType;
-import com.endava.endabank.model.Transaction;
-import com.endava.endabank.model.TransactionType;
+import com.endava.endabank.model.*;
 import com.endava.endabank.service.BankAccountService;
+import com.endava.endabank.service.MerchantService;
 import com.endava.endabank.service.TransactionService;
+import com.endava.endabank.service.UserService;
 import com.endava.endabank.utils.transaction.TransactionValidations;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +30,9 @@ public class TransactionServiceImpl implements TransactionService {
     private ModelMapper modelMapper;
     private EntityManager entityManager;
     private TransactionValidations transactionValidations;
-
+    private MerchantService merchantService;
+    private UserService userService;
+    private PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -70,10 +75,22 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Transactional
     @Override
-    public TransactionCreatedDto createTransactionFromMerchant(TransactionFromMerchantDto transferFromMerchantDto){
-        String api_id = transferFromMerchantDto.getApiId();
-        String merchant_key = transferFromMerchantDto.getMerchantKey();
-
-        return null;
+    public TransactionCreatedDto createTransactionFromMerchant(TransactionFromMerchantDto transactionFromMerchantDto){
+        User user = userService.findByIdentifier(transactionFromMerchantDto.getIdentifier());
+        BankAccount bankAccountIssuer = bankAccountService.findByUser(user);
+        Merchant merchant = merchantService.findByMerchantKey(transactionFromMerchantDto.getMerchantKey());
+        User userMerchant = userService.findById(merchant.getUser().getId());
+        BankAccount bankAccountReceiver = bankAccountService.findByUser(userMerchant);
+        String apiId = merchant.getApiId();
+        String bankAccountPassword = bankAccountIssuer.getPassword();
+        transactionValidations.
+                validateExternalTransaction(apiId,bankAccountPassword,transactionFromMerchantDto,passwordEncoder);
+        TransactionCreateDto transactionCreateDto = new TransactionCreateDto();
+        transactionCreateDto.setBankAccountNumberIssuer(bankAccountIssuer.getAccountNumber());
+        transactionCreateDto.setBankAccountNumberReceiver(bankAccountReceiver.getAccountNumber());
+        transactionCreateDto.setAddress(transactionFromMerchantDto.getAddress());
+        transactionCreateDto.setAmount(transactionFromMerchantDto.getAmount());
+        transactionCreateDto.setDescription(transactionFromMerchantDto.getDescription());
+        return createTransaction(user.getId(),transactionCreateDto);
     }
 }

@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface MerchantDao extends JpaRepository<Merchant,Integer> {
     Optional<Merchant> findByTaxId(String taxId);
+
+    Optional<Merchant> findByMerchantKey(String merchantKey);
 }

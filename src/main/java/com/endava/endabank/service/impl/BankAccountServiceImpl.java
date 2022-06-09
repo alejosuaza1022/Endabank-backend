@@ -15,7 +15,7 @@ import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.User;
 import com.endava.endabank.service.AccountTypeService;
 import com.endava.endabank.service.BankAccountService;
-import com.endava.endabank.utils.BankAccountUtils;
+import com.endava.endabank.utils.bankaccount.BankAccountUtils;
 import com.endava.endabank.utils.Pagination;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -45,6 +45,12 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public BankAccount findByAccountNumber(BigInteger accountNumber) {
         return bankAccountDao.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new ResourceNotFoundException(Strings.BANK_ACCOUNT_NOT_FOUND));
+    }
+
+    @Override
+    public BankAccount findByUser(User user) {
+        return bankAccountDao.findByUser(user)
                 .orElseThrow(() -> new ResourceNotFoundException(Strings.BANK_ACCOUNT_NOT_FOUND));
     }
 

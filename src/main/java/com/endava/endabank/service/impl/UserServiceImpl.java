@@ -82,6 +82,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public User findByIdentifier(String identifier) {
+        return userDao.findByIdentifier(identifier).
+                orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+    }
+
+    @Override
     @Transactional
     public User save(UserRegisterDto userDto) {
         User user = modelMapper.map(userDto, User.class);

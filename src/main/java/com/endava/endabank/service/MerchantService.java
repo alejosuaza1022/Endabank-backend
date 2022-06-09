@@ -7,8 +7,7 @@ import java.util.Map;
 
 public interface MerchantService {
     Merchant findById(Integer id);
+    Merchant findByMerchantKey(String merchantKey);
 
     Map<String,String> save(Integer userId, MerchantRegisterDto merchantDto);
-
-
 }

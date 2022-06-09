@@ -2,6 +2,7 @@ package com.endava.endabank.utils;
 
 import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.model.BankAccount;
+import com.endava.endabank.utils.bankaccount.BankAccountUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

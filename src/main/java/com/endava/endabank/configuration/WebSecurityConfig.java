@@ -38,15 +38,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers(Routes.API_MERCHANT_ROUTE + "/**");
-    }
-
-    @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().cors().and()
                 .authorizeRequests().antMatchers(HttpMethod.POST, Routes.API_LOGIN_ROUTE,
-                        Routes.API_USERS_ROUTE, Routes.API_USERS_ROUTE + Routes.EMAIL_VALIDATION_ROUTE + "/**").permitAll();
+                        Routes.API_USERS_ROUTE, Routes.API_USERS_ROUTE + Routes.EMAIL_VALIDATION_ROUTE + "/**",
+                        Routes.API_PAY_MERCHANT_ROUTE).permitAll();
         httpSecurity.authorizeRequests().antMatchers(
                 HttpMethod.GET, Routes.API_USERS_ROUTE +
                         Routes.RESET_PASSWORD_ROUTE + "/**", Routes.SWAGGER_IU,

@@ -30,4 +30,7 @@ public class TransactionFromMerchantDto {
 
     @Size(min = 6, max = 15)
     private String address;
+
+    @NotNull
+    private String password;
 }
