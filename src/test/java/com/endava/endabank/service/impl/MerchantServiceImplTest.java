@@ -13,16 +13,21 @@ import com.endava.endabank.utils.TestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import com.endava.endabank.dto.merchant.MerchantFilterAuditDto;
+import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
+import com.endava.endabank.specification.MerchantSpecification;
+import com.endava.endabank.utils.Pagination;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-
+import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -42,13 +47,35 @@ public class MerchantServiceImplTest {
     private MerchantRequestStateService merchantRequestStateService;
 
     @Mock
+    private Pagination pagination;
+
+    @Mock
+    private Pageable pageable;
+
+    @Mock
+    private MerchantSpecification merchantSpecification;
+
+    @Mock
     private UserService userService;
+
     @InjectMocks
     private MerchantServiceImpl merchantService;
 
     @BeforeEach
     void setUp(){
-        merchantService = new MerchantServiceImpl(merchantDao,modelMapper,merchantRequestStateService,userService);
+        merchantService = new MerchantServiceImpl(merchantDao,modelMapper,merchantRequestStateService,userService,merchantSpecification,pagination);
+    }
+
+    @Test
+    void testMerchantGetFilterAuditDtoShouldSuccessWhenDataCorrect() {
+        MerchantFilterAuditDto merchantFilterAuditDto = new MerchantFilterAuditDto();
+        Integer page = 0;
+        when(modelMapper.map(merchantDao.findAll(
+                        merchantSpecification.filterAuditMerchant(merchantFilterAuditDto), pageable),
+                MerchantGetFilterAuditDto.class)).thenReturn(TestUtils.getMerchant());
+        MerchantGetFilterAuditDto merchantGetFilterAuditDtoAnswer = merchantService.
+                filterMerchantAudit(merchantFilterAuditDto, page);
+        assertNotNull(merchantGetFilterAuditDtoAnswer);
     }
 
     @Test
@@ -117,6 +144,5 @@ public class MerchantServiceImplTest {
         }
 
     }
-
 
 }

@@ -26,6 +26,7 @@
             **/com/endava/endabank/configuration/**,
             **/com/endava/endabank/security/jwtauthentication/JwtAuthenticationEntryPoint.java,
             **/com/endava/endabank/security/UserAuthentication.java,
+            **/com/endava/endabank/specification/**,
         </sonar.coverage.exclusions>
     </properties>
     <dependencies>

@@ -28,6 +28,8 @@ import com.endava.endabank.model.StateType;
 import com.endava.endabank.model.Transaction;
 import com.endava.endabank.model.TransactionType;
 import com.endava.endabank.model.User;
+import com.endava.endabank.dto.merchant.MerchantDataFilterAuditDto;
+import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.security.UserAuthentication;
 import com.sendgrid.Response;
 import lombok.AccessLevel;
@@ -37,13 +39,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestUtils {
@@ -303,6 +299,21 @@ public final class TestUtils {
                 transactionType(transactionType).bankAccountIssuer(bankAccountIssuer)
                 .stateDescription(Strings.TRANSACTION_COMPLETED).
                 bankAccountReceiver(bankAccountReceiver).build();
+    }
+    public static List<MerchantDataFilterAuditDto> getMerchantList() {
+        return List.of(MerchantDataFilterAuditDto.builder().storeName("testStore")
+                .reviewedByFirstName("admin")
+                .updatedAt("2020-09-06")
+                .merchantRequestStateName("APPROVED")
+                .build());
+    }
+    public static MerchantGetFilterAuditDto getMerchant() {
+        return MerchantGetFilterAuditDto.builder()
+                .totalElements(1)
+                .totalPages(1)
+                .size(10)
+                .content(getMerchantList())
+                .build();
     }
 
     public static TransactionCreatedDto getTransactionCreatedDto() {
