@@ -38,7 +38,7 @@ public class MerchantController {
         return ResponseEntity.status(HttpStatus.CREATED).body(merchantService.save(user.getId(), merchant)).getBody();
     }
 
-    @PostMapping("/filter/{page}")
+    @PostMapping(Routes.MERCHANT_FILTER)
     public ResponseEntity<MerchantGetFilterAuditDto> filterAuditMerchant(
             @RequestBody MerchantFilterAuditDto merchantFilterAuditDto, @PathVariable Integer page) {
         return ResponseEntity.status(HttpStatus.OK).

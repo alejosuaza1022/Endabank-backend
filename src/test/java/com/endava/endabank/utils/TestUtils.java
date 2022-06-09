@@ -7,6 +7,8 @@ import com.endava.endabank.dto.CreateBankAccountDto;
 import com.endava.endabank.dto.StateTypeDto;
 import com.endava.endabank.dto.Transaction.TransactionCreateDto;
 import com.endava.endabank.dto.Transaction.TransactionCreatedDto;
+import com.endava.endabank.dto.merchant.MerchantDataFilterAuditDto;
+import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
@@ -265,6 +267,21 @@ public final class TestUtils {
                 transactionType(transactionType).bankAccountIssuer(bankAccountIssuer)
                 .stateDescription(Strings.TRANSACTION_COMPLETED).
                 bankAccountReceiver(bankAccountReceiver).build();
+    }
+    public static List<MerchantDataFilterAuditDto> getMerchantList() {
+        return List.of(MerchantDataFilterAuditDto.builder().storeName("testStore")
+                .reviewedByFirstName("admin")
+                .updatedAt("2020-09-06")
+                .merchantRequestStateName("APPROVED")
+                .build());
+    }
+    public static MerchantGetFilterAuditDto getMerchant() {
+        return MerchantGetFilterAuditDto.builder()
+                .totalElements(1)
+                .totalPages(1)
+                .size(10)
+                .content(getMerchantList())
+                .build();
     }
 
     public static TransactionCreatedDto getTransactionCreatedDto() {

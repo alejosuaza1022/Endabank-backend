@@ -25,4 +25,11 @@ class PaginationTest {
         assertEquals(1, pageable.getPageNumber());
         assertEquals(Sort.unsorted(), pageable.getSort());
     }
+    @Test
+    void testGetPageableWithOutSortShouldSuccessWhenDataCorrect(){
+        Pagination pagination = new Pagination();
+        Pageable pageable = pagination.getPageable(1);
+        assertEquals(1, pageable.getPageNumber());
+        assertEquals(10, pageable.getPageSize());
+    }
 }

@@ -19,7 +19,6 @@ public class MerchantSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             Join<Merchant, User> reviewedBy = root.join("reviewedBy");
-
             if (request.getMerchantName() != null && !request.getMerchantName().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("storeName")),
                          request.getMerchantName().toLowerCase() + "%"));
@@ -28,9 +27,12 @@ public class MerchantSpecification {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(reviewedBy.get("firstName")),
                          request.getAdminName().toLowerCase() + "%"));
             }
-            if (request.getStartDate() != null && request.getEndDate() != null) {
+            if (request.getStartDate() != null && !request.getStartDate().isEmpty()) {
                 LocalDateTime startDate = LocalDateTime.parse(request.getStartDate()+"T00:00:00");
                 LocalDateTime endDate = LocalDateTime.parse(request.getStartDate()+"T23:59:59");
+                if (request.getEndDate() != null && !request.getEndDate().isEmpty()) {
+                    endDate = LocalDateTime.parse(request.getEndDate()+"T23:59:59");
+                }
                 predicates.add(criteriaBuilder.between(root.get("updatedAt"),
                         startDate, endDate));
             }
