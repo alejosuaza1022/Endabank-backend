@@ -47,12 +47,19 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public Map<String,String> save(Integer userId, MerchantRegisterDto merchantDto) {
         Merchant merchant = modelMapper.map(merchantDto, Merchant.class);
-        MerchantRequestState merchantRequestState = merchantRequestStateService.findById(MerchantStates.PENDING);
-
-        Optional<Merchant> merchantExists = merchantDao.findByTaxId(merchant.getTaxId());
-        if(merchantExists.isPresent()) throw new UniqueConstraintViolationException(Strings.CONSTRAINT_TAX_ID_VIOLATED);
-
         User user = userService.findById(userId);
+
+        Optional<Merchant> merchantExists = merchantDao.findByUser(user);
+        if(merchantExists.isPresent()){
+            throw new UniqueConstraintViolationException(Strings.CONSTRAINT_MERCHANT_VIOLATED);
+        }
+
+        merchantExists = merchantDao.findByTaxId(merchant.getTaxId());
+        if(merchantExists.isPresent()) {
+            throw new UniqueConstraintViolationException(Strings.CONSTRAINT_TAX_ID_VIOLATED);
+        }
+
+        MerchantRequestState merchantRequestState = merchantRequestStateService.findById(MerchantStates.PENDING);
 
         merchant.setUser(user);
         merchant.setMerchantRequestState(merchantRequestState);
