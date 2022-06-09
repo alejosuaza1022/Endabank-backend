@@ -1,4 +1,4 @@
-package com.endava.endabank.dto.Transaction;
+package com.endava.endabank.dto.transaction;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
