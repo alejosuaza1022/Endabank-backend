@@ -35,7 +35,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MerchantServiceImplTest {
+class MerchantServiceImplTest {
 
     @Mock
     private MerchantDao merchantDao;
@@ -109,21 +109,25 @@ public class MerchantServiceImplTest {
         @Test
         void testSaveShouldFailWhenUserAlreadyRegisterAMerchant(){
             User user = TestUtils.getUserNotAdmin();
+            Integer userId = user.getId();
+
             when(userService.findById(user.getId())).thenReturn(user);
             when(merchantDao.findByUser(user))
                     .thenReturn(Optional.of(TestUtils.getMerchantNotReviewed()));
-            assertThrows(UniqueConstraintViolationException.class, () -> merchantService.save(user.getId(),merchantRegisterDto));
+            assertThrows(UniqueConstraintViolationException.class, () -> merchantService.save(userId,merchantRegisterDto));
         }
 
         @Test
         void testSaveShouldFailWhenTaxIdAlreadyExists(){
             User user = TestUtils.getUserNotAdmin();
+            Integer userId = user.getId();
+
             when(userService.findById(user.getId())).thenReturn(user);
             when(merchantDao.findByUser(user)).thenReturn(Optional.empty());
             when(merchantDao.findByTaxId(merchantRegisterDto.getTaxId()))
                     .thenReturn(Optional.of(TestUtils.getMerchantNotReviewed()));
 
-            assertThrows(UniqueConstraintViolationException.class, () -> merchantService.save(user.getId(),merchantRegisterDto));
+            assertThrows(UniqueConstraintViolationException.class, () -> merchantService.save(userId,merchantRegisterDto));
         }
 
         @Test
