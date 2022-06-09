@@ -9,22 +9,8 @@ import com.endava.endabank.dto.merchant.MerchantDataFilterAuditDto;
 import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
-import com.endava.endabank.dto.user.UpdatePasswordDto;
-import com.endava.endabank.dto.user.UserDetailsDto;
-import com.endava.endabank.dto.user.UserPrincipalSecurity;
-import com.endava.endabank.dto.user.UserRegisterDto;
-import com.endava.endabank.dto.user.UserRegisterGetDto;
-import com.endava.endabank.dto.user.UserToApproveAccountDto;
-import com.endava.endabank.model.AccountType;
-import com.endava.endabank.model.BankAccount;
-import com.endava.endabank.model.ForgotUserPasswordToken;
-import com.endava.endabank.model.IdentifierType;
-import com.endava.endabank.model.Permission;
-import com.endava.endabank.model.Role;
-import com.endava.endabank.model.StateType;
-import com.endava.endabank.model.Transaction;
-import com.endava.endabank.model.TransactionType;
-import com.endava.endabank.model.User;
+import com.endava.endabank.dto.user.*;
+import com.endava.endabank.model.*;
 import com.endava.endabank.security.UserAuthentication;
 import com.sendgrid.Response;
 import lombok.AccessLevel;
@@ -34,13 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestUtils {
