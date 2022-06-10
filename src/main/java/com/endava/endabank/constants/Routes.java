@@ -3,7 +3,6 @@ package com.endava.endabank.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.hibernate.boot.archive.scan.spi.PackageInfoArchiveEntryHandler;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Routes {
