@@ -9,8 +9,6 @@ import com.endava.endabank.model.Transaction;
 import java.util.Map;
 
 public interface TransactionService {
-    //List<Transaction> findAllByBankAccountIssuerOrBankAccountReceiver(String bankAccountIssuer, String bankAccountReceiver);
-
     TransactionCreatedDto createTransaction(Integer userId, TransactionCreateDto transactionCreateDto);
 
     void setStateAndBalanceOfTransaction(Transaction transaction, BankAccount bankAccountIssuer,

@@ -36,6 +36,6 @@ public final class Routes {
     public static final String SEND_MONEY = "/send-money";
     public static final String PAY_TO_MERCHANT = "/pay";
     public static final String API_PAY_MERCHANT_ROUTE = API_MERCHANT_ROUTE + PAY_TO_MERCHANT;
-
+    public static final String MERCHANT_FILTER = "/filter/{page}";
 
 }

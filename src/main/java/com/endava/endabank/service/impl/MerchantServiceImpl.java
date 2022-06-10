@@ -3,6 +3,8 @@ package com.endava.endabank.service.impl;
 import com.endava.endabank.constants.MerchantStates;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.MerchantDao;
+import com.endava.endabank.dto.merchant.MerchantFilterAuditDto;
+import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.dto.merchant.MerchantRegisterDto;
 import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
 import com.endava.endabank.exceptions.custom.UniqueConstraintViolationException;
@@ -12,8 +14,11 @@ import com.endava.endabank.model.User;
 import com.endava.endabank.service.MerchantRequestStateService;
 import com.endava.endabank.service.MerchantService;
 import com.endava.endabank.service.UserService;
+import com.endava.endabank.specification.MerchantSpecification;
+import com.endava.endabank.utils.Pagination;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +34,8 @@ public class MerchantServiceImpl implements MerchantService {
     private ModelMapper modelMapper;
     private MerchantRequestStateService merchantRequestStateService;
     private UserService userService;
+    private MerchantSpecification merchantSpecification;
+    private Pagination pagination;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,12 +54,19 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public Map<String,String> save(Integer userId, MerchantRegisterDto merchantDto) {
         Merchant merchant = modelMapper.map(merchantDto, Merchant.class);
-        MerchantRequestState merchantRequestState = merchantRequestStateService.findById(MerchantStates.PENDING);
-
-        Optional<Merchant> merchantExists = merchantDao.findByTaxId(merchant.getTaxId());
-        if(merchantExists.isPresent()) throw new UniqueConstraintViolationException(Strings.CONSTRAINT_TAX_ID_VIOLATED);
-
         User user = userService.findById(userId);
+
+        Optional<Merchant> merchantExists = merchantDao.findByUser(user);
+        if(merchantExists.isPresent()){
+            throw new UniqueConstraintViolationException(Strings.CONSTRAINT_MERCHANT_VIOLATED);
+        }
+
+        merchantExists = merchantDao.findByTaxId(merchant.getTaxId());
+        if(merchantExists.isPresent()) {
+            throw new UniqueConstraintViolationException(Strings.CONSTRAINT_TAX_ID_VIOLATED);
+        }
+
+        MerchantRequestState merchantRequestState = merchantRequestStateService.findById(MerchantStates.PENDING);
 
         merchant.setUser(user);
         merchant.setMerchantRequestState(merchantRequestState);
@@ -62,5 +76,13 @@ public class MerchantServiceImpl implements MerchantService {
         map.put(Strings.MESSAGE_RESPONSE, Strings.MERCHANT_REQUEST_CREATED);
 
         return map;
+    }
+
+    @Override
+    public MerchantGetFilterAuditDto filterMerchantAudit(MerchantFilterAuditDto merchantFilterAuditDto, Integer page) {
+        Pageable pageable = pagination.getPageable(page);
+        return modelMapper.map(merchantDao.findAll(
+                merchantSpecification.filterAuditMerchant(merchantFilterAuditDto), pageable),
+                MerchantGetFilterAuditDto.class);
     }
 }

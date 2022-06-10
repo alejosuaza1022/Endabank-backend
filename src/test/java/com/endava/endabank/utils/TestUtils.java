@@ -1,14 +1,17 @@
 package com.endava.endabank.utils;
 
+import com.endava.endabank.constants.MerchantStates;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dto.bankaccount.BankAccountDto;
 import com.endava.endabank.dto.bankaccount.BankAccountMinimalDto;
 import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
 import com.endava.endabank.dto.StateTypeDto;
+import com.endava.endabank.dto.merchant.MerchantRegisterDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
@@ -17,12 +20,16 @@ import com.endava.endabank.model.AccountType;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.ForgotUserPasswordToken;
 import com.endava.endabank.model.IdentifierType;
+import com.endava.endabank.model.Merchant;
+import com.endava.endabank.model.MerchantRequestState;
 import com.endava.endabank.model.Permission;
 import com.endava.endabank.model.Role;
 import com.endava.endabank.model.StateType;
 import com.endava.endabank.model.Transaction;
 import com.endava.endabank.model.TransactionType;
 import com.endava.endabank.model.User;
+import com.endava.endabank.dto.merchant.MerchantDataFilterAuditDto;
+import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.security.UserAuthentication;
 import com.sendgrid.Response;
 import lombok.AccessLevel;
@@ -32,13 +39,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestUtils {
@@ -119,6 +120,32 @@ public final class TestUtils {
         return new IdentifierType(1, "CC", new ArrayList<>());
     }
 
+    public static MerchantRequestState getPendingMerchantRequestState(){
+        return new MerchantRequestState(1,"PENDING",new ArrayList<>());
+    }
+
+    public static Merchant getMerchantNotReviewed(){
+        MerchantRequestState pendingMerchantRequestState = TestUtils.getPendingMerchantRequestState();
+        User user = TestUtils.getUserNotAdmin();
+
+        return Merchant.builder()
+                .id(1)
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .merchantRequestState(pendingMerchantRequestState)
+                .user(user)
+                .build();
+    }
+
+    public static MerchantRegisterDto getMerchantRegisterDto(){
+        return MerchantRegisterDto.builder()
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .build();
+    }
+
     public static UserRegisterDto getUserRegisterDto() {
         return UserRegisterDto.builder().
                 email("user@test.test").
@@ -140,13 +167,20 @@ public final class TestUtils {
                 map(user, UserDetailsDto.class);
     }
 
+    public static UserGeneralInfoDto getUserGeneralInfoDto(UserPrincipalSecurity user){
+        return new ModelMapper().map(user,UserGeneralInfoDto.class);
+    }
+
     public static UserPrincipalSecurity getUserPrincipalSecurity() {
         return UserPrincipalSecurity.builder().
                 id(1).
                 email("user@test.com").
                 phoneNumber("3210000000").
                 firstName("principal").
-                isApproved(true).build();
+                isApproved(true).
+                identifier("123456789").
+                identifierName("CC").
+                lastName("Security").build();
     }
 
     public static UserAuthentication getUserAuthentication() {
@@ -265,6 +299,21 @@ public final class TestUtils {
                 transactionType(transactionType).bankAccountIssuer(bankAccountIssuer)
                 .stateDescription(Strings.TRANSACTION_COMPLETED).
                 bankAccountReceiver(bankAccountReceiver).build();
+    }
+    public static List<MerchantDataFilterAuditDto> getMerchantList() {
+        return List.of(MerchantDataFilterAuditDto.builder().storeName("testStore")
+                .reviewedByFirstName("admin")
+                .updatedAt("2020-09-06")
+                .merchantRequestStateName("APPROVED")
+                .build());
+    }
+    public static MerchantGetFilterAuditDto getMerchant() {
+        return MerchantGetFilterAuditDto.builder()
+                .totalElements(1)
+                .totalPages(1)
+                .size(10)
+                .content(getMerchantList())
+                .build();
     }
 
     public static TransactionCreatedDto getTransactionCreatedDto() {
