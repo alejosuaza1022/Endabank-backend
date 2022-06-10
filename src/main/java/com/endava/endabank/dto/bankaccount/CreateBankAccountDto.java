@@ -1,4 +1,4 @@
-package com.endava.endabank.dto;
+package com.endava.endabank.dto.bankaccount;
 
 import com.endava.endabank.model.AccountType;
 import com.endava.endabank.model.User;

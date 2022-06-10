@@ -9,9 +9,7 @@ import java.util.Map;
 
 public interface MerchantService {
     Merchant findById(Integer id);
-
-    Map<String, String> save(Integer userId, MerchantRegisterDto merchantDto);
-
+    Merchant findByMerchantKey(String merchantKey);
+    Map<String,String> save(Integer userId, MerchantRegisterDto merchantDto);
     MerchantGetFilterAuditDto filterMerchantAudit(MerchantFilterAuditDto merchantFilterAuditDto, Integer page);
-
 }

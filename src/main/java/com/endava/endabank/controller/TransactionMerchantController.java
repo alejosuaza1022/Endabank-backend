@@ -17,17 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Map;
 
 @RestController
-@RequestMapping(Routes.API_ROUTE + Routes.TRANSACTIONS)
+@RequestMapping(Routes.API_MERCHANT_ROUTE)
 @AllArgsConstructor
-public class TransactionController {
+public class TransactionMerchantController {
     private TransactionService transactionService;
 
-    @PostMapping(Routes.SEND_MONEY)
-    public ResponseEntity<TransactionCreatedDto> createTransaction(Principal principal, @Valid @RequestBody TransactionCreateDto transactionCreateDto) {
+    @PostMapping(Routes.PAY_TO_MERCHANT)
+    public ResponseEntity<Map<String, Object>> createPayTransaction(Principal principal, @Valid @RequestBody TransactionFromMerchantDto transferFromMerchantDto) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
-        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.createTransaction(user.getId(), transactionCreateDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.createTransactionFromMerchant(user.getId(),transferFromMerchantDto));
     }
 }

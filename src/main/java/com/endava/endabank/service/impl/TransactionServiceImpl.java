@@ -1,22 +1,28 @@
 package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
+import com.endava.endabank.dao.BankAccountDao;
+import com.endava.endabank.dao.MerchantDao;
 import com.endava.endabank.dao.TransactionDao;
+import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
-import com.endava.endabank.model.BankAccount;
-import com.endava.endabank.model.StateType;
-import com.endava.endabank.model.Transaction;
-import com.endava.endabank.model.TransactionType;
+import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
+import com.endava.endabank.model.*;
 import com.endava.endabank.service.BankAccountService;
+import com.endava.endabank.service.MerchantService;
 import com.endava.endabank.service.TransactionService;
+import com.endava.endabank.service.UserService;
 import com.endava.endabank.utils.transaction.TransactionValidations;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +32,9 @@ public class TransactionServiceImpl implements TransactionService {
     private ModelMapper modelMapper;
     private EntityManager entityManager;
     private TransactionValidations transactionValidations;
-
+    private MerchantService merchantService;
+    private UserService userService;
+    private PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -65,5 +73,32 @@ public class TransactionServiceImpl implements TransactionService {
         bankAccountService.increaseBalance(bankAccountReceiver, amount);
         transaction.setStateType(stateType);
         transaction.setStateDescription(Strings.TRANSACTION_COMPLETED);
+    }
+
+    @Transactional
+    @Override
+    public Map<String, Object> createTransactionFromMerchant(Integer userId,TransactionFromMerchantDto transactionFromMerchantDto){
+        Map<String, Object> map = new HashMap<>();
+        User user = userService.findByIdentifier(transactionFromMerchantDto.getIdentifier());
+        BankAccount bankAccountIssuer = bankAccountService.findByUser(user);
+        Merchant merchant = merchantService.findByMerchantKey(transactionFromMerchantDto.getMerchantKey());
+        User userMerchant = userService.findById(merchant.getUser().getId());
+        BankAccount bankAccountReceiver = bankAccountService.findByUser(userMerchant);
+        String apiId = merchant.getApiId();
+        transactionValidations.
+                validateExternalTransaction(userId,user.getId(),apiId,transactionFromMerchantDto);
+        TransactionCreateDto transactionCreateDto = new TransactionCreateDto();
+        transactionCreateDto.setBankAccountNumberIssuer(bankAccountIssuer.getAccountNumber());
+        transactionCreateDto.setBankAccountNumberReceiver(bankAccountReceiver.getAccountNumber());
+        transactionCreateDto.setAddress(transactionFromMerchantDto.getAddress());
+        transactionCreateDto.setAmount(transactionFromMerchantDto.getAmount());
+        transactionCreateDto.setDescription(transactionFromMerchantDto.getDescription());
+        TransactionCreatedDto transactionCreatedDto = createTransaction(user.getId(),transactionCreateDto);
+        if(transactionCreatedDto.getStateType().getId().equals(1)){
+            map.put(Strings.STATUS_AUTHORISED,transactionCreatedDto);
+        }else{
+            map.put(Strings.STATUS_REFUSED,transactionCreatedDto);
+        }
+        return map;
     }
 }

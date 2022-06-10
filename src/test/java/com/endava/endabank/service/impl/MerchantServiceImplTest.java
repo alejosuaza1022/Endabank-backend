@@ -4,6 +4,7 @@ import com.endava.endabank.constants.MerchantStates;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.MerchantDao;
 import com.endava.endabank.dto.merchant.MerchantRegisterDto;
+import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
 import com.endava.endabank.exceptions.custom.UniqueConstraintViolationException;
 import com.endava.endabank.model.Merchant;
 import com.endava.endabank.model.User;
@@ -14,18 +15,18 @@ import com.endava.endabank.utils.TestUtils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
+
+import org.junit.jupiter.api.*;
 import com.endava.endabank.dto.merchant.MerchantFilterAuditDto;
 import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.specification.MerchantSpecification;
 import com.endava.endabank.utils.Pagination;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 
@@ -35,6 +36,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class MerchantServiceImplTest {
 
     @Mock
@@ -132,7 +134,6 @@ class MerchantServiceImplTest {
 
         @Test
         void testSaveShouldSuccessWhenDataCorrect(){
-            Merchant merchant = TestUtils.getMerchantNotReviewed();
             User user = TestUtils.getUserNotAdmin();
 
             when(userService.findById(user.getId())).thenReturn(user);
@@ -146,7 +147,17 @@ class MerchantServiceImplTest {
             assertEquals(Strings.MERCHANT_REQUEST_CREATED,map.get(Strings.MESSAGE_RESPONSE));
 
         }
-
+        @Test
+        void testFindByMerchantKeyShouldFailWhenMerchantKeyNotCorrect(){
+            when(merchantDao.findByMerchantKey("123")).thenReturn(Optional.empty());
+            assertThrows(ResourceNotFoundException.class, () -> merchantService.findByMerchantKey("123"));
+        }
+        @Test
+        void testFindByMerchantKeyShouldSuccessWhenMerchantKeyCorrect(){
+            Merchant merchant = TestUtils.getMerchantNotReviewed();
+            when(merchantDao.findByMerchantKey("123")).thenReturn(Optional.of(merchant));
+            assertEquals(merchant,merchantService.findByMerchantKey("123"));
+        }
     }
 
 }

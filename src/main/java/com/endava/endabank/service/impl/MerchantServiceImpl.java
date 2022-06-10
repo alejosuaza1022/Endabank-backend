@@ -45,6 +45,13 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Merchant findByMerchantKey(String merchantKey) {
+        return merchantDao.findByMerchantKey(merchantKey).
+                orElseThrow(() -> new ResourceNotFoundException(Strings.STATUS_ERROR + ": " +Strings.MERCHANT_NOT_FOUND));
+    }
+
+    @Override
     public Map<String,String> save(Integer userId, MerchantRegisterDto merchantDto) {
         Merchant merchant = modelMapper.map(merchantDto, Merchant.class);
         User user = userService.findById(userId);

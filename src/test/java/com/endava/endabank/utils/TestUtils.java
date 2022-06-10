@@ -2,13 +2,14 @@ package com.endava.endabank.utils;
 
 import com.endava.endabank.constants.MerchantStates;
 import com.endava.endabank.constants.Strings;
-import com.endava.endabank.dto.BankAccountDto;
-import com.endava.endabank.dto.BankAccountMinimalDto;
-import com.endava.endabank.dto.CreateBankAccountDto;
+import com.endava.endabank.dto.bankaccount.BankAccountDto;
+import com.endava.endabank.dto.bankaccount.BankAccountMinimalDto;
+import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
 import com.endava.endabank.dto.StateTypeDto;
 import com.endava.endabank.dto.merchant.MerchantRegisterDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
+import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserGeneralInfoDto;
@@ -38,6 +39,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -157,6 +160,26 @@ public final class TestUtils {
                 typeIdentifierId(1).build();
     }
 
+    public static TransactionFromMerchantDto getTransactionFromMerchantDto(){
+        return TransactionFromMerchantDto.builder()
+                .merchantKey("12345")
+                .identifier("1001000000")
+                .apiId("12345")
+                .amount(10000d)
+                .description("test")
+                .address("111.111.111.111")
+                .build();
+    }
+    public static TransactionFromMerchantDto getTransactionFromMerchantDtoWithBadAmount(){
+        return TransactionFromMerchantDto.builder()
+                .merchantKey("12345")
+                .identifier("1001000000")
+                .apiId("12345")
+                .amount(-10000d)
+                .description("test")
+                .address("111.111.111.111")
+                .build();
+    }
     public static UserRegisterGetDto getUserRegisterGetDto() {
         return new ModelMapper().
                 map(getUserNotAdmin(), UserRegisterGetDto.class);
@@ -323,6 +346,14 @@ public final class TestUtils {
                 amount(1000.0).bankAccountIssuer(getBankAccountDto()).
                 bankAccountReceiver(getBankAccountMinimalDto()).
                 stateType(stateTypeDto).stateDescription(Strings.TRANSACTION_COMPLETED).build();
+    }
+    public static TransactionCreatedDto getTransactionNotCreatedDto() {
+        StateTypeDto stateTypeDto = StateTypeDto.builder().id(2).name("FAILED").build();
+        return TransactionCreatedDto.builder().
+                id(2).
+                amount(1000.0).bankAccountIssuer(getBankAccountDto()).
+                bankAccountReceiver(getBankAccountMinimalDto()).
+                stateType(stateTypeDto).stateDescription("FAILED").build();
     }
 
     public static StateType getStateTypeApproved() {

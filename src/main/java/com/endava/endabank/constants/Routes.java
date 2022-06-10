@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Routes {
     public static final String API_ROUTE = "/api/v1";
+    public static final String API_MERCHANT_ROUTE = "/api/merchants/v1";
     public static final String USERS_ROUTE = "/users";
     public static final String MERCHANTS_ROUTE = "/merchants";
     public static final String CREATE_MERCHANT_REQUEST = "/create-request";
@@ -32,6 +33,8 @@ public final class Routes {
     public static final String SUMMARY="/summary/{email}/{page}";
     public static final String TRANSACTIONS = "/transactions";
     public static final String SEND_MONEY = "/send-money";
+    public static final String PAY_TO_MERCHANT = "/pay";
+    public static final String API_PAY_MERCHANT_ROUTE = API_MERCHANT_ROUTE + PAY_TO_MERCHANT;
     public static final String MERCHANT_FILTER = "/filter/{page}";
 
 }

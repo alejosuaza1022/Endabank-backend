@@ -1,4 +1,4 @@
-package com.endava.endabank.utils;
+package com.endava.endabank.utils.bankaccount;
 
 import com.endava.endabank.dao.BankAccountDao;
 import lombok.AccessLevel;
