@@ -71,7 +71,20 @@ class BankAccountServiceImplTest {
         BankAccount bankAccount1 = bankAccountService.findByAccountNumber(bankAccount.getAccountNumber());
         assertEquals(bankAccount, bankAccount1);
     }
-
+    @Test
+    void testFindByUserShouldFailWhenBankAccountNotFound() {
+        User user = TestUtils.getUserNotAdmin();
+        assertThrows(ResourceNotFoundException.class, () -> bankAccountService.findByUser(user));
+    }
+    @Test
+    void testFindByUserShouldSuccessWhenDataCorrect() {
+        User user = TestUtils.getUserNotAdmin();
+        BankAccount bankAccount = TestUtils.getBankAccount();
+        bankAccount.setUser(user);
+        when(bankAccountDao.findByUser(user)).thenReturn(Optional.of(bankAccount));
+        BankAccount bankAccount1 = bankAccountService.findByUser(user);
+        assertEquals(bankAccount, bankAccount1);
+    }
     @Test
     void reduceBalance() {
         BankAccount bankAccount = TestUtils.getBankAccount();

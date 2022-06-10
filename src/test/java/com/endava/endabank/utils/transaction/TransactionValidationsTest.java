@@ -1,6 +1,7 @@
 package com.endava.endabank.utils.transaction;
 
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
+import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.utils.TestUtils;
@@ -46,7 +47,21 @@ class TransactionValidationsTest {
     @Test
     void validateSameAccount() {
         BankAccount bankAccountIssuer = TestUtils.getBankAccount();
-        BankAccount bankAccountReciver = TestUtils.getBankAccount();
-        Assert.assertThrows(BadDataException.class, () -> transactionValidations.validateSameAccount(bankAccountIssuer, bankAccountReciver));
+        BankAccount bankAccountReceiver = TestUtils.getBankAccount();
+        Assert.assertThrows(BadDataException.class, () -> transactionValidations.validateSameAccount(bankAccountIssuer, bankAccountReceiver));
+    }
+    @Test
+    void testValidateExternalTransactionShouldFailWhenUserNotEqual() {
+        TransactionFromMerchantDto transactionFromMerchant = TestUtils.getTransactionFromMerchantDto();
+        Assert.assertThrows(BadDataException.class, () -> transactionValidations.validateExternalTransaction(1, 2, "1", transactionFromMerchant));
+    }
+    @Test
+    void testValidateExternalTransactionShouldFailWhenApiIdNotEqual() {
+        TransactionFromMerchantDto transactionFromMerchant = TestUtils.getTransactionFromMerchantDto();
+        Assert.assertThrows(BadDataException.class, () -> transactionValidations.validateExternalTransaction(1, 1, "2", transactionFromMerchant));
+    }
+    @Test
+    void testValidateExternalTransactionShouldSuccessWhenDataCorrect() {
+        transactionValidations.validateExternalTransaction(1, 1, "12345", TestUtils.getTransactionFromMerchantDto());
     }
 }
