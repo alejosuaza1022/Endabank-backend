@@ -48,24 +48,20 @@ public class TransactionValidations {
         }
     }
 
-    public void validateExternalTransaction(String apiId, String bankAccountPassword,
-                                            TransactionFromMerchantDto transferFromMerchantDto,
-                                            PasswordEncoder passwordEncoder){
+    public void validateExternalTransaction(Integer userId, Integer userIdBd, String apiId,TransactionFromMerchantDto transferFromMerchantDto){
+        validateUser(userId,userIdBd);
         validateMerchantApiId(apiId,transferFromMerchantDto.getApiId());
-        validateUserPassword(bankAccountPassword,transferFromMerchantDto.getPassword(),passwordEncoder);
     }
 
     void validateMerchantApiId(String apiIdDb, String apiId){
         if (!Objects.equals(apiIdDb, apiId)){
-            throw new BadDataException(Strings.BAD_API_ID);
+            throw new BadDataException(Strings.STATUS_ERROR +": "+ Strings.BAD_API_ID);
         }
     }
 
-    void validateUserPassword(String passwordBd, String password,
-                              PasswordEncoder passwordEncoder)throws AccessDeniedException {
-        if(!passwordBd.equals(password)){
-        //if (!passwordEncoder.matches(passwordBd, password)) {
-            throw new AccessDeniedException(Strings.BAD_BANK_ACCOUNT_PASSWORD);
+    void validateUser(Integer userId, Integer userIdBd){
+        if (!Objects.equals(userId, userIdBd)){
+            throw new BadDataException(Strings.STATUS_FRAUD +": "+ Strings.BAD_USER_DATA);
         }
     }
 }

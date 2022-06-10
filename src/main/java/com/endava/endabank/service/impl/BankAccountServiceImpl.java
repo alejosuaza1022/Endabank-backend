@@ -51,7 +51,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public BankAccount findByUser(User user) {
         return bankAccountDao.findByUser(user)
-                .orElseThrow(() -> new ResourceNotFoundException(Strings.BANK_ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(Strings.STATUS_ERROR + ": " +Strings.BANK_ACCOUNT_NOT_FOUND));
     }
 
     @Override

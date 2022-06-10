@@ -41,7 +41,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Transactional(readOnly = true)
     public Merchant findByMerchantKey(String merchantKey) {
         return merchantDao.findByMerchantKey(merchantKey).
-                orElseThrow(() -> new ResourceNotFoundException(Strings.MERCHANT_NOT_FOUND));
+                orElseThrow(() -> new ResourceNotFoundException(Strings.STATUS_ERROR + ": " +Strings.MERCHANT_NOT_FOUND));
     }
 
     @Override

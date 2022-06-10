@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -75,22 +77,28 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Transactional
     @Override
-    public TransactionCreatedDto createTransactionFromMerchant(TransactionFromMerchantDto transactionFromMerchantDto){
+    public Map<String, Object> createTransactionFromMerchant(Integer userId,TransactionFromMerchantDto transactionFromMerchantDto){
+        Map<String, Object> map = new HashMap<>();
         User user = userService.findByIdentifier(transactionFromMerchantDto.getIdentifier());
         BankAccount bankAccountIssuer = bankAccountService.findByUser(user);
         Merchant merchant = merchantService.findByMerchantKey(transactionFromMerchantDto.getMerchantKey());
         User userMerchant = userService.findById(merchant.getUser().getId());
         BankAccount bankAccountReceiver = bankAccountService.findByUser(userMerchant);
         String apiId = merchant.getApiId();
-        String bankAccountPassword = bankAccountIssuer.getPassword();
         transactionValidations.
-                validateExternalTransaction(apiId,bankAccountPassword,transactionFromMerchantDto,passwordEncoder);
+                validateExternalTransaction(userId,user.getId(),apiId,transactionFromMerchantDto);
         TransactionCreateDto transactionCreateDto = new TransactionCreateDto();
         transactionCreateDto.setBankAccountNumberIssuer(bankAccountIssuer.getAccountNumber());
         transactionCreateDto.setBankAccountNumberReceiver(bankAccountReceiver.getAccountNumber());
         transactionCreateDto.setAddress(transactionFromMerchantDto.getAddress());
         transactionCreateDto.setAmount(transactionFromMerchantDto.getAmount());
         transactionCreateDto.setDescription(transactionFromMerchantDto.getDescription());
-        return createTransaction(user.getId(),transactionCreateDto);
+        TransactionCreatedDto transactionCreatedDto = createTransaction(user.getId(),transactionCreateDto);
+        if(transactionCreatedDto.getStateType().getId().equals(1)){
+            map.put(Strings.STATUS_AUTHORISED,transactionCreatedDto);
+        }else{
+            map.put(Strings.STATUS_REFUSED,transactionCreatedDto);
+        }
+        return map;
     }
 }

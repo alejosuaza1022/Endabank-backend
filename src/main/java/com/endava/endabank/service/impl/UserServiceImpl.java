@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public User findByIdentifier(String identifier) {
         return userDao.findByIdentifier(identifier).
-                orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+                orElseThrow(() -> new UsernameNotFoundException(Strings.STATUS_FRAUD + ": " + Strings.USER_NOT_FOUND));
     }
 
     @Override
