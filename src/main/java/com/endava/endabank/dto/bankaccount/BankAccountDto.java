@@ -1,16 +1,18 @@
-package com.endava.endabank.dto;
+package com.endava.endabank.dto.bankaccount;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class BankAccountDto {
-    private String accountNumber;
-    private Float balance;
+    private BigInteger accountNumber;
+    private Double balance;
     private Integer id;
 }

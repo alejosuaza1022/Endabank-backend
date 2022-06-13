@@ -31,6 +31,7 @@
             **/com/endava/endabank/configuration/**,
             **/com/endava/endabank/security/jwtauthentication/JwtAuthenticationEntryPoint.java,
             **/com/endava/endabank/security/UserAuthentication.java,
+            **/com/endava/endabank/specification/**,
         </sonar.coverage.exclusions>
     </properties>
     <dependencies>
@@ -185,6 +186,7 @@
                     <url>${env.ENDABANK_DB_URL}</url>
                     <user>${env.ENDABANK_DB_USERNAME}</user>
                     <password>${env.ENDABANK_DB_PASSWORD}</password>
+                    <outOfOrder>true</outOfOrder>
                 </configuration>
             </plugin>
             <plugin>

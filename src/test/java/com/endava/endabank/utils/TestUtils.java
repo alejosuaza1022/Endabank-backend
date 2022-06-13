@@ -1,15 +1,36 @@
 package com.endava.endabank.utils;
 
+import com.endava.endabank.constants.MerchantStates;
 import com.endava.endabank.constants.Strings;
-import com.endava.endabank.dto.CreateBankAccountDto;
-import com.endava.endabank.dto.BankAccountDto;
+import com.endava.endabank.dto.bankaccount.BankAccountDto;
+import com.endava.endabank.dto.bankaccount.BankAccountMinimalDto;
+import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
+import com.endava.endabank.dto.StateTypeDto;
+import com.endava.endabank.dto.merchant.MerchantRegisterDto;
+import com.endava.endabank.dto.transaction.TransactionCreateDto;
+import com.endava.endabank.dto.transaction.TransactionCreatedDto;
+import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
 import com.endava.endabank.dto.user.UserToApproveAccountDto;
-import com.endava.endabank.model.*;
+import com.endava.endabank.model.AccountType;
+import com.endava.endabank.model.BankAccount;
+import com.endava.endabank.model.ForgotUserPasswordToken;
+import com.endava.endabank.model.IdentifierType;
+import com.endava.endabank.model.Merchant;
+import com.endava.endabank.model.MerchantRequestState;
+import com.endava.endabank.model.Permission;
+import com.endava.endabank.model.Role;
+import com.endava.endabank.model.StateType;
+import com.endava.endabank.model.Transaction;
+import com.endava.endabank.model.TransactionType;
+import com.endava.endabank.model.User;
+import com.endava.endabank.dto.merchant.MerchantDataFilterAuditDto;
+import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.security.UserAuthentication;
 import com.sendgrid.Response;
 import lombok.AccessLevel;
@@ -18,14 +39,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestUtils {
@@ -58,7 +75,7 @@ public final class TestUtils {
                 lastName("User").build();
     }
 
-    public static UserToApproveAccountDto getUserNotApprovedAccountDto() {
+    public static UserToApproveAccountDto getUserNotAprrovedAccountDto() {
         UserToApproveAccountDto userToApproveAccountDto = getUserApprovedAccountDto();
         userToApproveAccountDto.setApproved(false);
         return userToApproveAccountDto;
@@ -106,6 +123,32 @@ public final class TestUtils {
         return new IdentifierType(1, "CC", new ArrayList<>());
     }
 
+    public static MerchantRequestState getPendingMerchantRequestState(){
+        return new MerchantRequestState(1,"PENDING",new ArrayList<>());
+    }
+
+    public static Merchant getMerchantNotReviewed(){
+        MerchantRequestState pendingMerchantRequestState = TestUtils.getPendingMerchantRequestState();
+        User user = TestUtils.getUserNotAdmin();
+
+        return Merchant.builder()
+                .id(1)
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .merchantRequestState(pendingMerchantRequestState)
+                .user(user)
+                .build();
+    }
+
+    public static MerchantRegisterDto getMerchantRegisterDto(){
+        return MerchantRegisterDto.builder()
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .build();
+    }
+
     public static UserRegisterDto getUserRegisterDto() {
         return UserRegisterDto.builder().
                 email("user@test.test").
@@ -117,6 +160,26 @@ public final class TestUtils {
                 typeIdentifierId(1).build();
     }
 
+    public static TransactionFromMerchantDto getTransactionFromMerchantDto(){
+        return TransactionFromMerchantDto.builder()
+                .merchantKey("12345")
+                .identifier("1001000000")
+                .apiId("12345")
+                .amount(10000d)
+                .description("test")
+                .address("111.111.111.111")
+                .build();
+    }
+    public static TransactionFromMerchantDto getTransactionFromMerchantDtoWithBadAmount(){
+        return TransactionFromMerchantDto.builder()
+                .merchantKey("12345")
+                .identifier("1001000000")
+                .apiId("12345")
+                .amount(-10000d)
+                .description("test")
+                .address("111.111.111.111")
+                .build();
+    }
     public static UserRegisterGetDto getUserRegisterGetDto() {
         return new ModelMapper().
                 map(getUserNotAdmin(), UserRegisterGetDto.class);
@@ -127,13 +190,20 @@ public final class TestUtils {
                 map(user, UserDetailsDto.class);
     }
 
+    public static UserGeneralInfoDto getUserGeneralInfoDto(UserPrincipalSecurity user){
+        return new ModelMapper().map(user,UserGeneralInfoDto.class);
+    }
+
     public static UserPrincipalSecurity getUserPrincipalSecurity() {
         return UserPrincipalSecurity.builder().
                 id(1).
                 email("user@test.com").
                 phoneNumber("3210000000").
                 firstName("principal").
-                isApproved(true).build();
+                isApproved(true).
+                identifier("123456789").
+                identifierName("CC").
+                lastName("Security").build();
     }
 
     public static UserAuthentication getUserAuthentication() {
@@ -184,15 +254,23 @@ public final class TestUtils {
                 phoneNumber("3210000000").
                 isApproved(true).build();
     }
+
     public static List<User> getUserList() {
         return Arrays.asList(getUserNotAdmin(), getUserAdmin());
     }
-    public static Response getSendGridResponse(){
+
+    public static Response getSendGridResponse() {
         Response response = new Response();
         response.setStatusCode(202);
         response.setBody("Success");
         response.setHeaders(new HashMap<>());
         return response;
+    }
+
+    public static UserToApproveAccountDto getUserNotApprovedAccountDto() {
+        UserToApproveAccountDto userToApproveAccountDto = getUserApprovedAccountDto();
+        userToApproveAccountDto.setApproved(false);
+        return userToApproveAccountDto;
     }
 
     public static AccountType getAccountType() {
@@ -206,28 +284,11 @@ public final class TestUtils {
                 id(1).
                 accountNumber("1111111111111111").
                 accountType(accountType).
-                balance(1000000F).
+                balance(1000000.0).
                 password("1111").
                 user(user).build();
     }
 
-    public static BankAccountDto getBankAccountDto() {
-        return BankAccountDto.builder().
-                id(1).
-                accountNumber("1111111111111111").
-                balance(1000000F).build();
-    }
-    public static BankAccount getBankAccount() {
-        AccountType accountType = TestUtils.getAccountType();
-        User user = TestUtils.getUserAdmin();
-        return BankAccount.builder().
-                id(1).
-                accountNumber(BigInteger.valueOf(Long.parseLong("1000000000000000"))).
-                accountType(accountType).
-                balance(1000000F).
-                password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
-                user(user).build();
-    }
 
     public static BankAccount getBadBankAccount() {
         AccountType accountType = TestUtils.getAccountType();
@@ -236,8 +297,101 @@ public final class TestUtils {
                 id(1).
                 accountNumber(BigInteger.valueOf(Long.parseLong("10000000000001"))).
                 accountType(accountType).
-                balance(1000000F).
+                balance(1000000.0).
                 password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
                         user(user).build();
+    }
+
+    public static TransactionCreateDto getTransactionCreateDto() {
+        return TransactionCreateDto.builder().
+                amount(10000.0).
+                description("description").
+                bankAccountNumberIssuer(BigInteger.valueOf(Long.parseLong("1111111111111111"))).
+                bankAccountNumberReceiver(BigInteger.valueOf(Long.parseLong("0000000000000001"))).
+                address("235.30.171.21").build();
+    }
+
+    public static Transaction getTransaction() {
+        TransactionType transactionType = TransactionType.builder().id(1).build();
+        BankAccount bankAccountIssuer = getBankAccount();
+        BankAccount bankAccountReceiver = getBankAccount2();
+        return Transaction.
+                builder().amount(10000.0).
+                description("description").
+                address("235.30.171.21").
+                transactionType(transactionType).bankAccountIssuer(bankAccountIssuer)
+                .stateDescription(Strings.TRANSACTION_COMPLETED).
+                bankAccountReceiver(bankAccountReceiver).build();
+    }
+    public static List<MerchantDataFilterAuditDto> getMerchantList() {
+        return List.of(MerchantDataFilterAuditDto.builder().storeName("testStore")
+                .reviewedByFirstName("admin")
+                .updatedAt("2020-09-06")
+                .merchantRequestStateName("APPROVED")
+                .build());
+    }
+    public static MerchantGetFilterAuditDto getMerchant() {
+        return MerchantGetFilterAuditDto.builder()
+                .totalElements(1)
+                .totalPages(1)
+                .size(10)
+                .content(getMerchantList())
+                .build();
+    }
+
+    public static TransactionCreatedDto getTransactionCreatedDto() {
+        StateTypeDto stateTypeDto = StateTypeDto.builder().id(1).name("APPROVED").build();
+        return TransactionCreatedDto.builder().
+                id(1).
+                amount(1000.0).bankAccountIssuer(getBankAccountDto()).
+                bankAccountReceiver(getBankAccountMinimalDto()).
+                stateType(stateTypeDto).stateDescription(Strings.TRANSACTION_COMPLETED).build();
+    }
+    public static TransactionCreatedDto getTransactionNotCreatedDto() {
+        StateTypeDto stateTypeDto = StateTypeDto.builder().id(2).name("FAILED").build();
+        return TransactionCreatedDto.builder().
+                id(2).
+                amount(1000.0).bankAccountIssuer(getBankAccountDto()).
+                bankAccountReceiver(getBankAccountMinimalDto()).
+                stateType(stateTypeDto).stateDescription("FAILED").build();
+    }
+
+    public static StateType getStateTypeApproved() {
+        return StateType.builder().id(1).name("APPROVED").build();
+    }
+
+    public static StateType getStateTypeFailed() {
+        return StateType.builder().id(1).name("FAILED").build();
+    }
+
+    public static BankAccountDto getBankAccountDto() {
+        return BankAccountDto.builder().
+                id(1).
+                accountNumber(BigInteger.valueOf(Long.parseLong("1111111111111111"))).
+                balance(1000000.0).build();
+    }
+
+    public static BankAccountMinimalDto getBankAccountMinimalDto() {
+        return BankAccountMinimalDto.builder().
+                id(1).
+                accountNumber(BigInteger.valueOf(Long.parseLong("0000000000000001"))).build();
+    }
+
+    public static BankAccount getBankAccount() {
+        AccountType accountType = TestUtils.getAccountType();
+        User user = TestUtils.getUserAdmin();
+        return BankAccount.builder().
+                id(1).
+                accountNumber(BigInteger.valueOf(Long.parseLong("1111111111111111"))).
+                accountType(accountType).
+                balance(1000000.0).
+                password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
+                        user(user).build();
+    }
+
+    public static BankAccount getBankAccount2() {
+        BankAccount bankAccount = getBankAccount();
+        bankAccount.setAccountNumber(BigInteger.valueOf(Long.parseLong("0000000000000001")));
+        return bankAccount;
     }
 }

@@ -6,9 +6,10 @@ import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.dto.CreateBankAccountDto;
+import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.dto.user.UserRegisterDto;
 import com.endava.endabank.dto.user.UserRegisterGetDto;
@@ -64,6 +65,13 @@ public class UserServiceImpl implements UserService {
     public User findById(Integer id) {
         return userDao.findById(id).
                 orElseThrow(() -> new UsernameNotFoundException(Strings.USER_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findByIdentifier(String identifier) {
+        return userDao.findByIdentifier(identifier).
+                orElseThrow(() -> new UsernameNotFoundException(Strings.STATUS_FRAUD + ": " + Strings.USER_NOT_FOUND));
     }
 
     @Override
@@ -184,6 +192,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserGeneralInfoDto getUserGeneralInfo(UserPrincipalSecurity user) {
+        return mapToUserGeneralInfoDto(user);
+    }
+
+    @Override
     public Map<String, Object> verifyEmail(String token) {
         int userId = JwtManage.verifyToken(Strings.BEARER + token, Strings.SECRET_JWT);
         User user = userDao.findById(userId).
@@ -214,6 +227,11 @@ public class UserServiceImpl implements UserService {
     @VisibleForTesting
     UserDetailsDto mapToUserDetailsDto(UserPrincipalSecurity user) {
         return modelMapper.map(user, UserDetailsDto.class);
+    }
+
+    @VisibleForTesting
+    UserGeneralInfoDto mapToUserGeneralInfoDto(UserPrincipalSecurity user) {
+        return modelMapper.map(user, UserGeneralInfoDto.class);
     }
 
     @VisibleForTesting

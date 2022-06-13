@@ -7,12 +7,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Routes {
     public static final String API_ROUTE = "/api/v1";
+    public static final String API_MERCHANT_ROUTE = "/api/merchants/v1";
     public static final String USERS_ROUTE = "/users";
+    public static final String MERCHANTS_ROUTE = "/merchants";
+    public static final String CREATE_MERCHANT_REQUEST = "/create-request";
     public static final String EMAIL = "/{email}";
     public static final String API_USERS_ROUTE = API_ROUTE + USERS_ROUTE;
     public static final String LOGIN_ROUTE = "/login";
     public static final String API_LOGIN_ROUTE = API_ROUTE + LOGIN_ROUTE;
-    public static final String FRONTEND_ROUTE = "http://localhost:3000";
+    public static final String FRONTEND_ROUTE = "http://medellin-med.uc.r.appspot.com";
     public static final String RESET_PASSWORD_ROUTE = "/reset-password";
     public static final String APPROVE_ACCOUNT_ROUTE = "/approve/{id}";
     public static final String RESET_PASSWORD_FRONTEND_ROUTE = FRONTEND_ROUTE + "/reset-password/?token=";
@@ -28,5 +31,10 @@ public final class Routes {
     public static final String ACCOUNT = "/accounts";
     public static final String DETAILS="/details/{email}";
     public static final String SUMMARY="/summary/{email}/{page}";
+    public static final String TRANSACTIONS = "/transactions";
+    public static final String SEND_MONEY = "/send-money";
+    public static final String PAY_TO_MERCHANT = "/pay";
+    public static final String API_PAY_MERCHANT_ROUTE = API_MERCHANT_ROUTE + PAY_TO_MERCHANT;
+    public static final String MERCHANT_FILTER = "/filter/{page}";
 
 }
