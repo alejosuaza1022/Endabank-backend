@@ -26,7 +26,7 @@ class BankAccountUtilsTest {
 
     @Test
     void testGenerateRandomNumberShouldSuccessWhenDataCorrect() {
-        String number = BankAccountUtils.genereteRamdomNumber(4);
+        String number = BankAccountUtils.generateRandomNumber(4);
         assertEquals(4, number.length());
     }
 
