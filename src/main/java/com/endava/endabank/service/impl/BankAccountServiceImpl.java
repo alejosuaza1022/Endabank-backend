@@ -70,11 +70,11 @@ public class BankAccountServiceImpl implements BankAccountService {
     public Map<String, String> save(CreateBankAccountDto bankAccountDto) {
         BankAccount account = new BankAccount();
         AccountType accountType = accountTypeService.findById(AccountTypes.DEBIT);
-        BigInteger accountNumber = BigInteger.valueOf(Long.parseLong(BankAccountUtils.genereteRamdomNumber(16)));
+        BigInteger accountNumber = BigInteger.valueOf(Long.parseLong(BankAccountUtils.generateRandomNumber(16)));
         account.setAccountNumber(BankAccountUtils.validateAccountNumber(accountNumber,bankAccountDao));
         account.setBalance(1000000.0);
         account.setAccountType(accountType);
-        account.setPassword(passwordEncoder.encode(BankAccountUtils.genereteRamdomNumber(4)));
+        account.setPassword(passwordEncoder.encode(BankAccountUtils.generateRandomNumber(4)));
         account.setUser(bankAccountDto.getUser());
         bankAccountDao.save(account);
         Map<String, String> map = new HashMap<>();
@@ -93,13 +93,15 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public BankAccountDto getAccountDetails(String email) {
+    public BankAccountDto getAccountDetails(String emailToken, String email) {
+        BankAccountUtils.validateBankAccountEmail(emailToken, email);
         BankAccount userBankAccount = findBankAccountUser(email);
         return modelMapper.map(userBankAccount, BankAccountDto.class);
     }
 
     @Override
-    public Page<TransactionDto> getTransactionsSummary(String email, Integer page) {
+    public Page<TransactionDto> getTransactionsSummary(String emailToken, String email, Integer page) {
+        BankAccountUtils.validateBankAccountEmail(emailToken, email);
         BankAccount userBankAccount = findBankAccountUser(email);
         Sort sort = Sort.by(Strings.ACCOUNT_SUMMARY_SORT).descending();
         return transactionDao.getListTransactionsSummary(userBankAccount.getId(), pagination.getPageable(page, sort));

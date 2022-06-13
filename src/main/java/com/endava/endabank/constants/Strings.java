@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Strings {
     public static final String ROLE_NOT_FOUND = "The role was not found on the database.";
+    public static final String EMAIL_NOT_MATCH = "The email was not correct.";
     public static final String ACCOUNT_NOT_FOUND = "The account was not found on the database.";
     public static final String FORMAT_PASSWORD = "1 Capital, 1 Special character, 1 Number and 8 to 20 digits,";
     public static final String IDENTIFIER_TYPE_NOT_FOUND = "The identifier type was not found on the database.";

@@ -115,16 +115,26 @@ class BankAccountServiceImplTest {
         when(userDao.findByEmail(email)).thenReturn(Optional.of(user));
         assertThrows(BadDataException.class, () -> bankAccountService.findBankAccountUser(email));
     }
-
+    @Test
+    void testGetAccountDetailsShouldFailWhenEmailNotCorrect() {
+        String email = TestUtils.getUserNotAdmin().getEmail();
+        assertThrows(BadDataException.class, () -> bankAccountService.getAccountDetails("",email));
+    }
+    @Test
+    void testGetAccountSummaryShouldFailWhenEmailNotCorrect() {
+        String email = TestUtils.getUserNotAdmin().getEmail();
+        assertThrows(BadDataException.class, () -> bankAccountService.getTransactionsSummary("",email, 1));
+    }
     @Test
     void testFindBankAccountUserShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
+        String email = user.getEmail();
         ArrayList<BankAccount> bankAccounts = new ArrayList<>();
         bankAccounts.add(TestUtils.getBankAccount());
         user.setBankAccounts(bankAccounts);
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(modelMapper.map(user.getBankAccounts().get(0), BankAccountDto.class)).thenReturn(TestUtils.getBankAccountDto());
-        BankAccountDto bankAccountsUser = bankAccountService.getAccountDetails(user.getEmail());
+        BankAccountDto bankAccountsUser = bankAccountService.getAccountDetails(email,email);
         assertEquals(bankAccountsUser.getId(), user.getBankAccounts().get(0).getId());
         assertEquals(bankAccountsUser.getBalance(), user.getBankAccounts().get(0).getBalance());
     }
@@ -132,13 +142,14 @@ class BankAccountServiceImplTest {
     @Test
     void testGetTransactionSummaryShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
+        String email = user.getEmail();
         ArrayList<BankAccount> bankAccounts = new ArrayList<>();
         bankAccounts.add(TestUtils.getBankAccount());
         user.setBankAccounts(bankAccounts);
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         Sort sort = Sort.by(Strings.ACCOUNT_SUMMARY_SORT).descending();
         when(transactionDao.getListTransactionsSummary(1, pagination.getPageable(0, sort))).thenReturn(Page.empty());
-        Page<TransactionDto> transactionDaoPage = bankAccountService.getTransactionsSummary(user.getEmail(), 1);
+        Page<TransactionDto> transactionDaoPage = bankAccountService.getTransactionsSummary(email,email, 1);
         assertEquals(0, transactionDaoPage.getTotalElements());
     }
 
