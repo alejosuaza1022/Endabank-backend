@@ -2,7 +2,7 @@ package com.endava.endabank.utils.bankaccount;
 
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.BankAccountDao;
-import com.endava.endabank.exceptions.custom.BadDataException;
+import com.endava.endabank.exceptions.custom.CustomAuthenticationException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -32,7 +32,7 @@ public final class BankAccountUtils {
     }
     public static void validateBankAccountEmail(String emailToken, String email) {
         if (!emailToken.equals(email)){
-            throw new BadDataException(Strings.EMAIL_NOT_MATCH);
+            throw new CustomAuthenticationException(Strings.EMAIL_NOT_MATCH);
         }
     }
 }

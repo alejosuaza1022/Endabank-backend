@@ -1,8 +1,8 @@
 package com.endava.endabank.service;
 
+import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.dto.bankaccount.BankAccountDto;
 import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
-import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.User;
 import org.springframework.data.domain.Page;

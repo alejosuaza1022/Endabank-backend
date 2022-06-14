@@ -1,9 +1,9 @@
 package com.endava.endabank.controller;
 
 import com.endava.endabank.constants.Routes;
+import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.dto.bankaccount.BankAccountDto;
 import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
-import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.service.BankAccountService;
 import lombok.AllArgsConstructor;

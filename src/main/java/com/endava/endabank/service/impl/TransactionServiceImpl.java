@@ -1,10 +1,7 @@
 package com.endava.endabank.service.impl;
 
 import com.endava.endabank.constants.Strings;
-import com.endava.endabank.dao.BankAccountDao;
-import com.endava.endabank.dao.MerchantDao;
 import com.endava.endabank.dao.TransactionDao;
-import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;

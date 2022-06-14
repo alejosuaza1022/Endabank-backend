@@ -5,12 +5,8 @@ import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.model.BankAccount;
-import com.endava.endabank.model.Merchant;
-import com.endava.endabank.model.User;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
