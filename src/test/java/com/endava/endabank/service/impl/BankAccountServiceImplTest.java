@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -118,12 +119,12 @@ class BankAccountServiceImplTest {
     @Test
     void testGetAccountDetailsShouldFailWhenEmailNotCorrect() {
         String email = TestUtils.getUserNotAdmin().getEmail();
-        assertThrows(BadDataException.class, () -> bankAccountService.getAccountDetails("",email));
+        assertThrows(AuthenticationException.class, () -> bankAccountService.getAccountDetails("",email));
     }
     @Test
     void testGetAccountSummaryShouldFailWhenEmailNotCorrect() {
         String email = TestUtils.getUserNotAdmin().getEmail();
-        assertThrows(BadDataException.class, () -> bankAccountService.getTransactionsSummary("",email, 1));
+        assertThrows(AuthenticationException.class, () -> bankAccountService.getTransactionsSummary("",email, 1));
     }
     @Test
     void testFindBankAccountUserShouldSuccessWhenDataCorrect() {
