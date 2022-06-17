@@ -1,1 +1,0 @@
-Type your test cases using Gherkin syntax in this directory.
