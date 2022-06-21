@@ -93,15 +93,13 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public BankAccountDto getAccountDetails(String emailToken, String email) {
-        BankAccountUtils.validateBankAccountEmail(emailToken, email);
+    public BankAccountDto getAccountDetails(String email) {
         BankAccount userBankAccount = findBankAccountUser(email);
         return modelMapper.map(userBankAccount, BankAccountDto.class);
     }
 
     @Override
-    public Page<TransactionDto> getTransactionsSummary(String emailToken, String email, Integer page) {
-        BankAccountUtils.validateBankAccountEmail(emailToken, email);
+    public Page<TransactionDto> getTransactionsSummary(String email, Integer page) {
         BankAccount userBankAccount = findBankAccountUser(email);
         Sort sort = Sort.by(Strings.ACCOUNT_SUMMARY_SORT).descending();
         return transactionDao.getListTransactionsSummary(userBankAccount.getId(), pagination.getPageable(page, sort));
