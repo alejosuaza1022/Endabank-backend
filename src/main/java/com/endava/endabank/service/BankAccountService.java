@@ -21,7 +21,7 @@ public interface BankAccountService {
 
     Map<String, String> save(CreateBankAccountDto banckAccount);
 
-    BankAccountDto getAccountDetails(String emailToken, String email);
+    BankAccountDto getAccountDetails(String email);
 
-    Page<TransactionDto> getTransactionsSummary(String emailToken, String email, Integer page);
+    Page<TransactionDto> getTransactionsSummary(String email, Integer page);
 }

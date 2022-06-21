@@ -24,7 +24,6 @@ import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.EntityManager;
-
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

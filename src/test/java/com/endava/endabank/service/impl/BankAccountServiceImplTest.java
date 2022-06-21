@@ -4,9 +4,9 @@ import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.TransactionDao;
 import com.endava.endabank.dao.UserDao;
+import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.dto.bankaccount.BankAccountDto;
 import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
-import com.endava.endabank.dto.TransactionDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
 import com.endava.endabank.model.AccountType;
@@ -23,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -117,16 +116,6 @@ class BankAccountServiceImplTest {
         assertThrows(BadDataException.class, () -> bankAccountService.findBankAccountUser(email));
     }
     @Test
-    void testGetAccountDetailsShouldFailWhenEmailNotCorrect() {
-        String email = TestUtils.getUserNotAdmin().getEmail();
-        assertThrows(AuthenticationException.class, () -> bankAccountService.getAccountDetails("",email));
-    }
-    @Test
-    void testGetAccountSummaryShouldFailWhenEmailNotCorrect() {
-        String email = TestUtils.getUserNotAdmin().getEmail();
-        assertThrows(AuthenticationException.class, () -> bankAccountService.getTransactionsSummary("",email, 1));
-    }
-    @Test
     void testFindBankAccountUserShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
         String email = user.getEmail();
@@ -135,7 +124,7 @@ class BankAccountServiceImplTest {
         user.setBankAccounts(bankAccounts);
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(modelMapper.map(user.getBankAccounts().get(0), BankAccountDto.class)).thenReturn(TestUtils.getBankAccountDto());
-        BankAccountDto bankAccountsUser = bankAccountService.getAccountDetails(email,email);
+        BankAccountDto bankAccountsUser = bankAccountService.getAccountDetails(email);
         assertEquals(bankAccountsUser.getId(), user.getBankAccounts().get(0).getId());
         assertEquals(bankAccountsUser.getBalance(), user.getBankAccounts().get(0).getBalance());
     }
@@ -150,7 +139,7 @@ class BankAccountServiceImplTest {
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         Sort sort = Sort.by(Strings.ACCOUNT_SUMMARY_SORT).descending();
         when(transactionDao.getListTransactionsSummary(1, pagination.getPageable(0, sort))).thenReturn(Page.empty());
-        Page<TransactionDto> transactionDaoPage = bankAccountService.getTransactionsSummary(email,email, 1);
+        Page<TransactionDto> transactionDaoPage = bankAccountService.getTransactionsSummary(email, 1);
         assertEquals(0, transactionDaoPage.getTotalElements());
     }
 

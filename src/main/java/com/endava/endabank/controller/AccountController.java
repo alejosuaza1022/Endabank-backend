@@ -24,17 +24,17 @@ public class AccountController {
     private BankAccountService bankAccountService;
 
     @GetMapping(Routes.DETAILS)
-    public ResponseEntity<BankAccountDto> getAccountSummary(Principal principal, @PathVariable String email) {
+    public ResponseEntity<BankAccountDto> getAccountSummary(Principal principal) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
-        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getAccountDetails(user.getEmail(), email));
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getAccountDetails(user.getEmail()));
     }
 
     @GetMapping(Routes.SUMMARY)
-    public ResponseEntity<Page<TransactionDto>> getTransactionsSummary(Principal principal, @PathVariable String email, @PathVariable Integer page) {
+    public ResponseEntity<Page<TransactionDto>> getTransactionsSummary(Principal principal, @PathVariable Integer page) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
         UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
-        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getTransactionsSummary(user.getEmail(),email, page));
+        return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.getTransactionsSummary(user.getEmail(), page));
     }
 
     @PostMapping
