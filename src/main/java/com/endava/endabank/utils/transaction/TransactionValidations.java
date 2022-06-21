@@ -44,20 +44,62 @@ public class TransactionValidations {
         }
     }
 
-    public void validateExternalTransaction(Integer userId, Integer userIdBd, String apiId,TransactionFromMerchantDto transferFromMerchantDto){
-        validateUser(userId,userIdBd);
-        validateMerchantApiId(apiId,transferFromMerchantDto.getApiId());
+    public String validateExternalTransaction(Integer userId, Integer userIdBd, String apiId,
+                                            BankAccount bankAccountIssuer,
+                                            BankAccount bankAccountReceiver,
+                                            TransactionFromMerchantDto transferFromMerchantDto){
+        String response = validateUser(userId,userIdBd);
+        if(response == null){
+            response = validateMerchantApiId(apiId,transferFromMerchantDto.getApiId());
+            if(response == null){
+                response = validateOwnerM(userId, bankAccountIssuer);
+                if(response == null){
+                    response = validateAmountM(transferFromMerchantDto.getAmount());
+                    if(response == null){
+                        response = validateSameAccountM(bankAccountIssuer, bankAccountReceiver);
+                    }
+                }
+            }
+        }
+        return response;
     }
 
-    void validateMerchantApiId(String apiIdDb, String apiId){
+    String validateMerchantApiId(String apiIdDb, String apiId){
         if (!Objects.equals(apiIdDb, apiId)){
-            throw new BadDataException(Strings.STATUS_ERROR +": "+ Strings.BAD_API_ID);
+            return (Strings.BAD_API_ID);
         }
+        return null;
     }
 
-    void validateUser(Integer userId, Integer userIdBd){
+    String validateUser(Integer userId, Integer userIdBd){
         if (!Objects.equals(userId, userIdBd)){
-            throw new BadDataException(Strings.STATUS_FRAUD +": "+ Strings.BAD_USER_DATA);
+            return (Strings.BAD_USER_DATA);
         }
+        return null;
     }
+
+    @VisibleForTesting
+    String validateOwnerM(Integer userId, BankAccount bankAccountIssuer) {
+        if (!Objects.equals(userId, bankAccountIssuer.getUser().getId())) {
+            return(Strings.USER_NOT_OWN_BANK_ACCOUNT);
+        }
+        return null;
+    }
+
+    @VisibleForTesting
+    String validateAmountM(Double amount) {
+        if (amount <= 0) {
+            return(Strings.AMOUNT_NOT_VALID);
+        }
+        return null;
+    }
+
+    @VisibleForTesting
+    String validateSameAccountM(BankAccount bankAccountIssuer, BankAccount bankAccountReciver) {
+        if (Objects.equals(bankAccountReciver.getAccountNumber(), bankAccountIssuer.getAccountNumber())){
+            return(Strings.TRANSACTION_SAME_ACCOUNT);
+        }
+        return null;
+    }
+
 }
