@@ -14,6 +14,7 @@ import com.endava.endabank.service.MerchantService;
 import com.endava.endabank.service.UserService;
 import com.endava.endabank.utils.TestUtils;
 import com.endava.endabank.utils.transaction.TransactionValidations;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -100,41 +101,5 @@ class TransactionServiceImplTest {
         verify(bankAccountService, times(0)).increaseBalance(bankAccountReceiver, transaction.getAmount());
         assertEquals(transaction.getStateType(), TestUtils.getStateTypeFailed());
         assertEquals(Strings.NOT_FOUNDS_ENOUGH, transaction.getStateDescription());
-    }
-    @Test
-    void testCreateTransactionFromMerchantShouldSuccess() {
-        Transaction transaction = TestUtils.getTransaction();
-        BankAccount bankAccountIssuer = TestUtils.getBankAccount();
-        BankAccount bankAccountReceiver = TestUtils.getBankAccount2();
-        TransactionFromMerchantDto transactionFromMerchantDto = TestUtils.getTransactionFromMerchantDto();
-        when(userService.findByIdentifier(any())).thenReturn(TestUtils.getUserNotAdmin());
-        when(merchantService.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantNotReviewed());
-        when(bankAccountService.findByUser(any())).thenReturn(bankAccountIssuer);
-        when(bankAccountService.findByAccountNumber(transaction.getBankAccountIssuer().getAccountNumber())).
-                thenReturn(bankAccountIssuer);
-        when(bankAccountService.findByAccountNumber(transaction.getBankAccountReceiver().getAccountNumber())).
-                thenReturn(bankAccountReceiver);
-        when(transactionDao.save(any(Transaction.class))).thenReturn(transaction);
-        when(modelMapper.map(transaction, TransactionCreatedDto.class)).thenReturn(TestUtils.getTransactionCreatedDto());
-        Map<String, Object> transactionCreatedDto = transactionService.createTransactionFromMerchant(1,transactionFromMerchantDto);
-        assertNotNull(transactionCreatedDto);
-    }
-    @Test
-    void testCreateTransactionFromMerchantShouldFailWhenDataNotCorrect(){
-        Transaction transaction = TestUtils.getTransaction();
-        BankAccount bankAccountIssuer = TestUtils.getBankAccount();
-        BankAccount bankAccountReceiver = TestUtils.getBankAccount2();
-        TransactionFromMerchantDto transactionFromMerchantDto = TestUtils.getTransactionFromMerchantDtoWithBadAmount();
-        when(userService.findByIdentifier(any())).thenReturn(TestUtils.getUserNotAdmin());
-        when(merchantService.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantNotReviewed());
-        when(bankAccountService.findByUser(any())).thenReturn(bankAccountIssuer);
-        when(bankAccountService.findByAccountNumber(transaction.getBankAccountIssuer().getAccountNumber())).
-                thenReturn(bankAccountIssuer);
-        when(bankAccountService.findByAccountNumber(transaction.getBankAccountReceiver().getAccountNumber())).
-                thenReturn(bankAccountReceiver);
-        when(transactionDao.save(any(Transaction.class))).thenReturn(transaction);
-        when(modelMapper.map(transaction, TransactionCreatedDto.class)).thenReturn(TestUtils.getTransactionNotCreatedDto());
-        Map<String, Object> transactionCreatedDto = transactionService.createTransactionFromMerchant(1,transactionFromMerchantDto);
-        assertNotNull(transactionCreatedDto);
     }
 }

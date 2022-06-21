@@ -56,7 +56,6 @@ public class TransactionServiceImpl implements TransactionService {
         return modelMapper.map(transaction, TransactionCreatedDto.class);
     }
 
-    @Transactional
     @Override
     public Transaction setStateAndBalanceOfTransaction(Transaction transaction,
                                                 BankAccount bankAccountIssuer,
@@ -108,12 +107,12 @@ public class TransactionServiceImpl implements TransactionService {
             bankAccountIssuer = bankAccountService.findByUser(user);
             transaction.setBankAccountIssuer(bankAccountIssuer);
         }
-        
+
         Optional<Merchant> merchantOptional = merchantDao.findByMerchantKey(transactionFromMerchantDto.getMerchantKey());
         BankAccount bankAccountReceiver;
         String apiId;
+        stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE);
         if(merchantOptional.isEmpty()){
-            stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE);
             description = Strings.MERCHANT_NOT_FOUND;
             transactionStateService.saveTransactionState(transaction,stateType,
                     description);
@@ -124,9 +123,19 @@ public class TransactionServiceImpl implements TransactionService {
         }else{
             Merchant merchant = merchantOptional.get();
             Optional<User> userMerchant = userDao.findById(merchant.getUser().getId());
-            bankAccountReceiver = bankAccountService.findByUser(userMerchant.get());
-            apiId = merchant.getApiId();
-            transaction.setBankAccountReceiver(bankAccountReceiver);
+            if(userMerchant.isPresent()) {
+                bankAccountReceiver = bankAccountService.findByUser(userMerchant.get());
+                apiId = merchant.getApiId();
+                transaction.setBankAccountReceiver(bankAccountReceiver);
+            }else {
+                description = Strings.MERCHANT_BANK_ACCOUNT_NOT_FOUND;
+                transactionStateService.saveTransactionState(transaction,stateType,
+                        description);
+                transaction.setStateType(stateType);
+                transaction.setStateDescription(description);
+                transactionDao.save(transaction);
+                return modelMapper.map(transaction, TransactionCreatedDto.class);
+            }
         }
 
         String validation = transactionValidations.

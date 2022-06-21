@@ -6,6 +6,7 @@ import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.utils.TestUtils;
 import org.junit.Assert;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,18 +51,5 @@ class TransactionValidationsTest {
         BankAccount bankAccountReceiver = TestUtils.getBankAccount();
         Assert.assertThrows(BadDataException.class, () -> transactionValidations.validateSameAccount(bankAccountIssuer, bankAccountReceiver));
     }
-    @Test
-    void testValidateExternalTransactionShouldFailWhenUserNotEqual() {
-        TransactionFromMerchantDto transactionFromMerchant = TestUtils.getTransactionFromMerchantDto();
-        Assert.assertThrows(BadDataException.class, () -> transactionValidations.validateExternalTransaction(1, 2, "1", transactionFromMerchant));
-    }
-    @Test
-    void testValidateExternalTransactionShouldFailWhenApiIdNotEqual() {
-        TransactionFromMerchantDto transactionFromMerchant = TestUtils.getTransactionFromMerchantDto();
-        Assert.assertThrows(BadDataException.class, () -> transactionValidations.validateExternalTransaction(1, 1, "2", transactionFromMerchant));
-    }
-    @Test
-    void testValidateExternalTransactionShouldSuccessWhenDataCorrect() {
-        transactionValidations.validateExternalTransaction(1, 1, "12345", TestUtils.getTransactionFromMerchantDto());
-    }
+
 }
