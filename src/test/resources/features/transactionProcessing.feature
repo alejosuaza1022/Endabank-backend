@@ -12,3 +12,4 @@ Feature: Transaction processing
     Given the user has written the POST request using the endpoint to send money
     When the user types the necessary information into the body request
     Then the user should see the next body response
+

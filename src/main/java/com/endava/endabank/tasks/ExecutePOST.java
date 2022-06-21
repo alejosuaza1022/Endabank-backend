@@ -1,7 +1,6 @@
 package com.endava.endabank.tasks;
 
 import com.endava.endabank.constants.ConstantsAPI;
-import com.endava.endabank.utils.SendMoney;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.Tasks;
