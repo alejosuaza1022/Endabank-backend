@@ -43,7 +43,6 @@ public class TransactionValidations {
             throw new BadDataException(Strings.TRANSACTION_SAME_ACCOUNT);
         }
     }
-
     public String validateExternalTransaction(Integer userId, Integer userIdBd, String apiId,
                                             BankAccount bankAccountIssuer,
                                             BankAccount bankAccountReceiver,
@@ -63,14 +62,14 @@ public class TransactionValidations {
         }
         return response;
     }
-
+    @VisibleForTesting
     String validateMerchantApiId(String apiIdDb, String apiId){
         if (!Objects.equals(apiIdDb, apiId)){
             return (Strings.BAD_API_ID);
         }
         return null;
     }
-
+    @VisibleForTesting
     String validateUser(Integer userId, Integer userIdBd){
         if (!Objects.equals(userId, userIdBd)){
             return (Strings.BAD_USER_DATA);

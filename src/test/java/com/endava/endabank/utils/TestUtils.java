@@ -323,6 +323,24 @@ public final class TestUtils {
                 .stateDescription(Strings.TRANSACTION_COMPLETED).
                 bankAccountReceiver(bankAccountReceiver).build();
     }
+    public static StateType getStateTypeApproved() {
+        return StateType.builder().id(1).name("APPROVED").build();
+    }
+    public static StateType getStateTypeFailed() {
+        return StateType.builder().id(2).name("FAILED").build();
+    }
+    public static StateType getStateTypePending() {
+        return StateType.builder().id(3).name("PENDING").build();
+    }
+    public static StateType getStateTypeAuthorised() {
+        return StateType.builder().id(4).name("AUTHORISED").build();
+    }
+    public static StateType getStateTypeError() {
+        return StateType.builder().id(5).name("ERROR").build();
+    }
+    public static StateType getStateTypeRefused() {
+        return StateType.builder().id(6).name("REFUSED").build();
+    }
     public static List<MerchantDataFilterAuditDto> getMerchantList() {
         return List.of(MerchantDataFilterAuditDto.builder().storeName("testStore")
                 .reviewedByFirstName("admin")
@@ -337,6 +355,17 @@ public final class TestUtils {
                 .size(10)
                 .content(getMerchantList())
                 .build();
+    }
+    public static Optional<Merchant> getMerchantOptional() {
+        return Optional.of(Merchant.builder().
+                id(1).
+                user(TestUtils.getUserAdmin()).
+                taxId("123456789").
+                apiId("123456789").
+                merchantKey("123456789").
+                address("123456789").
+                storeName("123456789").
+                build());
     }
 
     public static TransactionCreatedDto getTransactionCreatedDto() {
@@ -354,14 +383,6 @@ public final class TestUtils {
                 amount(1000.0).bankAccountIssuer(getBankAccountDto()).
                 bankAccountReceiver(getBankAccountMinimalDto()).
                 stateType(stateTypeDto).stateDescription("FAILED").build();
-    }
-
-    public static StateType getStateTypeApproved() {
-        return StateType.builder().id(1).name("APPROVED").build();
-    }
-
-    public static StateType getStateTypeFailed() {
-        return StateType.builder().id(1).name("FAILED").build();
     }
 
     public static BankAccountDto getBankAccountDto() {
@@ -385,6 +406,17 @@ public final class TestUtils {
                 accountNumber(BigInteger.valueOf(Long.parseLong("1111111111111111"))).
                 accountType(accountType).
                 balance(1000000.0).
+                password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
+                        user(user).build();
+    }
+    public static BankAccount getBankAccountWhitOutBalance() {
+        AccountType accountType = TestUtils.getAccountType();
+        User user = TestUtils.getUserAdmin();
+        return BankAccount.builder().
+                id(1).
+                accountNumber(BigInteger.valueOf(Long.parseLong("1111111111111111"))).
+                accountType(accountType).
+                balance(0.0).
                 password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
                         user(user).build();
     }

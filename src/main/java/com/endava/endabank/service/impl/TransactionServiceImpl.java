@@ -157,7 +157,7 @@ public class TransactionServiceImpl implements TransactionService {
             stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_AUTHORISED_STATE);
             transactionStateService.saveTransactionState(transaction,stateType,
                     Strings.TRANSACTION_COMPLETED);
-        } else if (transaction.getStateType().getId().equals(Strings.TRANSACTION_FAILED_STATE)) {
+        } else {
             stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_REFUSED_STATE);
             transactionStateService.saveTransactionState(transaction,stateType,
                     Strings.NOT_FOUNDS_ENOUGH);
