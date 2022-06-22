@@ -1,6 +1,5 @@
 package com.endava.endabank.service.impl;
 
-import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.TransactionStateDao;
 import com.endava.endabank.model.StateType;
 import com.endava.endabank.model.Transaction;

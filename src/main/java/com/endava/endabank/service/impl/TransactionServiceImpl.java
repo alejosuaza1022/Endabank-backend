@@ -7,20 +7,17 @@ import com.endava.endabank.dao.UserDao;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
-import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
 import com.endava.endabank.model.*;
-import com.endava.endabank.service.*;
+import com.endava.endabank.service.BankAccountService;
+import com.endava.endabank.service.TransactionService;
+import com.endava.endabank.service.TransactionStateService;
 import com.endava.endabank.utils.transaction.TransactionValidations;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Service

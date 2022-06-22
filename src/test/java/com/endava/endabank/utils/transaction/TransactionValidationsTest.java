@@ -7,7 +7,6 @@ import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.utils.TestUtils;
 import org.junit.Assert;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

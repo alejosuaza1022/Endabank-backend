@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Map;
 
 @RestController
 @RequestMapping(Routes.API_MERCHANT_ROUTE)
