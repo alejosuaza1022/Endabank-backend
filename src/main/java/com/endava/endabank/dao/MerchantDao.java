@@ -20,6 +20,7 @@ public interface MerchantDao extends JpaRepository<Merchant,Integer>, JpaSpecifi
     Optional<Merchant> findByUser(User user);
 
     Page<Merchant> findAll(Specification<Merchant> spec, Pageable pageable);
+    Page<Merchant> findAll(Pageable pageable);
 
     List<Merchant> findAll(Specification<Merchant> spec);
 }

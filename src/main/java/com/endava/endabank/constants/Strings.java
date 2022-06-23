@@ -59,6 +59,7 @@ public final class Strings {
     public static final String ACCOUNT_CREATED = "The bank account was successfully created.";
     public static final String MERCHANT_REQUEST_CREATED = "The request to become a merchant was successfully created.";
     public static final String ACCOUNT_SUMMARY_SORT = "create_at";
+    public static final String MERCHANT_REQUESTS_SORT = "create_at";
     public static final String BAD_API_ID = "The Api Id does not match merchant data";
     public static final String BAD_USER_DATA = "Data user does not match";
     public static final String STATUS_ERROR = "ERROR";

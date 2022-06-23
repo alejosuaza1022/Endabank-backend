@@ -6,6 +6,7 @@ import com.endava.endabank.dao.MerchantDao;
 import com.endava.endabank.dto.merchant.MerchantFilterAuditDto;
 import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.dto.merchant.MerchantRegisterDto;
+import com.endava.endabank.dto.merchant.MerchantRequestPaginationDto;
 import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
 import com.endava.endabank.exceptions.custom.UniqueConstraintViolationException;
 import com.endava.endabank.model.Merchant;
@@ -19,6 +20,7 @@ import com.endava.endabank.utils.Pagination;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,5 +86,12 @@ public class MerchantServiceImpl implements MerchantService {
         return modelMapper.map(merchantDao.findAll(
                 merchantSpecification.filterAuditMerchant(merchantFilterAuditDto), pageable),
                 MerchantGetFilterAuditDto.class);
+    }
+
+    @Override
+    public MerchantRequestPaginationDto getAllMerchantRequests(Integer page) {
+        Pageable pageable = pagination.getPageable(page);
+
+        return modelMapper.map(merchantDao.findAll(pageable),MerchantRequestPaginationDto.class);
     }
 }
