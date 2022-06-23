@@ -6,20 +6,18 @@ import com.endava.endabank.utils.AuthenticationToken;
 import com.endava.endabank.utils.ConvertToJSON;
 import com.endava.endabank.utils.SendMoney;
 import com.endava.endabank.utils.Credentials;
-import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-import io.restassured.http.Header;
 import net.serenitybdd.core.annotations.events.BeforeScenario;
 import net.serenitybdd.rest.SerenityRest;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 import net.serenitybdd.screenplay.rest.interactions.Post;
-import io.restassured.response.Response;
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.util.Map;
 
@@ -63,18 +61,16 @@ public class TransactionProcessingStepDefinition {
     public void theUserHasWrittenThePOSTRequestUsingTheEndpointToSendMoney() {
 
         authenticationToken.setToken(SerenityRest.lastResponse().jsonPath().getString("accessToken"));
-        //theActorInTheSpotlight().whoCan(CallAnApi.at("http://localhost:8080/api/v1"));
-        //theActorInTheSpotlight().whoCan(CallAnApi.at("http://35.202.242.69:8081/api/v1"));
 
     }
-    @When("the user types the necessary information into the body request")
-    public void theUserTypesTheNecessaryInformationIntoTheBodyRequest() {
+    @When("the user types the information into the body request")
+    public void theUserTypesTheInformationIntoTheBodyRequest(Map<String,String> bodyRequest) {
 
-        sendMoney.setAmount("1");
-        sendMoney.setBankAccountNumberIssuer("2022053111472379");
-        sendMoney.setBankAccountNumberReceiver("2022053111472379");
-        sendMoney.setDescription("test payment");
-        sendMoney.setAddress("181.57.222.58");
+        sendMoney.setAmount(bodyRequest.get("amount"));
+        sendMoney.setBankAccountNumberIssuer(bodyRequest.get("bANIssuer"));
+        sendMoney.setBankAccountNumberReceiver(bodyRequest.get("bANReceiver"));
+        sendMoney.setDescription(bodyRequest.get("description"));
+        sendMoney.setAddress(bodyRequest.get("address"));
 
         theActorInTheSpotlight().attemptsTo(Post.to("/transactions/send-money").
                 with(request -> request.header("Authorization","Bearer "+ authenticationToken.getToken())
@@ -85,11 +81,12 @@ public class TransactionProcessingStepDefinition {
     }
 
     @Then("the user should see the next body response")
-    public void theUserShouldSeeTheNextBodyResponse() {
+    public void theUserShouldSeeTheNextBodyResponse(Map<String,String> bodyResponse) {
 
         theActorInTheSpotlight().should(seeThatResponse(
-                "The transaction failed.",
-                response -> response.statusCode(422)));
+                "Transaction status.",
+                response -> response.statusCode(Integer.parseInt(bodyResponse.get("statusCode")))
+                        .body(bodyResponse.get("name"),equalTo(bodyResponse.get("value")))));
 
     }
 
