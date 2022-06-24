@@ -5,6 +5,7 @@ import com.endava.endabank.dao.MerchantDao;
 import com.endava.endabank.dao.TransactionDao;
 import com.endava.endabank.dao.TransactionStateDao;
 import com.endava.endabank.dao.UserDao;
+import com.endava.endabank.dto.transaction.PayTransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
@@ -28,6 +29,7 @@ import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -117,69 +119,78 @@ class TransactionServiceImplTest {
         Transaction transaction = TestUtils.getTransaction();
         TransactionFromMerchantDto transactionFromMerchantDto = TestUtils.getTransactionFromMerchantDto();
         when(transactionDao.save(any())).thenReturn(transaction);
+        transaction.setCreateAt(LocalDateTime.now());
+        transaction.setId(1);
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         when(transactionStateDao.save(any())).thenReturn(null);
-        when( entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
         when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptional());
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(userDao.findById(any())).thenReturn(Optional.of(TestUtils.getUserAdmin()));
         when(bankAccountService.findByUser(any())).thenReturn(TestUtils.getBankAccount()).thenReturn(TestUtils.getBankAccount2());
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_APPROVED_STATE)).thenReturn(TestUtils.getStateTypeApproved());
-        TransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
-        assertNull(transactionCreatedDto);
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_AUTHORISED_STATE)).thenReturn(TestUtils.getStateTypeAuthorised());
+        PayTransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
+        assertNotNull(transactionCreatedDto);
     }
     @Test
     void testCreateTransactionFromMerchantShouldFailWhenFindByIdentifierIsNull(){
         Transaction transaction = TestUtils.getTransaction();
         TransactionFromMerchantDto transactionFromMerchantDto = TestUtils.getTransactionFromMerchantDto();
         when(transactionDao.save(any())).thenReturn(transaction);
+        transaction.setCreateAt(LocalDateTime.now());
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.empty());
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_REFUSED_STATE)).thenReturn(TestUtils.getStateTypeRefused());
         when(transactionStateDao.save(any())).thenReturn(null);
         when(modelMapper.map(transaction, TransactionCreatedDto.class)).thenReturn(TestUtils.getTransactionCreatedDto());
-        TransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
-        assertEquals(TestUtils.getTransactionCreatedDto(), transactionCreatedDto);
+        PayTransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
+        assertEquals(Strings.USER_NOT_FOUND, transactionCreatedDto.getStateDescription());
     }
     @Test
     void testCreateTransactionFromMerchantShouldFailWhenMerchantOptionalIsNull(){
         Transaction transaction = TestUtils.getTransaction();
         TransactionFromMerchantDto transactionFromMerchantDto = TestUtils.getTransactionFromMerchantDto();
         when(transactionDao.save(any())).thenReturn(transaction);
+        transaction.setCreateAt(LocalDateTime.now());
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         when(transactionStateDao.save(any())).thenReturn(null);
-        when( entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
+        when(bankAccountService.findByUser(TestUtils.getUserAdmin())).thenReturn(TestUtils.getBankAccount());
         when(merchantDao.findByMerchantKey(any())).thenReturn(Optional.empty());
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(transactionStateDao.save(any())).thenReturn(null);
         when(transactionDao.save(transaction)).thenReturn(null);
-        when(modelMapper.map(transaction, TransactionCreatedDto.class)).thenReturn(TestUtils.getTransactionCreatedDto());
-        TransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
-        assertEquals(TestUtils.getTransactionCreatedDto(), transactionCreatedDto);
+        PayTransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
+        assertEquals(Strings.MERCHANT_NOT_FOUND, transactionCreatedDto.getStateDescription());
     }
     @Test
     void testCreateTransactionFromMerchantShouldFailWhenUserMerchantIsNotPresent(){
         Transaction transaction = TestUtils.getTransaction();
         TransactionFromMerchantDto transactionFromMerchantDto = TestUtils.getTransactionFromMerchantDto();
         when(transactionDao.save(any())).thenReturn(transaction);
+        transaction.setCreateAt(LocalDateTime.now());
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         when(transactionStateDao.save(any())).thenReturn(null);
-        when( entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
         when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptional());
+        when(bankAccountService.findByUser(TestUtils.getUserAdmin())).thenReturn(TestUtils.getBankAccount());
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(userDao.findById(any())).thenReturn(Optional.empty());
         when(transactionStateDao.save(any())).thenReturn(null);
         when(transactionDao.save(transaction)).thenReturn(null);
         when(modelMapper.map(transaction, TransactionCreatedDto.class)).thenReturn(TestUtils.getTransactionCreatedDto());
-        TransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
-        assertEquals(TestUtils.getTransactionCreatedDto(), transactionCreatedDto);
+        PayTransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
+        assertEquals(Strings.MERCHANT_BANK_ACCOUNT_NOT_FOUND, transactionCreatedDto.getStateDescription());
     }
     @Test
     void testCreateTransactionFromMerchantShouldFailWhenUserHadNotEnoughBalance(){
         Transaction transaction = TestUtils.getTransaction();
         TransactionFromMerchantDto transactionFromMerchantDto = TestUtils.getTransactionFromMerchantDto();
         when(transactionDao.save(any())).thenReturn(transaction);
+        transaction.setCreateAt(LocalDateTime.now());
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         when(transactionStateDao.save(any())).thenReturn(null);
-        when( entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
         when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptional());
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(userDao.findById(any())).thenReturn(Optional.of(TestUtils.getUserAdmin()));
@@ -189,7 +200,7 @@ class TransactionServiceImplTest {
         when(transactionDao.save(transaction)).thenReturn(null);
         when(modelMapper.map(transaction, TransactionCreatedDto.class)).thenReturn(TestUtils.getTransactionCreatedDto());
         when(transactionValidations.validateExternalTransaction(anyInt(),anyInt(),anyString(),any(),any(),any())).thenReturn("NOT NULL");
-        TransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
+        PayTransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
         assertNotNull(transactionCreatedDto);
     }
     @Test
@@ -197,9 +208,10 @@ class TransactionServiceImplTest {
         Transaction transaction = TestUtils.getTransaction();
         TransactionFromMerchantDto transactionFromMerchantDto = TestUtils.getTransactionFromMerchantDto();
         when(transactionDao.save(any())).thenReturn(transaction);
+        transaction.setCreateAt(LocalDateTime.now());
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         when(transactionStateDao.save(any())).thenReturn(null);
-        when( entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
         when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptional());
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(userDao.findById(any())).thenReturn(Optional.of(TestUtils.getUserAdmin()));
@@ -208,7 +220,7 @@ class TransactionServiceImplTest {
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_REFUSED_STATE)).thenReturn(TestUtils.getStateTypeRefused());
         when(transactionDao.save(transaction)).thenReturn(null);
         when(modelMapper.map(transaction, TransactionCreatedDto.class)).thenReturn(TestUtils.getTransactionCreatedDto());
-        TransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
-        assertNull(transactionCreatedDto);
+        PayTransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
+        assertNotNull(transactionCreatedDto);
     }
 }
