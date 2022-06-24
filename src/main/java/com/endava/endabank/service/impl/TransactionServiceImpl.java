@@ -4,6 +4,7 @@ import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.MerchantDao;
 import com.endava.endabank.dao.TransactionDao;
 import com.endava.endabank.dao.UserDao;
+import com.endava.endabank.dto.transaction.PayTransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
@@ -72,7 +73,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public TransactionCreatedDto createTransactionFromMerchant(Integer userId,TransactionFromMerchantDto transactionFromMerchantDto){
+    public PayTransactionCreatedDto createTransactionFromMerchant(Integer userId, TransactionFromMerchantDto transactionFromMerchantDto){
         TransactionType transactionType = TransactionType.builder().id(1).build();
         StateType stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE);
         Transaction transaction = Transaction.builder()
@@ -86,6 +87,13 @@ public class TransactionServiceImpl implements TransactionService {
         transaction = transactionDao.save(transaction);
         transactionStateService.saveTransactionState(transaction,stateType,Strings.TRANSACTION_CREATED_AND_PENDING);
 
+        PayTransactionCreatedDto transactionCreatedDto = PayTransactionCreatedDto.builder()
+                .amount(transactionFromMerchantDto.getAmount())
+                .id(transaction.getId())
+                .createAt(transaction.getCreateAt().toString())
+                .description(transaction.getDescription())
+                .build();
+
         Optional<User> userOptional = userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier());
         User user;
         BankAccount bankAccountIssuer;
@@ -98,11 +106,14 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setStateType(stateType);
             transaction.setStateDescription(description);
             transactionDao.save(transaction);
-            return modelMapper.map(transaction, TransactionCreatedDto.class);
+            transactionCreatedDto.setStateType(stateType.getName());
+            transactionCreatedDto.setStateDescription(description);
+            return transactionCreatedDto;
         }else{
             user = userOptional.get();
             bankAccountIssuer = bankAccountService.findByUser(user);
             transaction.setBankAccountIssuer(bankAccountIssuer);
+            transactionCreatedDto.setBankAccountIssuer(bankAccountIssuer.getAccountNumber().toString());
         }
 
         Optional<Merchant> merchantOptional = merchantDao.findByMerchantKey(transactionFromMerchantDto.getMerchantKey());
@@ -116,7 +127,9 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setStateType(stateType);
             transaction.setStateDescription(description);
             transactionDao.save(transaction);
-            return modelMapper.map(transaction, TransactionCreatedDto.class);
+            transactionCreatedDto.setStateType(stateType.getName());
+            transactionCreatedDto.setStateDescription(description);
+            return transactionCreatedDto;
         }else{
             Merchant merchant = merchantOptional.get();
             Optional<User> userMerchant = userDao.findById(merchant.getUser().getId());
@@ -124,6 +137,7 @@ public class TransactionServiceImpl implements TransactionService {
                 bankAccountReceiver = bankAccountService.findByUser(userMerchant.get());
                 apiId = merchant.getApiId();
                 transaction.setBankAccountReceiver(bankAccountReceiver);
+                transactionCreatedDto.setMerchant(merchant.getStoreName());
             }else {
                 description = Strings.MERCHANT_BANK_ACCOUNT_NOT_FOUND;
                 transactionStateService.saveTransactionState(transaction,stateType,
@@ -131,7 +145,9 @@ public class TransactionServiceImpl implements TransactionService {
                 transaction.setStateType(stateType);
                 transaction.setStateDescription(description);
                 transactionDao.save(transaction);
-                return modelMapper.map(transaction, TransactionCreatedDto.class);
+                transactionCreatedDto.setStateType(stateType.getName());
+                transactionCreatedDto.setStateDescription(description);
+                return transactionCreatedDto;
             }
         }
 
@@ -145,7 +161,9 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setStateType(stateType);
             transaction.setStateDescription(description);
             transactionDao.save(transaction);
-            return modelMapper.map(transaction, TransactionCreatedDto.class);
+            transactionCreatedDto.setStateType(stateType.getName());
+            transactionCreatedDto.setStateDescription(description);
+            return transactionCreatedDto;
         }
 
         transaction = setStateAndBalanceOfTransaction(transaction, bankAccountIssuer, bankAccountReceiver,
@@ -155,13 +173,17 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setStateType(stateType);
             transactionStateService.saveTransactionState(transaction,stateType,
                     Strings.TRANSACTION_COMPLETED);
+            transactionCreatedDto.setStateType(stateType.getName());
+            transactionCreatedDto.setStateDescription(Strings.TRANSACTION_COMPLETED);
         } else {
             stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_REFUSED_STATE);
             transaction.setStateType(stateType);
             transactionStateService.saveTransactionState(transaction,stateType,
                     Strings.NOT_FOUNDS_ENOUGH);
+            transactionCreatedDto.setStateType(stateType.getName());
+            transactionCreatedDto.setStateDescription(Strings.NOT_FOUNDS_ENOUGH);
         }
-        transaction = transactionDao.save(transaction);
-        return modelMapper.map(transaction, TransactionCreatedDto.class);
+        transactionDao.save(transaction);
+        return transactionCreatedDto;
     }
 }

@@ -8,6 +8,7 @@ import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
 import com.endava.endabank.dto.merchant.MerchantDataFilterAuditDto;
 import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.dto.merchant.MerchantRegisterDto;
+import com.endava.endabank.dto.transaction.PayTransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;

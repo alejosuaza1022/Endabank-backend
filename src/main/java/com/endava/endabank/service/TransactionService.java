@@ -1,5 +1,6 @@
 package com.endava.endabank.service;
 
+import com.endava.endabank.dto.transaction.PayTransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
@@ -12,5 +13,5 @@ public interface TransactionService {
     Transaction setStateAndBalanceOfTransaction(Transaction transaction, BankAccount bankAccountIssuer,
                                          BankAccount bankAccountReceiver, Double amount);
 
-    TransactionCreatedDto createTransactionFromMerchant(Integer userId,TransactionFromMerchantDto transferFromMerchantDto);
+    PayTransactionCreatedDto createTransactionFromMerchant(Integer userId, TransactionFromMerchantDto transferFromMerchantDto);
 }
