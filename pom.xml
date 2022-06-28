@@ -12,7 +12,7 @@
     <artifactId>endabank</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>endabank</name>
-    <description>Endabank backend proyect</description>
+    <description>Endabank backend project</description>
     <properties>
         <serenity.version>3.2.0</serenity.version>
         <serenity.maven.version>3.2.0</serenity.maven.version>
