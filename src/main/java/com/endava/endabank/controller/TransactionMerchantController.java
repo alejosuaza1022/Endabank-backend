@@ -2,7 +2,6 @@ package com.endava.endabank.controller;
 
 import com.endava.endabank.constants.Routes;
 import com.endava.endabank.dto.transaction.PayTransactionCreatedDto;
-import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.service.TransactionService;
