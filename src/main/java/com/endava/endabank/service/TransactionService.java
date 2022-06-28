@@ -5,6 +5,7 @@ import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
 import com.endava.endabank.model.BankAccount;
+import com.endava.endabank.model.StateType;
 import com.endava.endabank.model.Transaction;
 
 public interface TransactionService {
@@ -14,4 +15,7 @@ public interface TransactionService {
                                          BankAccount bankAccountReceiver, Double amount);
 
     PayTransactionCreatedDto createTransactionFromMerchant(Integer userId, TransactionFromMerchantDto transferFromMerchantDto);
+
+    PayTransactionCreatedDto saveTransactionAndState(Transaction transaction, PayTransactionCreatedDto transactionCreatedDto,
+                                                     StateType stateType, String description);
 }
