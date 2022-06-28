@@ -19,7 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Service
 @AllArgsConstructor
@@ -101,14 +106,7 @@ public class TransactionServiceImpl implements TransactionService {
         if(userOptional.isEmpty()){
             stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_REFUSED_STATE);
             description = Strings.USER_NOT_FOUND;
-            transactionStateService.saveTransactionState(transaction,stateType,
-                    description);
-            transaction.setStateType(stateType);
-            transaction.setStateDescription(description);
-            transactionDao.save(transaction);
-            transactionCreatedDto.setStateType(stateType.getName());
-            transactionCreatedDto.setStateDescription(description);
-            return transactionCreatedDto;
+            return saveTransactionAndState(transaction,transactionCreatedDto,stateType,description);
         }else{
             user = userOptional.get();
             bankAccountIssuer = bankAccountService.findByUser(user);
@@ -122,14 +120,7 @@ public class TransactionServiceImpl implements TransactionService {
         stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE);
         if(merchantOptional.isEmpty()){
             description = Strings.MERCHANT_NOT_FOUND;
-            transactionStateService.saveTransactionState(transaction,stateType,
-                    description);
-            transaction.setStateType(stateType);
-            transaction.setStateDescription(description);
-            transactionDao.save(transaction);
-            transactionCreatedDto.setStateType(stateType.getName());
-            transactionCreatedDto.setStateDescription(description);
-            return transactionCreatedDto;
+            return saveTransactionAndState(transaction,transactionCreatedDto,stateType,description);
         }else{
             Merchant merchant = merchantOptional.get();
             Optional<User> userMerchant = userDao.findById(merchant.getUser().getId());
@@ -140,14 +131,7 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionCreatedDto.setMerchant(merchant.getStoreName());
             }else {
                 description = Strings.MERCHANT_BANK_ACCOUNT_NOT_FOUND;
-                transactionStateService.saveTransactionState(transaction,stateType,
-                        description);
-                transaction.setStateType(stateType);
-                transaction.setStateDescription(description);
-                transactionDao.save(transaction);
-                transactionCreatedDto.setStateType(stateType.getName());
-                transactionCreatedDto.setStateDescription(description);
-                return transactionCreatedDto;
+                return saveTransactionAndState(transaction,transactionCreatedDto,stateType,description);
             }
         }
 
@@ -156,14 +140,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (validation != null){
             stateType = entityManager.getReference(StateType.class, Strings.TRANSACTION_REFUSED_STATE);
             description = validation;
-            transactionStateService.saveTransactionState(transaction,stateType,
-                    description);
-            transaction.setStateType(stateType);
-            transaction.setStateDescription(description);
-            transactionDao.save(transaction);
-            transactionCreatedDto.setStateType(stateType.getName());
-            transactionCreatedDto.setStateDescription(description);
-            return transactionCreatedDto;
+            return saveTransactionAndState(transaction,transactionCreatedDto,stateType,description);
         }
 
         transaction = setStateAndBalanceOfTransaction(transaction, bankAccountIssuer, bankAccountReceiver,
@@ -184,6 +161,19 @@ public class TransactionServiceImpl implements TransactionService {
             transactionCreatedDto.setStateDescription(Strings.NOT_FOUNDS_ENOUGH);
         }
         transactionDao.save(transaction);
+        return transactionCreatedDto;
+    }
+
+    @Override
+    public PayTransactionCreatedDto saveTransactionAndState(Transaction transaction, PayTransactionCreatedDto transactionCreatedDto,
+                                                         StateType stateType, String description){
+        transactionStateService.saveTransactionState(transaction,stateType,
+                description);
+        transaction.setStateType(stateType);
+        transaction.setStateDescription(description);
+        transactionDao.save(transaction);
+        transactionCreatedDto.setStateType(stateType.getName());
+        transactionCreatedDto.setStateDescription(description);
         return transactionCreatedDto;
     }
 }
