@@ -45,4 +45,14 @@ public class MerchantController {
         return ResponseEntity.status(HttpStatus.OK).body(merchantService.getAllMerchantRequests(page));
     }
 
+    @PutMapping(Routes.UPDATE_MERCHANT_REQUEST)
+    public ResponseEntity<Map<String,String>> updateMerchantRequestState(@PathVariable Integer id, Principal principal, @RequestBody Map<String,Boolean> map){
+
+        UsernamePasswordAuthenticationToken
+                usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
+        UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
+
+        return ResponseEntity.status(HttpStatus.OK).body(merchantService.updateMerchantRequestStatus(id,user,map.get("value")));
+    }
+
 }
