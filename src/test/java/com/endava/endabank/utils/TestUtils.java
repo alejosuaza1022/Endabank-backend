@@ -410,6 +410,34 @@ public final class TestUtils {
                 build());
     }
 
+    public static Optional<Merchant> getMerchantOptionalIsNotApproved() {
+        MerchantRequestState merchantRequestState = MerchantRequestState.builder().id(3).name("REFUSED").build();
+        return Optional.of(Merchant.builder().
+                id(1).
+                user(TestUtils.getUserAdmin()).
+                taxId("123456789").
+                apiId("123456789").
+                merchantKey("123456789").
+                address("123456789").
+                storeName("123456789").
+                merchantRequestState(merchantRequestState).
+                build());
+    }
+
+    public static Optional<Merchant> getMerchantOptionalIsApproved() {
+        MerchantRequestState merchantRequestState = MerchantRequestState.builder().id(2).name("APPROVED").build();
+        return Optional.of(Merchant.builder().
+                id(1).
+                user(TestUtils.getUserAdmin()).
+                taxId("123456789").
+                apiId("123456789").
+                merchantKey("123456789").
+                address("123456789").
+                storeName("123456789").
+                merchantRequestState(merchantRequestState).
+                build());
+    }
+
     public static TransactionCreatedDto getTransactionCreatedDto() {
         StateTypeDto stateTypeDto = StateTypeDto.builder().id(1).name("APPROVED").build();
         return TransactionCreatedDto.builder().
