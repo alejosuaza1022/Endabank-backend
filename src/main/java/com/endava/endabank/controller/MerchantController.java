@@ -4,6 +4,7 @@ import com.endava.endabank.constants.Routes;
 import com.endava.endabank.dto.merchant.MerchantFilterAuditDto;
 import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
 import com.endava.endabank.dto.merchant.MerchantRegisterDto;
+import com.endava.endabank.dto.merchant.MerchantRequestPaginationDto;
 import com.endava.endabank.dto.user.UserPrincipalSecurity;
 import com.endava.endabank.service.MerchantService;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,21 @@ public class MerchantController {
             @RequestBody MerchantFilterAuditDto merchantFilterAuditDto, @PathVariable Integer page) {
         return ResponseEntity.status(HttpStatus.OK).
                 body(merchantService.filterMerchantAudit(merchantFilterAuditDto, page));
+    }
+
+    @GetMapping(Routes.GET_MERCHANT_REQUESTS)
+    public ResponseEntity<MerchantRequestPaginationDto> getAllMerchantRequests(@PathVariable Integer page){
+        return ResponseEntity.status(HttpStatus.OK).body(merchantService.getAllMerchantRequests(page));
+    }
+
+    @PutMapping(Routes.UPDATE_MERCHANT_REQUEST)
+    public ResponseEntity<Map<String,Object>> updateMerchantRequestState(@PathVariable Integer id, Principal principal, @RequestBody Map<String,Boolean> map){
+
+        UsernamePasswordAuthenticationToken
+                usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
+        UserPrincipalSecurity user = (UserPrincipalSecurity) usernamePasswordAuthenticationToken.getPrincipal();
+
+        return ResponseEntity.status(HttpStatus.OK).body(merchantService.updateMerchantRequestStatus(id,user,map.get("value")));
     }
 
 }
