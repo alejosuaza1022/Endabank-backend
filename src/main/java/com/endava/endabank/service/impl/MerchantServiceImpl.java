@@ -84,7 +84,7 @@ public class MerchantServiceImpl implements MerchantService {
         merchantDao.save(merchant);
 
         Map<String, String> map = new HashMap<>();
-        map.put(Strings.MESSAGE_RESPONSE, Strings.MERCHANT_REQUEST_UPDATED);
+        map.put(Strings.MESSAGE_RESPONSE, Strings.MERCHANT_REQUEST_CREATED);
 
         return map;
     }
