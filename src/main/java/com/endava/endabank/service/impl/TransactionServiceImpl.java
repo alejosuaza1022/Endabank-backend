@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.*;
 
 @Service
 @AllArgsConstructor
@@ -163,6 +161,7 @@ public class TransactionServiceImpl implements TransactionService {
             transactionCreatedDto.setStateType(stateType.getName());
             transactionCreatedDto.setStateDescription(Strings.NOT_FOUNDS_ENOUGH);
         }
+
         transactionDao.save(transaction);
         return transactionCreatedDto;
     }
