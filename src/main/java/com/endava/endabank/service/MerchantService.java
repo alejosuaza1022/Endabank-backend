@@ -15,5 +15,5 @@ public interface MerchantService {
     Map<String,String> save(Integer userId, MerchantRegisterDto merchantDto);
     MerchantGetFilterAuditDto filterMerchantAudit(MerchantFilterAuditDto merchantFilterAuditDto, Integer page);
     MerchantRequestPaginationDto getAllMerchantRequests(Integer page);
-    Map<String,String> updateMerchantRequestStatus(Integer id, UserPrincipalSecurity user, boolean value);
+    Map<String,Object> updateMerchantRequestStatus(Integer id, UserPrincipalSecurity user, boolean value);
 }

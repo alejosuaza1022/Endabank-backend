@@ -46,7 +46,7 @@ public class MerchantController {
     }
 
     @PutMapping(Routes.UPDATE_MERCHANT_REQUEST)
-    public ResponseEntity<Map<String,String>> updateMerchantRequestState(@PathVariable Integer id, Principal principal, @RequestBody Map<String,Boolean> map){
+    public ResponseEntity<Map<String,Object>> updateMerchantRequestState(@PathVariable Integer id, Principal principal, @RequestBody Map<String,Boolean> map){
 
         UsernamePasswordAuthenticationToken
                 usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;

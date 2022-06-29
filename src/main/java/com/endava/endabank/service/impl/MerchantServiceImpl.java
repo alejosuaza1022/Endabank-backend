@@ -106,11 +106,11 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public Map<String, String> updateMerchantRequestStatus(Integer id, UserPrincipalSecurity user, boolean value) {
+    public Map<String, Object> updateMerchantRequestStatus(Integer id, UserPrincipalSecurity user, boolean value) {
         Merchant currentMerchant = this.findById(id);
         User reviewingUser = userService.findById(user.getId());
         MerchantRequestState newState;
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
 
         if(value){
             newState = merchantRequestStateService.findById(MerchantStates.APPROVED);
@@ -126,7 +126,7 @@ public class MerchantServiceImpl implements MerchantService {
 
         } else{
 
-            if(currentMerchant.getMerchantRequestState().getId().equals(MerchantStates.PENDING)){
+            if(currentMerchant.getMerchantRequestState().getId().equals(MerchantStates.APPROVED)){
                 User requestingUser = userService.findById(currentMerchant.getUser().getId());
                 Role newRole = roleService.findById(Permissions.ROLE_USER);
 
