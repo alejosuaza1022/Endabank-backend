@@ -49,7 +49,6 @@ public class MerchantServiceImpl implements MerchantService {
     private RoleService roleService;
 
     @Override
-    @Transactional(readOnly = true)
     public Merchant findById(Integer id) {
         return merchantDao.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException(Strings.MERCHANT_NOT_FOUND));
