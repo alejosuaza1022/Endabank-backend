@@ -43,11 +43,11 @@ public class Transaction {
     private String address;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "bank_account_issuer_id", nullable = false)
+    @JoinColumn(name = "bank_account_issuer_id")
     private BankAccount bankAccountIssuer;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "bank_account_receiver_id", nullable = false)
+    @JoinColumn(name = "bank_account_receiver_id")
     private BankAccount bankAccountReceiver;
 
     @ManyToOne(optional = false)

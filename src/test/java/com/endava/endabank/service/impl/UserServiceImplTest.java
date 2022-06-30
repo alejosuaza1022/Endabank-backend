@@ -149,6 +149,24 @@ class UserServiceImplTest {
         when(userDao.findById(1)).thenReturn(Optional.empty());
         assertThrows(UsernameNotFoundException.class, () -> userService.findById(1));
     }
+    @Test
+    void testFindByIdentifierShouldFailWhenIdentifierNotFound() {
+        when(userDao.findByIdentifier("test")).thenReturn(Optional.empty());
+        assertThrows(UsernameNotFoundException.class, () -> userService.findByIdentifier("test"));
+    }
+    @Test
+    void testFindByIdentifierShouldSuccessWhenDataCorrect() {
+        User userNotAdmin = TestUtils.getUserNotAdmin();
+        when(userDao.findByIdentifier("test")).thenReturn(Optional.of(userNotAdmin));
+        User user = userService.findByIdentifier("test");
+        assertEquals(userNotAdmin.getEmail(), user.getEmail());
+        assertEquals(userNotAdmin.getFirstName(), user.getFirstName());
+        assertEquals(userNotAdmin.getLastName(), user.getLastName());
+        assertEquals(userNotAdmin.getPhoneNumber(), user.getPhoneNumber());
+        assertEquals(userNotAdmin.getId(), user.getId());
+        assertEquals(userNotAdmin.getRole().getId(), user.getRole().getId());
+        assertEquals(userNotAdmin.getRole().getName(), user.getRole().getName());
+    }
 
     @Test
     void testUpdateUserAccountApproveToTrueShouldSuccessWhenDataCorrect() {

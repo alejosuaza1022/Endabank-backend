@@ -49,6 +49,11 @@ public class TransactionState {
     @JoinColumn(name = "state_type_id", nullable = false)
     private StateType stateType;
 
+    @PrePersist
+    private void beforeSaving() {
+        createAt = LocalDateTime.now();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

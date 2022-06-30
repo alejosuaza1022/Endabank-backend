@@ -16,10 +16,11 @@ import java.util.Optional;
 public interface MerchantDao extends JpaRepository<Merchant,Integer>, JpaSpecificationExecutor<Merchant> {
     Optional<Merchant> findByTaxId(String taxId);
 
+    Optional<Merchant> findByMerchantKey(String merchantKey);
     Optional<Merchant> findByUser(User user);
 
     Page<Merchant> findAll(Specification<Merchant> spec, Pageable pageable);
+    Page<Merchant> findAll(Pageable pageable);
 
     List<Merchant> findAll(Specification<Merchant> spec);
-
 }

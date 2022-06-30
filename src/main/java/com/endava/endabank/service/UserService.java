@@ -20,6 +20,8 @@ public interface UserService {
 
     User findById(Integer id);
 
+    User findByIdentifier(String identifier);
+
     User save(UserRegisterDto user);
 
     UsernamePasswordAuthenticationToken getUsernamePasswordToken(Integer userId);

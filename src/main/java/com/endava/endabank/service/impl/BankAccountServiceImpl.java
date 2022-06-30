@@ -5,9 +5,9 @@ import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.TransactionDao;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.dto.BankAccountDto;
-import com.endava.endabank.dto.CreateBankAccountDto;
 import com.endava.endabank.dto.TransactionDto;
+import com.endava.endabank.dto.bankaccount.BankAccountDto;
+import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
 import com.endava.endabank.model.AccountType;
@@ -15,8 +15,8 @@ import com.endava.endabank.model.BankAccount;
 import com.endava.endabank.model.User;
 import com.endava.endabank.service.AccountTypeService;
 import com.endava.endabank.service.BankAccountService;
-import com.endava.endabank.utils.BankAccountUtils;
 import com.endava.endabank.utils.Pagination;
+import com.endava.endabank.utils.bankaccount.BankAccountUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -49,6 +49,12 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
+    public BankAccount findByUser(User user) {
+        return bankAccountDao.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException(Strings.STATUS_ERROR + ": " +Strings.BANK_ACCOUNT_NOT_FOUND));
+    }
+
+    @Override
     public void reduceBalance(BankAccount bankAccount, Double amount) {
         bankAccount.setBalance(bankAccount.getBalance() - amount);
         bankAccountDao.save(bankAccount);
@@ -64,11 +70,11 @@ public class BankAccountServiceImpl implements BankAccountService {
     public Map<String, String> save(CreateBankAccountDto bankAccountDto) {
         BankAccount account = new BankAccount();
         AccountType accountType = accountTypeService.findById(AccountTypes.DEBIT);
-        BigInteger accountNumber = BigInteger.valueOf(Long.parseLong(BankAccountUtils.genereteRamdomNumber(16)));
+        BigInteger accountNumber = BigInteger.valueOf(Long.parseLong(BankAccountUtils.generateRandomNumber(16)));
         account.setAccountNumber(BankAccountUtils.validateAccountNumber(accountNumber,bankAccountDao));
         account.setBalance(1000000.0);
         account.setAccountType(accountType);
-        account.setPassword(passwordEncoder.encode(BankAccountUtils.genereteRamdomNumber(4)));
+        account.setPassword(passwordEncoder.encode(BankAccountUtils.generateRandomNumber(4)));
         account.setUser(bankAccountDto.getUser());
         bankAccountDao.save(account);
         Map<String, String> map = new HashMap<>();

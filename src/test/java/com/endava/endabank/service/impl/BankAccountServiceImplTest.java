@@ -4,9 +4,9 @@ import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.TransactionDao;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.dto.BankAccountDto;
-import com.endava.endabank.dto.CreateBankAccountDto;
 import com.endava.endabank.dto.TransactionDto;
+import com.endava.endabank.dto.bankaccount.BankAccountDto;
+import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
 import com.endava.endabank.exceptions.custom.BadDataException;
 import com.endava.endabank.exceptions.custom.ResourceNotFoundException;
 import com.endava.endabank.model.AccountType;
@@ -71,7 +71,20 @@ class BankAccountServiceImplTest {
         BankAccount bankAccount1 = bankAccountService.findByAccountNumber(bankAccount.getAccountNumber());
         assertEquals(bankAccount, bankAccount1);
     }
-
+    @Test
+    void testFindByUserShouldFailWhenBankAccountNotFound() {
+        User user = TestUtils.getUserNotAdmin();
+        assertThrows(ResourceNotFoundException.class, () -> bankAccountService.findByUser(user));
+    }
+    @Test
+    void testFindByUserShouldSuccessWhenDataCorrect() {
+        User user = TestUtils.getUserNotAdmin();
+        BankAccount bankAccount = TestUtils.getBankAccount();
+        bankAccount.setUser(user);
+        when(bankAccountDao.findByUser(user)).thenReturn(Optional.of(bankAccount));
+        BankAccount bankAccount1 = bankAccountService.findByUser(user);
+        assertEquals(bankAccount, bankAccount1);
+    }
     @Test
     void reduceBalance() {
         BankAccount bankAccount = TestUtils.getBankAccount();
@@ -102,16 +115,16 @@ class BankAccountServiceImplTest {
         when(userDao.findByEmail(email)).thenReturn(Optional.of(user));
         assertThrows(BadDataException.class, () -> bankAccountService.findBankAccountUser(email));
     }
-
     @Test
     void testFindBankAccountUserShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
+        String email = user.getEmail();
         ArrayList<BankAccount> bankAccounts = new ArrayList<>();
         bankAccounts.add(TestUtils.getBankAccount());
         user.setBankAccounts(bankAccounts);
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(modelMapper.map(user.getBankAccounts().get(0), BankAccountDto.class)).thenReturn(TestUtils.getBankAccountDto());
-        BankAccountDto bankAccountsUser = bankAccountService.getAccountDetails(user.getEmail());
+        BankAccountDto bankAccountsUser = bankAccountService.getAccountDetails(email);
         assertEquals(bankAccountsUser.getId(), user.getBankAccounts().get(0).getId());
         assertEquals(bankAccountsUser.getBalance(), user.getBankAccounts().get(0).getBalance());
     }
@@ -119,13 +132,14 @@ class BankAccountServiceImplTest {
     @Test
     void testGetTransactionSummaryShouldSuccessWhenDataCorrect() {
         User user = TestUtils.getUserNotAdmin();
+        String email = user.getEmail();
         ArrayList<BankAccount> bankAccounts = new ArrayList<>();
         bankAccounts.add(TestUtils.getBankAccount());
         user.setBankAccounts(bankAccounts);
         when(userDao.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         Sort sort = Sort.by(Strings.ACCOUNT_SUMMARY_SORT).descending();
         when(transactionDao.getListTransactionsSummary(1, pagination.getPageable(0, sort))).thenReturn(Page.empty());
-        Page<TransactionDto> transactionDaoPage = bankAccountService.getTransactionsSummary(user.getEmail(), 1);
+        Page<TransactionDto> transactionDaoPage = bankAccountService.getTransactionsSummary(email, 1);
         assertEquals(0, transactionDaoPage.getTotalElements());
     }
 

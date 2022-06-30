@@ -6,7 +6,7 @@ import com.endava.endabank.constants.Routes;
 import com.endava.endabank.constants.Strings;
 import com.endava.endabank.dao.BankAccountDao;
 import com.endava.endabank.dao.UserDao;
-import com.endava.endabank.dto.CreateBankAccountDto;
+import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
 import com.endava.endabank.dto.user.UpdatePasswordDto;
 import com.endava.endabank.dto.user.UserDetailsDto;
 import com.endava.endabank.dto.user.UserGeneralInfoDto;
@@ -82,6 +82,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public User findByIdentifier(String identifier) {
+        return userDao.findByIdentifier(identifier).
+                orElseThrow(() -> new UsernameNotFoundException(Strings.STATUS_FRAUD + ": " + Strings.USER_NOT_FOUND));
+    }
+
+    @Override
     @Transactional
     public User save(UserRegisterDto userDto) {
         User user = modelMapper.map(userDto, User.class);
@@ -123,7 +130,7 @@ public class UserServiceImpl implements UserService {
         user.setIsApproved(value);
         CreateBankAccountDto createBankAccountDto = new CreateBankAccountDto();
         createBankAccountDto.setUser(user);
-        if((bankAccountDao.findByUser(user).isEmpty())){
+        if ((bankAccountDao.findByUser(user).isEmpty())) {
             bankAccountService.save(createBankAccountDto);
         }
         return this.mapToUserToApproveDto(userDao.save(user));
@@ -243,7 +250,7 @@ public class UserServiceImpl implements UserService {
 
     @VisibleForTesting
     Map<String, Object> sendEmailToUser(String templateId, User user, String asName,
-                                                BiFunction<User, String, String> callback) {
+                                        BiFunction<User, String, String> callback) {
         Map<String, Object> map = new HashMap<>();
         try {
             String token = JwtManage.generateToken(user.getId(), user.getEmail(), Strings.SECRET_JWT);
