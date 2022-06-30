@@ -3,7 +3,6 @@ package com.endava.endabank.utils.merchant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.security.SecureRandom;
 import java.util.Random;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -5,12 +5,7 @@ import com.endava.endabank.dto.StateTypeDto;
 import com.endava.endabank.dto.bankaccount.BankAccountDto;
 import com.endava.endabank.dto.bankaccount.BankAccountMinimalDto;
 import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
-import com.endava.endabank.dto.merchant.MerchantDataFilterAuditDto;
-import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
-import com.endava.endabank.dto.merchant.MerchantRegisterDto;
-import com.endava.endabank.dto.merchant.MerchantRequestDataDto;
-import com.endava.endabank.dto.merchant.MerchantRequestPaginationDto;
-import com.endava.endabank.dto.transaction.PayTransactionCreatedDto;
+import com.endava.endabank.dto.merchant.*;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
@@ -156,6 +151,24 @@ public final class TestUtils {
 
     public static Merchant getMerchantApproved(){
         MerchantRequestState approvedMerchantRequestState = TestUtils.getApprovedMerchantRequestState();
+        User user = TestUtils.getUserNotAdmin();
+        User reviewingUser = TestUtils.getUserAdmin2();
+
+        return Merchant.builder()
+                .id(1)
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .merchantRequestState(approvedMerchantRequestState)
+                .user(user)
+                .merchantKey("asdfghjkl456")
+                .apiId("a")
+                .reviewedBy(reviewingUser)
+                .build();
+    }
+
+    public static Merchant getMerchantRejected(){
+        MerchantRequestState approvedMerchantRequestState = TestUtils.getRejectedMerchantRequestState();
         User user = TestUtils.getUserNotAdmin();
         User reviewingUser = TestUtils.getUserAdmin2();
 

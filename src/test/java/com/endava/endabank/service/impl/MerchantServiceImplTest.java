@@ -29,22 +29,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.mockito.stubbing.Answer;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -154,8 +150,58 @@ class MerchantServiceImplTest {
 
         //assertEquals(HttpStatus.ACCEPTED.value(), map.get(Strings.STATUS_CODE_RESPONSE));
         assertEquals(Strings.MERCHANT_REQUEST_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
+    }
 
+    @Test
+    void testUpdateMerchantRequestStateToFalseShouldSuccessWheStateIsApproved(){
+        User adminUser = TestUtils.getUserAdmin2();
+        User nonAdminUser = TestUtils.getUserNotAdmin();
+        Merchant merchantNotReviewed = TestUtils.getMerchantApproved();
+        Merchant merchantApproved = TestUtils.getMerchantApproved();
+        MerchantRequestState merchantRequestState = TestUtils.getApprovedMerchantRequestState();
+        Role role = TestUtils.merchantRole();
 
+        nonAdminUser.setRole(role);
+
+        MerchantService merchantService1 = Mockito.spy(merchantService);
+        MerchantRequestStateService merchantRequestStateService1 = Mockito.spy(merchantRequestStateService);
+        RoleService roleService1 = Mockito.spy(roleService);
+
+        doReturn(merchantNotReviewed).when(merchantService1).findById(1);
+        doReturn(adminUser).when(userService).findById(2);
+        doReturn(nonAdminUser).when(userService).findById(1);
+        doReturn(role).when(roleService1).findById(3);
+        doReturn(merchantRequestState).when(merchantRequestStateService1).findById(2);
+
+        when(userDao.save(TestUtils.getUserNotAdmin())).thenReturn(nonAdminUser);
+        when(merchantDao.save(TestUtils.getMerchantApproved())).thenReturn(merchantApproved);
+
+        Map<String,Object> map = merchantService1.updateMerchantRequestStatus(1,TestUtils.getUserPrincipalSecurity(),false);
+
+        assertEquals(Strings.MERCHANT_REQUEST_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
+    }
+
+    @Test
+    void testUpdateMerchantRequestStateToFalseShouldSuccessWheDataIsCorrect(){
+        User adminUser = TestUtils.getUserAdmin2();
+        User nonAdminUser = TestUtils.getUserNotAdmin();
+        Merchant merchantNotReviewed = TestUtils.getMerchantNotReviewed();
+        Merchant merchantRejected = TestUtils.getMerchantRejected();
+        MerchantRequestState merchantRequestState = TestUtils.getApprovedMerchantRequestState();
+
+        MerchantService merchantService1 = Mockito.spy(merchantService);
+        MerchantRequestStateService merchantRequestStateService1 = Mockito.spy(merchantRequestStateService);
+
+        doReturn(merchantNotReviewed).when(merchantService1).findById(1);
+        doReturn(adminUser).when(userService).findById(2);
+        doReturn(merchantRequestState).when(merchantRequestStateService1).findById(3);
+
+        when(userDao.save(TestUtils.getUserNotAdmin())).thenReturn(nonAdminUser);
+        when(merchantDao.save(TestUtils.getMerchantApproved())).thenReturn(merchantRejected);
+
+        Map<String,Object> map = merchantService1.updateMerchantRequestStatus(1,TestUtils.getUserPrincipalSecurity(),false);
+
+        assertEquals(Strings.MERCHANT_REQUEST_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
     }
 
     @Test
