@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class MerchantUtilsTest {
+class MerchantUtilsTest {
 
     @Test
     void testGenerateRandomKeyShouldSuccessWhenDataCorrect(){
