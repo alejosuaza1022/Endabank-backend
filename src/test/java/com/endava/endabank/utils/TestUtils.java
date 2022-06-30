@@ -167,6 +167,24 @@ public final class TestUtils {
                 .build();
     }
 
+    public static Merchant getMerchantRejected(){
+        MerchantRequestState approvedMerchantRequestState = TestUtils.getRejectedMerchantRequestState();
+        User user = TestUtils.getUserNotAdmin();
+        User reviewingUser = TestUtils.getUserAdmin2();
+
+        return Merchant.builder()
+                .id(1)
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .merchantRequestState(approvedMerchantRequestState)
+                .user(user)
+                .merchantKey("asdfghjkl456")
+                .apiId("a")
+                .reviewedBy(reviewingUser)
+                .build();
+    }
+
     public static MerchantRegisterDto getMerchantRegisterDto(){
         return MerchantRegisterDto.builder()
                 .taxId("1234567890")

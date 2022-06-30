@@ -153,7 +153,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    void testUpdateMerchantRequestStateToFalseShouldSuccessWheDataCorrect(){
+    void testUpdateMerchantRequestStateToFalseShouldSuccessWheStateIsApproved(){
         User adminUser = TestUtils.getUserAdmin2();
         User nonAdminUser = TestUtils.getUserNotAdmin();
         Merchant merchantNotReviewed = TestUtils.getMerchantApproved();
@@ -175,6 +175,29 @@ class MerchantServiceImplTest {
 
         when(userDao.save(TestUtils.getUserNotAdmin())).thenReturn(nonAdminUser);
         when(merchantDao.save(TestUtils.getMerchantApproved())).thenReturn(merchantApproved);
+
+        Map<String,Object> map = merchantService1.updateMerchantRequestStatus(1,TestUtils.getUserPrincipalSecurity(),false);
+
+        assertEquals(Strings.MERCHANT_REQUEST_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
+    }
+
+    @Test
+    void testUpdateMerchantRequestStateToFalseShouldSuccessWheDataIsCorrect(){
+        User adminUser = TestUtils.getUserAdmin2();
+        User nonAdminUser = TestUtils.getUserNotAdmin();
+        Merchant merchantNotReviewed = TestUtils.getMerchantNotReviewed();
+        Merchant merchantRejected = TestUtils.getMerchantRejected();
+        MerchantRequestState merchantRequestState = TestUtils.getApprovedMerchantRequestState();
+
+        MerchantService merchantService1 = Mockito.spy(merchantService);
+        MerchantRequestStateService merchantRequestStateService1 = Mockito.spy(merchantRequestStateService);
+
+        doReturn(merchantNotReviewed).when(merchantService1).findById(1);
+        doReturn(adminUser).when(userService).findById(2);
+        doReturn(merchantRequestState).when(merchantRequestStateService1).findById(3);
+
+        when(userDao.save(TestUtils.getUserNotAdmin())).thenReturn(nonAdminUser);
+        when(merchantDao.save(TestUtils.getMerchantApproved())).thenReturn(merchantRejected);
 
         Map<String,Object> map = merchantService1.updateMerchantRequestStatus(1,TestUtils.getUserPrincipalSecurity(),false);
 
