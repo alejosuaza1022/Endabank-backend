@@ -1,8 +1,25 @@
 package com.endava.endabank.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,7 +52,7 @@ public class Merchant {
 
     private LocalDateTime updatedAt;
 
-    @Column( nullable = false)
+    @Column(nullable = false)
     private String storeName;
 
     @ManyToOne(optional = false)
@@ -43,6 +60,7 @@ public class Merchant {
     private MerchantRequestState merchantRequestState;
 
     @OneToOne(optional = false)
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -59,8 +77,6 @@ public class Merchant {
     private void beforeUpdating() {
         updatedAt = LocalDateTime.now();
     }
-
-
 
 
 }

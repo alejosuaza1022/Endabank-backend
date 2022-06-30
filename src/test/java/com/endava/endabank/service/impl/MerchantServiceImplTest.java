@@ -40,7 +40,9 @@ import org.springframework.data.domain.Sort;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -82,8 +84,8 @@ class MerchantServiceImplTest {
     private MerchantServiceImpl merchantService;
 
     @BeforeEach
-    void setUp(){
-        merchantService = new MerchantServiceImpl(merchantDao,userDao,modelMapper,merchantRequestStateService,userService,merchantSpecification,pagination,roleService);
+    void setUp() {
+        merchantService = new MerchantServiceImpl(merchantDao, userDao, modelMapper, merchantRequestStateService, userService, merchantSpecification, pagination, roleService);
     }
 
     @Test
@@ -99,7 +101,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    void testFindByIdShouldSuccessWhenDataCorrect(){
+    void testFindByIdShouldSuccessWhenDataCorrect() {
         Merchant merchantNotReviewed = TestUtils.getMerchantNotReviewed();
 
         when(merchantDao.findById(1)).thenReturn(Optional.of(merchantNotReviewed));
@@ -115,12 +117,12 @@ class MerchantServiceImplTest {
 
     }
 
-    void testingGetAllMerchantRequests(){
+    void testingGetAllMerchantRequests() {
 
     }
 
     @Test
-    void testUpdateMerchantRequestStateToTrueShouldSuccessWheDataCorrect(){
+    void testUpdateMerchantRequestStateToTrueShouldSuccessWheDataCorrect() {
         User adminUser = TestUtils.getUserAdmin2();
         User nonAdminUser = TestUtils.getUserNotAdmin();
         Merchant merchantNotReviewed = TestUtils.getMerchantNotReviewed();
@@ -146,14 +148,14 @@ class MerchantServiceImplTest {
         when(userDao.save(TestUtils.getUserNotAdmin())).thenReturn(nonAdminUser);
         when(merchantDao.save(TestUtils.getMerchantApproved())).thenReturn(merchantApproved);
 
-        Map<String,Object> map = merchantService1.updateMerchantRequestStatus(1,TestUtils.getUserPrincipalSecurity(),true);
+        Map<String, Object> map = merchantService1.updateMerchantRequestStatus(1, TestUtils.getUserPrincipalSecurity(), true);
 
         //assertEquals(HttpStatus.ACCEPTED.value(), map.get(Strings.STATUS_CODE_RESPONSE));
         assertEquals(Strings.MERCHANT_REQUEST_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
     }
 
     @Test
-    void testUpdateMerchantRequestStateToFalseShouldSuccessWheStateIsApproved(){
+    void testUpdateMerchantRequestStateToFalseShouldSuccessWheStateIsApproved() {
         User adminUser = TestUtils.getUserAdmin2();
         User nonAdminUser = TestUtils.getUserNotAdmin();
         Merchant merchantNotReviewed = TestUtils.getMerchantApproved();
@@ -176,13 +178,13 @@ class MerchantServiceImplTest {
         when(userDao.save(TestUtils.getUserNotAdmin())).thenReturn(nonAdminUser);
         when(merchantDao.save(TestUtils.getMerchantApproved())).thenReturn(merchantApproved);
 
-        Map<String,Object> map = merchantService1.updateMerchantRequestStatus(1,TestUtils.getUserPrincipalSecurity(),false);
+        Map<String, Object> map = merchantService1.updateMerchantRequestStatus(1, TestUtils.getUserPrincipalSecurity(), false);
 
         assertEquals(Strings.MERCHANT_REQUEST_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
     }
 
     @Test
-    void testUpdateMerchantRequestStateToFalseShouldSuccessWheDataIsCorrect(){
+    void testUpdateMerchantRequestStateToFalseShouldSuccessWheDataIsCorrect() {
         User adminUser = TestUtils.getUserAdmin2();
         User nonAdminUser = TestUtils.getUserNotAdmin();
         Merchant merchantNotReviewed = TestUtils.getMerchantNotReviewed();
@@ -199,22 +201,22 @@ class MerchantServiceImplTest {
         when(userDao.save(TestUtils.getUserNotAdmin())).thenReturn(nonAdminUser);
         when(merchantDao.save(TestUtils.getMerchantApproved())).thenReturn(merchantRejected);
 
-        Map<String,Object> map = merchantService1.updateMerchantRequestStatus(1,TestUtils.getUserPrincipalSecurity(),false);
+        Map<String, Object> map = merchantService1.updateMerchantRequestStatus(1, TestUtils.getUserPrincipalSecurity(), false);
 
         assertEquals(Strings.MERCHANT_REQUEST_UPDATED, map.get(Strings.MESSAGE_RESPONSE));
     }
 
     @Test
-    void testGetAllMerchantRequests(){
+    void testGetAllMerchantRequests() {
         Sort sort = Sort.by("createAt").descending();
-        Pageable pageable = pagination.getPageable(0,sort);
+        Pageable pageable = pagination.getPageable(0, sort);
 
         when(merchantDao.findAll(pageable)).thenReturn(Page.empty());
         when(modelMapper.map(Page.empty(), MerchantRequestPaginationDto.class)).thenReturn(TestUtils.getMerchantRequestPaginationDto());
 
         MerchantRequestPaginationDto merchantRequestsPage = merchantService.getAllMerchantRequests(0);
 
-        assertEquals(0,merchantRequestsPage.getTotalElements());
+        assertEquals(0, merchantRequestsPage.getTotalElements());
     }
 
 
@@ -224,24 +226,24 @@ class MerchantServiceImplTest {
         MerchantRegisterDto merchantRegisterDto;
 
         @BeforeEach
-        void setUp(){
+        void setUp() {
             merchantRegisterDto = TestUtils.getMerchantRegisterDto();
             when(modelMapper.map(merchantRegisterDto, Merchant.class)).thenReturn(TestUtils.getMerchantNotReviewed());
         }
 
         @Test
-        void testSaveShouldFailWhenUserAlreadyRegisterAMerchant(){
+        void testSaveShouldFailWhenUserAlreadyRegisterAMerchant() {
             User user = TestUtils.getUserNotAdmin();
             Integer userId = user.getId();
 
             when(userService.findById(user.getId())).thenReturn(user);
             when(merchantDao.findByUser(user))
                     .thenReturn(Optional.of(TestUtils.getMerchantNotReviewed()));
-            assertThrows(UniqueConstraintViolationException.class, () -> merchantService.save(userId,merchantRegisterDto));
+            assertThrows(UniqueConstraintViolationException.class, () -> merchantService.save(userId, merchantRegisterDto));
         }
 
         @Test
-        void testSaveShouldFailWhenTaxIdAlreadyExists(){
+        void testSaveShouldFailWhenTaxIdAlreadyExists() {
             User user = TestUtils.getUserNotAdmin();
             Integer userId = user.getId();
 
@@ -250,11 +252,12 @@ class MerchantServiceImplTest {
             when(merchantDao.findByTaxId(merchantRegisterDto.getTaxId()))
                     .thenReturn(Optional.of(TestUtils.getMerchantNotReviewed()));
 
-            assertThrows(UniqueConstraintViolationException.class, () -> merchantService.save(userId,merchantRegisterDto));
+            assertThrows(UniqueConstraintViolationException.class, () -> merchantService.save(userId, merchantRegisterDto));
         }
 
         @Test
-        void testSaveShouldSuccessWhenDataCorrect(){
+        void testSaveShouldSuccessWhenDataCorrect() {
+            Merchant merchant = TestUtils.getMerchantNotReviewed();
             User user = TestUtils.getUserNotAdmin();
 
             when(userService.findById(user.getId())).thenReturn(user);
@@ -265,19 +268,21 @@ class MerchantServiceImplTest {
 
             Map<String, String> map = merchantService.save(user.getId(), merchantRegisterDto);
 
-            assertEquals(Strings.MERCHANT_REQUEST_CREATED,map.get(Strings.MESSAGE_RESPONSE));
+            assertEquals(Strings.MERCHANT_REQUEST_CREATED, map.get(Strings.MESSAGE_RESPONSE));
 
         }
+
         @Test
-        void testFindByMerchantKeyShouldFailWhenMerchantKeyNotCorrect(){
+        void testFindByMerchantKeyShouldFailWhenMerchantKeyNotCorrect() {
             when(merchantDao.findByMerchantKey("123")).thenReturn(Optional.empty());
             assertThrows(ResourceNotFoundException.class, () -> merchantService.findByMerchantKey("123"));
         }
+
         @Test
-        void testFindByMerchantKeyShouldSuccessWhenMerchantKeyCorrect(){
+        void testFindByMerchantKeyShouldSuccessWhenMerchantKeyCorrect() {
             Merchant merchant = TestUtils.getMerchantNotReviewed();
             when(merchantDao.findByMerchantKey("123")).thenReturn(Optional.of(merchant));
-            assertEquals(merchant,merchantService.findByMerchantKey("123"));
+            assertEquals(merchant, merchantService.findByMerchantKey("123"));
         }
     }
 

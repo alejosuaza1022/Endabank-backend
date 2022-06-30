@@ -5,12 +5,33 @@ import com.endava.endabank.dto.StateTypeDto;
 import com.endava.endabank.dto.bankaccount.BankAccountDto;
 import com.endava.endabank.dto.bankaccount.BankAccountMinimalDto;
 import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
-import com.endava.endabank.dto.merchant.*;
+import com.endava.endabank.dto.merchant.MerchantDataFilterAuditDto;
+import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
+import com.endava.endabank.dto.merchant.MerchantRegisterDto;
+import com.endava.endabank.dto.merchant.MerchantRequestDataDto;
+import com.endava.endabank.dto.merchant.MerchantRequestPaginationDto;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
-import com.endava.endabank.dto.user.*;
-import com.endava.endabank.model.*;
+import com.endava.endabank.dto.user.UpdatePasswordDto;
+import com.endava.endabank.dto.user.UserDetailsDto;
+import com.endava.endabank.dto.user.UserGeneralInfoDto;
+import com.endava.endabank.dto.user.UserPrincipalSecurity;
+import com.endava.endabank.dto.user.UserRegisterDto;
+import com.endava.endabank.dto.user.UserRegisterGetDto;
+import com.endava.endabank.dto.user.UserToApproveAccountDto;
+import com.endava.endabank.model.AccountType;
+import com.endava.endabank.model.BankAccount;
+import com.endava.endabank.model.ForgotUserPasswordToken;
+import com.endava.endabank.model.IdentifierType;
+import com.endava.endabank.model.Merchant;
+import com.endava.endabank.model.MerchantRequestState;
+import com.endava.endabank.model.Permission;
+import com.endava.endabank.model.Role;
+import com.endava.endabank.model.StateType;
+import com.endava.endabank.model.Transaction;
+import com.endava.endabank.model.TransactionType;
+import com.endava.endabank.model.User;
 import com.endava.endabank.security.UserAuthentication;
 import com.sendgrid.Response;
 import lombok.AccessLevel;
@@ -20,7 +41,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestUtils {
@@ -123,19 +151,19 @@ public final class TestUtils {
         return new IdentifierType(1, "CC", new ArrayList<>());
     }
 
-    public static MerchantRequestState getPendingMerchantRequestState(){
-        return new MerchantRequestState(1,"PENDING",new ArrayList<>());
+    public static MerchantRequestState getPendingMerchantRequestState() {
+        return new MerchantRequestState(1, "PENDING", new ArrayList<>());
     }
 
-    public static MerchantRequestState getApprovedMerchantRequestState(){
-        return new MerchantRequestState(2,"APPROVED",new ArrayList<>());
+    public static MerchantRequestState getApprovedMerchantRequestState() {
+        return new MerchantRequestState(2, "APPROVED", new ArrayList<>());
     }
 
-    public static MerchantRequestState getRejectedMerchantRequestState(){
-        return new MerchantRequestState(3,"REJECTED",new ArrayList<>());
+    public static MerchantRequestState getRejectedMerchantRequestState() {
+        return new MerchantRequestState(3, "REJECTED", new ArrayList<>());
     }
 
-    public static Merchant getMerchantNotReviewed(){
+    public static Merchant getMerchantNotReviewed() {
         MerchantRequestState pendingMerchantRequestState = TestUtils.getPendingMerchantRequestState();
         User user = TestUtils.getUserNotAdmin();
 
@@ -149,7 +177,7 @@ public final class TestUtils {
                 .build();
     }
 
-    public static Merchant getMerchantApproved(){
+    public static Merchant getMerchantApproved() {
         MerchantRequestState approvedMerchantRequestState = TestUtils.getApprovedMerchantRequestState();
         User user = TestUtils.getUserNotAdmin();
         User reviewingUser = TestUtils.getUserAdmin2();
@@ -167,7 +195,7 @@ public final class TestUtils {
                 .build();
     }
 
-    public static Merchant getMerchantRejected(){
+    public static Merchant getMerchantRejected() {
         MerchantRequestState approvedMerchantRequestState = TestUtils.getRejectedMerchantRequestState();
         User user = TestUtils.getUserNotAdmin();
         User reviewingUser = TestUtils.getUserAdmin2();
@@ -185,7 +213,7 @@ public final class TestUtils {
                 .build();
     }
 
-    public static MerchantRegisterDto getMerchantRegisterDto(){
+    public static MerchantRegisterDto getMerchantRegisterDto() {
         return MerchantRegisterDto.builder()
                 .taxId("1234567890")
                 .address("cr 13 # 5")
@@ -193,7 +221,7 @@ public final class TestUtils {
                 .build();
     }
 
-    public static MerchantRequestPaginationDto getMerchantRequestPaginationDto(){
+    public static MerchantRequestPaginationDto getMerchantRequestPaginationDto() {
         List<MerchantRequestDataDto> content = new ArrayList<>();
 
         return MerchantRequestPaginationDto.builder()
@@ -215,7 +243,7 @@ public final class TestUtils {
                 typeIdentifierId(1).build();
     }
 
-    public static TransactionFromMerchantDto getTransactionFromMerchantDto(){
+    public static TransactionFromMerchantDto getTransactionFromMerchantDto() {
         return TransactionFromMerchantDto.builder()
                 .merchantKey("12345")
                 .identifier("1001000000")
@@ -225,7 +253,8 @@ public final class TestUtils {
                 .address("111.111.111.111")
                 .build();
     }
-    public static TransactionFromMerchantDto getTransactionFromMerchantDtoWithBadAmount(){
+
+    public static TransactionFromMerchantDto getTransactionFromMerchantDtoWithBadAmount() {
         return TransactionFromMerchantDto.builder()
                 .merchantKey("12345")
                 .identifier("1001000000")
@@ -235,6 +264,7 @@ public final class TestUtils {
                 .address("111.111.111.111")
                 .build();
     }
+
     public static UserRegisterGetDto getUserRegisterGetDto() {
         return new ModelMapper().
                 map(getUserNotAdmin(), UserRegisterGetDto.class);
@@ -245,8 +275,8 @@ public final class TestUtils {
                 map(user, UserDetailsDto.class);
     }
 
-    public static UserGeneralInfoDto getUserGeneralInfoDto(UserPrincipalSecurity user){
-        return new ModelMapper().map(user,UserGeneralInfoDto.class);
+    public static UserGeneralInfoDto getUserGeneralInfoDto(UserPrincipalSecurity user) {
+        return new ModelMapper().map(user, UserGeneralInfoDto.class);
     }
 
     public static UserPrincipalSecurity getUserPrincipalSecurity() {
@@ -378,24 +408,31 @@ public final class TestUtils {
                 .stateDescription(Strings.TRANSACTION_COMPLETED).
                 bankAccountReceiver(bankAccountReceiver).build();
     }
+
     public static StateType getStateTypeApproved() {
         return StateType.builder().id(1).name("APPROVED").build();
     }
+
     public static StateType getStateTypeFailed() {
         return StateType.builder().id(2).name("FAILED").build();
     }
+
     public static StateType getStateTypePending() {
         return StateType.builder().id(3).name("PENDING").build();
     }
+
     public static StateType getStateTypeAuthorised() {
         return StateType.builder().id(4).name("AUTHORISED").build();
     }
+
     public static StateType getStateTypeError() {
         return StateType.builder().id(5).name("ERROR").build();
     }
+
     public static StateType getStateTypeRefused() {
         return StateType.builder().id(6).name("REFUSED").build();
     }
+
     public static List<MerchantDataFilterAuditDto> getMerchantList() {
         return List.of(MerchantDataFilterAuditDto.builder().storeName("testStore")
                 .reviewedByFirstName("admin")
@@ -403,6 +440,7 @@ public final class TestUtils {
                 .merchantRequestStateName("APPROVED")
                 .build());
     }
+
     public static MerchantGetFilterAuditDto getMerchant() {
         return MerchantGetFilterAuditDto.builder()
                 .totalElements(1)
@@ -411,6 +449,7 @@ public final class TestUtils {
                 .content(getMerchantList())
                 .build();
     }
+
     public static Optional<Merchant> getMerchantOptional() {
         return Optional.of(Merchant.builder().
                 id(1).
@@ -459,6 +498,7 @@ public final class TestUtils {
                 bankAccountReceiver(getBankAccountMinimalDto()).
                 stateType(stateTypeDto).stateDescription(Strings.TRANSACTION_COMPLETED).build();
     }
+
     public static TransactionCreatedDto getTransactionNotCreatedDto() {
         StateTypeDto stateTypeDto = StateTypeDto.builder().id(2).name("FAILED").build();
         return TransactionCreatedDto.builder().
@@ -492,6 +532,7 @@ public final class TestUtils {
                 password("$2a$10$caewIC6lyX2A3c0qF1UMFeF8zyVwSZGiMUrPWst/0Cy.B/Xxnmh/u"). // 1111 encode
                         user(user).build();
     }
+
     public static BankAccount getBankAccountWhitOutBalance() {
         AccountType accountType = TestUtils.getAccountType();
         User user = TestUtils.getUserAdmin();
