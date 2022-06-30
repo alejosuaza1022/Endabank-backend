@@ -24,6 +24,7 @@ public final class Strings {
     public static final String CONSTRAINT_MERCHANT_VIOLATED = "There is already a request registered for the current user";
     public static final String CONSTRAINT_EMAIL_VIOLATED = "There is already a user registered with this email.";
     public static final String SECRET_JWT = System.getenv("JWT_ENDABANK_SECRET");
+    public static final String API_KEY = "Aa789rtTHGaWerss787sdf10";
     public static final String MESSAGE_RESPONSE = "message";
     public static final String STATUS_CODE_RESPONSE = "statusCode";
     public static final String BAD_DATA_FOR_TOKEN_GENERATION = "The data required for the token generation is not provided.";
@@ -61,16 +62,18 @@ public final class Strings {
     public static final String ACCOUNT_TYPE_NOT_FOUND = "The account type was not found on the database.";
     public static final String MERCHANT_NOT_FOUND = "The merchant was not found in the database";
     public static final String MERCHANT_BANK_ACCOUNT_NOT_FOUND = "The merchant's bank account was not found in the database";
+    public static final String MERCHANT_IS_NOT_APPROVED = "The merchant is not approved";
     public static final String ACCOUNT_CREATED = "The bank account was successfully created.";
     public static final String MERCHANT_REQUEST_CREATED = "The request to become a merchant was successfully created.";
+    public static final String MERCHANT_REQUEST_UPDATED = "The merchant request was updated";
     public static final String ACCOUNT_SUMMARY_SORT = "create_at";
+    public static final String MERCHANT_REQUESTS_SORT = "create_at";
     public static final String BAD_API_ID = "The Api Id does not match merchant data";
     public static final String BAD_USER_DATA = "Data user does not match";
     public static final String STATUS_ERROR = "ERROR";
     public static final String STATUS_FRAUD = "FRAUD";
     public static final String STATUS_REFUSED = "REFUSED";
     public static final String STATUS_AUTHORISED = "AUTHORISED";
-
     public static final String TRANSACTION_CREATED_AND_PENDING = "The transaction has been created, is pending";
 
 }

@@ -5,10 +5,7 @@ import com.endava.endabank.dto.StateTypeDto;
 import com.endava.endabank.dto.bankaccount.BankAccountDto;
 import com.endava.endabank.dto.bankaccount.BankAccountMinimalDto;
 import com.endava.endabank.dto.bankaccount.CreateBankAccountDto;
-import com.endava.endabank.dto.merchant.MerchantDataFilterAuditDto;
-import com.endava.endabank.dto.merchant.MerchantGetFilterAuditDto;
-import com.endava.endabank.dto.merchant.MerchantRegisterDto;
-import com.endava.endabank.dto.transaction.PayTransactionCreatedDto;
+import com.endava.endabank.dto.merchant.*;
 import com.endava.endabank.dto.transaction.TransactionCreateDto;
 import com.endava.endabank.dto.transaction.TransactionCreatedDto;
 import com.endava.endabank.dto.transaction.TransactionFromMerchantDto;
@@ -38,6 +35,24 @@ public final class TestUtils {
                 phoneNumber("3212312321").
                 identifier("1001000000").
                 firstName("User").
+                lastName("Admin").
+                password("$2a$10$bUcuzJbChZheTqPERIqk3u7COWhAF1CV6OU.LUkCG6iZYRhXydRqW").
+                isEmailVerified(true).
+                isApproved(true).
+                role(adminRole).
+                identifierType(cc).
+                bankAccounts(new ArrayList<>()).build();
+    }
+
+    public static User getUserAdmin2() {
+        Role adminRole = TestUtils.adminRole();
+        IdentifierType cc = TestUtils.identifierTypeCC();
+        return User.builder().
+                id(2).
+                email("admin@test.test").
+                phoneNumber("3212312324").
+                identifier("1001000002").
+                firstName("User2").
                 lastName("Admin").
                 password("$2a$10$bUcuzJbChZheTqPERIqk3u7COWhAF1CV6OU.LUkCG6iZYRhXydRqW").
                 isEmailVerified(true).
@@ -100,12 +115,24 @@ public final class TestUtils {
         return new Role(2, "ROLE_USER", new ArrayList<>(), new HashSet<>());
     }
 
+    public static Role merchantRole() {
+        return new Role(3, "ROLE_MERCHANT", new ArrayList<>(), new HashSet<>());
+    }
+
     public static IdentifierType identifierTypeCC() {
         return new IdentifierType(1, "CC", new ArrayList<>());
     }
 
     public static MerchantRequestState getPendingMerchantRequestState(){
         return new MerchantRequestState(1,"PENDING",new ArrayList<>());
+    }
+
+    public static MerchantRequestState getApprovedMerchantRequestState(){
+        return new MerchantRequestState(2,"APPROVED",new ArrayList<>());
+    }
+
+    public static MerchantRequestState getRejectedMerchantRequestState(){
+        return new MerchantRequestState(3,"REJECTED",new ArrayList<>());
     }
 
     public static Merchant getMerchantNotReviewed(){
@@ -122,11 +149,58 @@ public final class TestUtils {
                 .build();
     }
 
+    public static Merchant getMerchantApproved(){
+        MerchantRequestState approvedMerchantRequestState = TestUtils.getApprovedMerchantRequestState();
+        User user = TestUtils.getUserNotAdmin();
+        User reviewingUser = TestUtils.getUserAdmin2();
+
+        return Merchant.builder()
+                .id(1)
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .merchantRequestState(approvedMerchantRequestState)
+                .user(user)
+                .merchantKey("asdfghjkl456")
+                .apiId("a")
+                .reviewedBy(reviewingUser)
+                .build();
+    }
+
+    public static Merchant getMerchantRejected(){
+        MerchantRequestState approvedMerchantRequestState = TestUtils.getRejectedMerchantRequestState();
+        User user = TestUtils.getUserNotAdmin();
+        User reviewingUser = TestUtils.getUserAdmin2();
+
+        return Merchant.builder()
+                .id(1)
+                .taxId("1234567890")
+                .address("cr 13 # 5")
+                .storeName("tests and tests")
+                .merchantRequestState(approvedMerchantRequestState)
+                .user(user)
+                .merchantKey("asdfghjkl456")
+                .apiId("a")
+                .reviewedBy(reviewingUser)
+                .build();
+    }
+
     public static MerchantRegisterDto getMerchantRegisterDto(){
         return MerchantRegisterDto.builder()
                 .taxId("1234567890")
                 .address("cr 13 # 5")
                 .storeName("tests and tests")
+                .build();
+    }
+
+    public static MerchantRequestPaginationDto getMerchantRequestPaginationDto(){
+        List<MerchantRequestDataDto> content = new ArrayList<>();
+
+        return MerchantRequestPaginationDto.builder()
+                .content(content)
+                .totalElements(0)
+                .totalPages(1)
+                .size(10)
                 .build();
     }
 
@@ -346,6 +420,34 @@ public final class TestUtils {
                 merchantKey("123456789").
                 address("123456789").
                 storeName("123456789").
+                build());
+    }
+
+    public static Optional<Merchant> getMerchantOptionalIsNotApproved() {
+        MerchantRequestState merchantRequestState = MerchantRequestState.builder().id(3).name("REFUSED").build();
+        return Optional.of(Merchant.builder().
+                id(1).
+                user(TestUtils.getUserAdmin()).
+                taxId("123456789").
+                apiId("123456789").
+                merchantKey("123456789").
+                address("123456789").
+                storeName("123456789").
+                merchantRequestState(merchantRequestState).
+                build());
+    }
+
+    public static Optional<Merchant> getMerchantOptionalIsApproved() {
+        MerchantRequestState merchantRequestState = MerchantRequestState.builder().id(2).name("APPROVED").build();
+        return Optional.of(Merchant.builder().
+                id(1).
+                user(TestUtils.getUserAdmin()).
+                taxId("123456789").
+                apiId("123456789").
+                merchantKey("123456789").
+                address("123456789").
+                storeName("123456789").
+                merchantRequestState(merchantRequestState).
                 build());
     }
 

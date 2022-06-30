@@ -32,7 +32,8 @@ import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -124,7 +125,7 @@ class TransactionServiceImplTest {
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         when(transactionStateDao.save(any())).thenReturn(null);
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
-        when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptional());
+        when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptionalIsApproved());
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(userDao.findById(any())).thenReturn(Optional.of(TestUtils.getUserAdmin()));
         when(bankAccountService.findByUser(any())).thenReturn(TestUtils.getBankAccount()).thenReturn(TestUtils.getBankAccount2());
@@ -157,11 +158,29 @@ class TransactionServiceImplTest {
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
         when(bankAccountService.findByUser(TestUtils.getUserAdmin())).thenReturn(TestUtils.getBankAccount());
         when(merchantDao.findByMerchantKey(any())).thenReturn(Optional.empty());
-        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_REFUSED_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(transactionStateDao.save(any())).thenReturn(null);
         when(transactionDao.save(transaction)).thenReturn(null);
         PayTransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
         assertEquals(Strings.MERCHANT_NOT_FOUND, transactionCreatedDto.getStateDescription());
+    }
+
+    @Test
+    void testCreateTransactionFromMerchantShouldFailWhenMerchantIsNotApproved(){
+        Transaction transaction = TestUtils.getTransaction();
+        TransactionFromMerchantDto transactionFromMerchantDto = TestUtils.getTransactionFromMerchantDto();
+        when(transactionDao.save(any())).thenReturn(transaction);
+        transaction.setCreateAt(LocalDateTime.now());
+        when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
+        when(transactionStateDao.save(any())).thenReturn(null);
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
+        when(bankAccountService.findByUser(TestUtils.getUserAdmin())).thenReturn(TestUtils.getBankAccount());
+        when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptionalIsNotApproved());
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_REFUSED_STATE)).thenReturn(TestUtils.getStateTypeError());
+        when(transactionStateDao.save(any())).thenReturn(null);
+        when(transactionDao.save(transaction)).thenReturn(null);
+        PayTransactionCreatedDto transactionCreatedDto = transactionService.createTransactionFromMerchant(1,TestUtils.getTransactionFromMerchantDto());
+        assertEquals(Strings.MERCHANT_IS_NOT_APPROVED, transactionCreatedDto.getStateDescription());
     }
     @Test
     void testCreateTransactionFromMerchantShouldFailWhenUserMerchantIsNotPresent(){
@@ -172,9 +191,9 @@ class TransactionServiceImplTest {
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         when(transactionStateDao.save(any())).thenReturn(null);
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
-        when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptional());
+        when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptionalIsApproved());
         when(bankAccountService.findByUser(TestUtils.getUserAdmin())).thenReturn(TestUtils.getBankAccount());
-        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
+        when(entityManager.getReference(StateType.class, Strings.TRANSACTION_REFUSED_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(userDao.findById(any())).thenReturn(Optional.empty());
         when(transactionStateDao.save(any())).thenReturn(null);
         when(transactionDao.save(transaction)).thenReturn(null);
@@ -191,7 +210,7 @@ class TransactionServiceImplTest {
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         when(transactionStateDao.save(any())).thenReturn(null);
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
-        when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptional());
+        when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptionalIsApproved());
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(userDao.findById(any())).thenReturn(Optional.of(TestUtils.getUserAdmin()));
         when(bankAccountService.findByUser(any())).thenReturn(TestUtils.getBankAccountWhitOutBalance()).thenReturn(TestUtils.getBankAccount2());
@@ -212,7 +231,7 @@ class TransactionServiceImplTest {
         when(userDao.findByIdentifier(transactionFromMerchantDto.getIdentifier())).thenReturn(Optional.of(TestUtils.getUserNotAdmin()));
         when(transactionStateDao.save(any())).thenReturn(null);
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_PENDING_STATE)).thenReturn(TestUtils.getStateTypePending());
-        when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptional());
+        when(merchantDao.findByMerchantKey(any())).thenReturn(TestUtils.getMerchantOptionalIsApproved());
         when(entityManager.getReference(StateType.class, Strings.TRANSACTION_ERROR_STATE)).thenReturn(TestUtils.getStateTypeError());
         when(userDao.findById(any())).thenReturn(Optional.of(TestUtils.getUserAdmin()));
         when(bankAccountService.findByUser(any())).thenReturn(TestUtils.getBankAccountWhitOutBalance()).thenReturn(TestUtils.getBankAccount2());
