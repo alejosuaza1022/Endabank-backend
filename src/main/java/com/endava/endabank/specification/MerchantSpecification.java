@@ -2,9 +2,11 @@ package com.endava.endabank.specification;
 
 import com.endava.endabank.dto.merchant.MerchantFilterAuditDto;
 import com.endava.endabank.model.Merchant;
+import com.endava.endabank.model.User;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
@@ -17,9 +19,7 @@ public class MerchantSpecification {
     public Specification<Merchant> filterAuditMerchant(MerchantFilterAuditDto request) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            root.fetch("reviewedBy", JoinType.LEFT);
-            root.fetch("merchantRequestState", JoinType.LEFT);
-            root.fetch("user", JoinType.LEFT);
+            Join<Merchant, User> reviewedBy = root.join("reviewedBy");
             if (request.getMerchantName() != null && !request.getMerchantName().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("storeName")),
                         request.getMerchantName().toLowerCase() + "%"));
